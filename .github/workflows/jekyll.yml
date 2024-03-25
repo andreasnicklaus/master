@@ -29,6 +29,7 @@ jobs:
           ruby-version: "3.1"
           bundler-cache: true
           cache-version: 0
+          working-directory: pages
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v4

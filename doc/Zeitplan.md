@@ -1,4 +1,11 @@
-<h1>Masterthesis Zeitplan</h1>
+---
+layout: page
+title: Zeitplan
+permalink: /zeitplan.html
+nav_order: 2
+---
+
+<h1>Zeitplan</h1>
 
 - [Gantt](#gantt)
 - [Milestones](#milestones)

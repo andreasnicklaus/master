@@ -1,2 +1,8 @@
 HdM-Dokumente
 Quellen
+
+# Github pages
+Gemfile.lock
+_site
+.jekyll-cache
+pages/**/*.md

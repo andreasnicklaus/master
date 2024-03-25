@@ -1,4 +1,11 @@
-<h1>Masterthesis Pre-Plan</h1>
+---
+layout: page
+title: Pre-Plan
+permalink: /pre-plan.html
+nav_order: 1
+---
+
+<h1>Pre-Plan</h1>
 
 Andreas Nicklaus, an067, 44835
 
@@ -26,6 +33,7 @@ Andreas Nicklaus, an067, 44835
 siehe [https://www.dirk-heuzeroth.de/forschung-und-lehre/#theses](https://www.dirk-heuzeroth.de/forschung-und-lehre/#theses)
 
 ## Erste Wahl: Messungsthesis
+
 | Messungsthesis                                                                          |                                                                                                                                          |
 | :-------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 |                                                                                         | Ich will anhand von klassischen Web-Performance-Zahlen & Reactivity-Codeexecution-Zeiten Plugins für Webbundler miteinander vergleichen. |
@@ -43,6 +51,7 @@ Mögl. Gliederung:
 5. Fazit: Zusammenfassung und Diskussion der Ergebnisse
 
 ## Zweite Wahl: Umsetzungsthesis
+
 | Umsetzungsthesis                                                                                       |                                                                                                                                                                               |
 | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |                                                                                                        | Ich will ein JavaScript-Plugin entwickeln, das Änderungen zur Web-Performance automatisch erkennt und vornimmt, oder Probleme mit bestehenden Frameworks oder Plugins behebt. |

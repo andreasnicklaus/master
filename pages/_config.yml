@@ -1,0 +1,21 @@
+title: Master - A. Nicklaus
+url: https://master.andreasnicklaus.de
+baseurl: /
+# color_scheme: dark
+
+# Build settings
+theme: just-the-docs
+plugins:
+  - jekyll-relative-links
+  - jekyll-sitemap
+
+mermaid:
+  version: "9.1.3"
+
+exclude:
+  - .jekyll-cache/
+  - Gemfile
+  - Gemfile.lock
+  - Quellen
+  - HdM-Dokumente
+  - .github

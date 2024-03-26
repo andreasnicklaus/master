@@ -19,3 +19,9 @@ exclude:
   - Quellen
   - HdM-Dokumente
   - .github
+
+nav_external_links:
+  - title: Quellen
+    url: https://andreasnicklaus.notion.site/8698753ca6ea4ee3ac8dcdeea56148f2?v=77e17697b4a44d68bd455c35e42a96ae
+    hide_icon: true # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: true # set to true to open this link in a new tab - defaults to false

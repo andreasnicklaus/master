@@ -86,7 +86,7 @@ nach den [Allgemeinen Randbedingungen für den Ablauf von Abschlussarbeiten](htt
    4. Aufwandsabschätzung (insg. 600h = 20 ECTS * 30 h/ECTS)
 3. Statusreports, 2-3 wöchtlich
    1. Bearbeitete Arbeitspakete
-   2. Aufgetretene Schwierigkeite & Erfolge
+   2. Aufgetretene Schwierigkeiten & Erfolge
       1. Einfluss auf den Projektplan
    3. Erreichte Milestones & Status des aktuellen Milestones
    4. Anstehende Aufgaben in der nächsten Reportperiode

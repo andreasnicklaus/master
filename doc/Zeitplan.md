@@ -104,7 +104,7 @@ gantt
 | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Beschreibung  | Um einen geordneten und zielgerichteten Ablauf der ersten Experimente zu gewährleisten, müssen Rahmenbedingungen, Untersuchungsgegenstände und Metriken festgelegt werden. |
 | Predicted ETA | 08.04.24                                                                                                                                                                   |
-| Actual TA     |                                                                                                                                                                            |
+| Actual TA     | 12.04.2024                                                                                                                                                                 |
 | Anforderung   | Untersuchte Frameworks, genutzte Metriken, Experimenteumgebung und Experimentebeschreibung stehen fest.                                                                    |
 
 ## 3. Presentable Information

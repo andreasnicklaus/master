@@ -1,6 +1,10 @@
-import './assets/main.css'
-
+import router from './router'
 import { createApp } from 'vue'
 import App from './App.vue'
+import "@fontsource-variable/inter";
 
-createApp(App).mount('#app')
+import "@/assets/main.css"
+
+createApp(App)
+  .use(router)
+  .mount('#app')

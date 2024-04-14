@@ -10,7 +10,10 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "vue": "^3.4.21"
+    "@fontsource-variable/inter": "^5.0.17",
+    "@fontsource/kaushan-script": "^5.0.19",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.0",

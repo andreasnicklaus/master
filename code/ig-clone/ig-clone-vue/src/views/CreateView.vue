@@ -18,18 +18,17 @@ import ImageComponent from "@/components/ImageComponent.vue";
   <form id="newPostForm" action="" method="post">
     <input
       type="url"
-      name="imageUrl"
-      id="imageUrl"
-      placeholder="Insert your image URL here..."
-      v-model="imageUrl"
+      name="mediaUrl"
+      id="mediaUrl"
+      placeholder="Insert your media URL here..."
+      v-model="mediaUrl"
     />
     <p>or</p>
-    <select name="preloaded-image" id="preloaded-image" v-model="imageChoice">
-      <option value="">Choose one of our images here...</option>
-      <option v-for="image in preloadedImages" :key="image" :value="image">
+    <select name="preloaded-image" id="preloaded-image" v-model="mediaChoice">
+      <option value="">Choose one of our media files here...</option>
+      <option v-for="media in preloadedMedia" :key="media" :value="media">
         <span>
-          <ImageComponent :src="image" alt="" width="50" />
-          {{ image }}
+          {{ media }}
         </span>
       </option>
     </select>
@@ -49,7 +48,7 @@ import ImageComponent from "@/components/ImageComponent.vue";
   <hr />
 
   <Post
-    :user="user"
+    :userhandle="userhandle"
     :caption="caption"
     :likeCount="0"
     :mediaSource="mediaSource"
@@ -62,13 +61,18 @@ export default {
   name: "CreateView",
   data() {
     return {
-      preloadedImages: [
+      preloadedMedia: [
+        "canyon.mp4",
+        "easter-bunnies.mp4",
+        "reading.mp4",
+        "skaters.mp4",
         "abstract-circles.jpg",
         "joseph-joker.jpg",
         "asian-house.jpg",
         "lars-local.jpg",
         "backpack.jpg",
         "moon.jpg",
+        "beach.mp4",
         "beach.jpg",
         "mountains.jpg",
         "bernd-bart.jpg",
@@ -94,22 +98,19 @@ export default {
         "garden-art.jpg",
         "your-profile.jpg",
       ],
-      user: {
-        username: "Your Profile",
-        handle: "@you",
-        profileImageSource: "/stock-images/your-profile.jpg",
-      },
+      userhandle: "@you",
       caption: "",
-      imageUrl: "",
-      imageChoice: "",
+      mediaUrl: "",
+      mediaChoice: "",
     };
   },
   computed: {
     mediaSource() {
-      if (this.imageUrl) return this.imageUrl;
-      return this.imageChoice;
+      if (this.mediaUrl) return this.mediaUrl;
+      return this.mediaChoice;
     },
     mediaType() {
+      if (this.mediaSource.endsWith(".mp4")) return "VIDEO";
       return "IMAGE";
     },
   },

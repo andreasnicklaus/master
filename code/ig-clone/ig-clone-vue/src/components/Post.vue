@@ -30,9 +30,20 @@ import ImageComponent from "@/components/ImageComponent.vue";
   />
   <video
     class="postMedia"
-    :src="mediaSource"
     v-else-if="mediaSource && mediaType == 'VIDEO'"
-  ></video>
+    width="100%"
+    autoplay="true"
+    controls
+    controlslist="nodownload,nofullscreen,noremoteplayback"
+    disablepictureinpicture
+    loop
+    muted
+  >
+    <source
+      :src="'/src/assets/stock-footage/' + mediaSource"
+      type="video/mp4"
+    />
+  </video>
   <div v-else class="mediaError">
     <p>Nothing to see yet...<br />Choose an image to continue!</p>
   </div>
@@ -151,6 +162,7 @@ export default {
 
 .postMedia {
   aspect-ratio: 1 / 1;
+  object-fit: cover;
 }
 
 .actionIconRow {

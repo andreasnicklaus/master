@@ -18,14 +18,13 @@ export default {
   },
   computed: {
     imageSource() {
-      console.log(this.src);
       if (
         this.src == null ||
         this.src == undefined ||
         this.src.startsWith("http")
       )
         return this.src;
-      return new URL(`/src/assets/stock-images/${this.src}`, import.meta.url)
+      return new URL(`/src/assets/stock-footage/${this.src}`, import.meta.url)
         .href;
     },
   },

@@ -1,5 +1,10 @@
 const profiles = [
   {
+    username: 'Your Profile',
+    handle: '@you',
+    profileImageSource: 'your-profile.jpg',
+  },
+  {
     username: "Peter Poster",
     handle: "@PeterPoster",
     profileImageSource: "peter-poster.jpg",

@@ -9,6 +9,15 @@ const posts = [
     createdAt: new Date(),
   },
   {
+    userhandle: "@PeterPoster",
+    caption:
+      "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
+    mediaType: "VIDEO",
+    mediaSource: "beach.mp4",
+    likeCount: 196,
+    createdAt: new Date(),
+  },
+  {
     userhandle: "@TinaTraveller",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
@@ -18,11 +27,29 @@ const posts = [
     createdAt: new Date(),
   },
   {
+    userhandle: "@TinaTraveller",
+    caption:
+      "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
+    mediaType: "VIDEO",
+    mediaSource: "canyon.mp4",
+    likeCount: 196,
+    createdAt: new Date(),
+  },
+  {
     userhandle: "@LarsLocal",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
     mediaType: "IMAGE",
     mediaSource: "abstract-circles.jpg",
+    likeCount: 123456,
+    createdAt: new Date(),
+  },
+  {
+    userhandle: "@LarsLocal",
+    caption:
+      "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
+    mediaType: "VIDEO",
+    mediaSource: "easter-bunnies.mp4",
     likeCount: 123456,
     createdAt: new Date(),
   },
@@ -48,6 +75,15 @@ const posts = [
     userhandle: "@DonnaDrama",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
+    mediaType: "VIDEO",
+    mediaSource: "reading.mp4",
+    likeCount: 196,
+    createdAt: new Date(),
+  },
+  {
+    userhandle: "@DonnaDrama",
+    caption:
+      "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
     mediaType: "IMAGE",
     mediaSource: "busy-street.jpg",
     likeCount: 196,
@@ -59,6 +95,15 @@ const posts = [
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
     mediaType: "IMAGE",
     mediaSource: "couple-kitchen.jpg",
+    likeCount: 4567,
+    createdAt: new Date(),
+  },
+  {
+    userhandle: "@ElsaErdbeere",
+    caption:
+      "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
+    mediaType: "VIDEO",
+    mediaSource: "skaters.mp4",
     likeCount: 4567,
     createdAt: new Date(),
   },

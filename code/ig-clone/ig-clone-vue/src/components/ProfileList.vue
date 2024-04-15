@@ -5,20 +5,9 @@ import ImageComponent from "@/components/ImageComponent.vue";
 <template>
   <div id="profileList">
     <RouterLink
-      :to="
-        profile.handle
-          ? { name: 'Profile', params: { handle: profile.handle } }
-          : { name: 'Feed' }
-      "
+      :to="{ name: 'Profile', params: { handle: profile.handle } }"
       class="profileListItem"
-      v-for="profile in [
-        {
-          username: 'Your Profile',
-          handle: '',
-          profileImageSource: 'your-profile.jpg',
-        },
-        ...profiles,
-      ]"
+      v-for="profile in profiles"
       :key="profile.handle"
     >
       <ImageComponent

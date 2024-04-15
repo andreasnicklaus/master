@@ -1,0 +1,39 @@
+#profileHeader {
+  display: flex;
+  align-items: center;
+}
+
+#profileImage {
+  margin-right: 16px;
+  border-radius: 50%;
+}
+
+#profileInfo p {
+  margin: 0;
+}
+
+#username {
+  font-weight: 700;
+  font-size: 20px;
+}
+
+#caption {
+  margin-bottom: 0;
+}
+
+#creationTime {
+  font-size: 14px;
+  color: #adadad;
+  margin-top: 2px;
+  margin-bottom: 24px;
+}
+
+#images {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+#images img {
+  aspect-ratio: 1 / 1;
+}

@@ -1,0 +1,22 @@
+footer {
+  margin: 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+hr {
+  width: 70%;
+  border-color: #97979788;
+}
+
+a {
+  display: flex;
+  align-items: center;
+  width: max-content;
+}
+
+a img {
+  margin-right: 8px;
+}

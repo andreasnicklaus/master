@@ -1,24 +1,25 @@
-import logo from './logo.svg';
 import './App.css';
+import "@fontsource-variable/inter";
+import "@fontsource/kaushan-script"
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Feed from "./pages/Feed"
+import About from "./pages/About"
+import CreatePost from "./pages/CreatePost"
+import ProfilePage from "./pages/ProfilePage"
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Feed />} />
+          <Route path='/user/:handle' element={<ProfilePage />} />
+          <Route path='/create' element={<CreatePost />} />
+          <Route path='/about' element={<About />} />
+        </Routes>
+      </BrowserRouter>
+    </main>
   );
 }
 

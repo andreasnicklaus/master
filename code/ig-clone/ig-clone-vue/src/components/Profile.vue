@@ -1,10 +1,10 @@
 <script setup>
-import ImageComponent from "@/components/ImageComponent.vue";
+import MediaComponent from "@/components/MediaComponent.vue";
 </script>
 
 <template>
   <div id="profileHeader">
-    <ImageComponent
+    <MediaComponent
       id="profileImage"
       :src="profileImageSource"
       alt=""
@@ -28,9 +28,9 @@ import ImageComponent from "@/components/ImageComponent.vue";
   <p id="creationTime">created {{ creationTimeString }}</p>
 
   <div id="images">
-    <ImageComponent
+    <MediaComponent
       v-for="image in images"
-      key="image"
+      :key="image"
       :src="image"
       alt=""
       width="100%"

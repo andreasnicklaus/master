@@ -2,7 +2,6 @@
 import NotInstagramLogo from "@/components/NotInstagramLogo.vue";
 import XIcon from "@/components/icons/XIcon.vue";
 import Post from "@/components/Post.vue";
-import ImageComponent from "@/components/ImageComponent.vue";
 </script>
 
 <template>
@@ -52,7 +51,6 @@ import ImageComponent from "@/components/ImageComponent.vue";
     :caption="caption"
     :likeCount="0"
     :mediaSource="mediaSource"
-    :mediaType="mediaType"
     :hideActionIcons="true"
   />
 </template>
@@ -108,10 +106,6 @@ export default {
     mediaSource() {
       if (this.mediaUrl) return this.mediaUrl;
       return this.mediaChoice;
-    },
-    mediaType() {
-      if (this.mediaSource.endsWith(".mp4")) return "VIDEO";
-      return "IMAGE";
     },
   },
 };

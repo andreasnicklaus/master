@@ -9,7 +9,6 @@ import Post from "@/components/Post.vue";
       :key="post.id"
       :userhandle="post.userhandle"
       :caption="post.caption"
-      :mediaType="post.mediaType"
       :mediaSource="post.mediaSource"
       :likeCount="post.likeCount"
       :createdAt="post.createdAt"

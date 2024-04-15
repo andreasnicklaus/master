@@ -3,7 +3,6 @@ const posts = [
     userhandle: "@PeterPoster",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "beach.jpg",
     likeCount: 196,
     createdAt: new Date(),
@@ -12,7 +11,6 @@ const posts = [
     userhandle: "@PeterPoster",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "VIDEO",
     mediaSource: "beach.mp4",
     likeCount: 196,
     createdAt: new Date(),
@@ -21,7 +19,6 @@ const posts = [
     userhandle: "@TinaTraveller",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "mountains.jpg",
     likeCount: 196,
     createdAt: new Date(),
@@ -30,7 +27,6 @@ const posts = [
     userhandle: "@TinaTraveller",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "VIDEO",
     mediaSource: "canyon.mp4",
     likeCount: 196,
     createdAt: new Date(),
@@ -39,7 +35,6 @@ const posts = [
     userhandle: "@LarsLocal",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "abstract-circles.jpg",
     likeCount: 123456,
     createdAt: new Date(),
@@ -48,7 +43,6 @@ const posts = [
     userhandle: "@LarsLocal",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "VIDEO",
     mediaSource: "easter-bunnies.mp4",
     likeCount: 123456,
     createdAt: new Date(),
@@ -57,7 +51,6 @@ const posts = [
     userhandle: "@BerndBart",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "asian-house.jpg",
     likeCount: 2,
     createdAt: new Date(),
@@ -66,7 +59,6 @@ const posts = [
     userhandle: "@DonnaDrama",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "backpack.jpg",
     likeCount: 196,
     createdAt: new Date(),
@@ -75,7 +67,6 @@ const posts = [
     userhandle: "@DonnaDrama",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "VIDEO",
     mediaSource: "reading.mp4",
     likeCount: 196,
     createdAt: new Date(),
@@ -84,7 +75,6 @@ const posts = [
     userhandle: "@DonnaDrama",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "busy-street.jpg",
     likeCount: 196,
     createdAt: new Date(),
@@ -93,7 +83,6 @@ const posts = [
     userhandle: "@ElsaErdbeere",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "couple-kitchen.jpg",
     likeCount: 4567,
     createdAt: new Date(),
@@ -102,7 +91,6 @@ const posts = [
     userhandle: "@ElsaErdbeere",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "VIDEO",
     mediaSource: "skaters.mp4",
     likeCount: 4567,
     createdAt: new Date(),
@@ -111,7 +99,6 @@ const posts = [
     userhandle: "@FilippaFeurig",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "dramatic-portrait.jpg",
     likeCount: 78945,
     createdAt: new Date(),
@@ -120,7 +107,6 @@ const posts = [
     userhandle: "@GabrielaGut",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "field-wheat.jpg",
     likeCount: 567,
     createdAt: new Date(),
@@ -129,7 +115,6 @@ const posts = [
     userhandle: "@JosephJoker",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "flower-art.jpg",
     likeCount: 784,
     createdAt: new Date(),
@@ -138,7 +123,6 @@ const posts = [
     userhandle: "@RosaRot",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "garden-art.jpg",
     likeCount: 45678,
     createdAt: new Date(),
@@ -147,7 +131,6 @@ const posts = [
     userhandle: "@SteffiSanft",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "moon.jpg",
     likeCount: 49789,
     createdAt: new Date(),
@@ -156,7 +139,6 @@ const posts = [
     userhandle: "@SteffiSauer",
     caption:
       "If you read this, you are great! Have a fantastic time doing whatever it is that comes to your mind! #ootd #foodie #Ineverthoughthisdaywouldcome",
-    mediaType: "IMAGE",
     mediaSource: "snow-mountains.jpg",
     likeCount: 196,
     createdAt: new Date(),

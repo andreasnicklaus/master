@@ -3,7 +3,7 @@ import HeartIcon from "@/components/icons/HeartIcon.vue";
 import SendIcon from "@/components/icons/SendIcon.vue";
 import CommentIcon from "@/components/icons/CommentIcon.vue";
 import BookmarkIcon from "@/components/icons/BookmarkIcon.vue";
-import ImageComponent from "@/components/ImageComponent.vue";
+import MediaComponent from "@/components/MediaComponent.vue";
 </script>
 
 <template>
@@ -12,7 +12,7 @@ import ImageComponent from "@/components/ImageComponent.vue";
     :to="{ name: 'Profile', params: { handle: userhandle } }"
     class="postUserInfo"
   >
-    <ImageComponent
+    <MediaComponent
       class="profileImage"
       :src="user?.profileImageSource"
       alt=""
@@ -21,32 +21,12 @@ import ImageComponent from "@/components/ImageComponent.vue";
     />
     <span class="username">{{ user?.username }}</span>
   </RouterLink>
-  <ImageComponent
+  <MediaComponent
     class="postMedia"
     :src="mediaSource"
     :alt="caption"
-    v-if="mediaSource && mediaType == 'IMAGE'"
     width="100%"
   />
-  <video
-    class="postMedia"
-    v-else-if="mediaSource && mediaType == 'VIDEO'"
-    width="100%"
-    autoplay="true"
-    controls
-    controlslist="nodownload,nofullscreen,noremoteplayback"
-    disablepictureinpicture
-    loop
-    muted
-  >
-    <source
-      :src="'/src/assets/stock-footage/' + mediaSource"
-      type="video/mp4"
-    />
-  </video>
-  <div v-else class="mediaError">
-    <p>Nothing to see yet...<br />Choose an image to continue!</p>
-  </div>
   <div class="actionIconRow" v-if="!hideActionIcons">
     <div class="leftActionIcons">
       <HeartIcon />
@@ -76,7 +56,6 @@ export default {
   props: {
     userhandle: String,
     caption: String,
-    mediaType: String,
     mediaSource: String,
     likeCount: Number,
     createdAt: Date,
@@ -145,24 +124,6 @@ export default {
 
 .username {
   font-weight: 800;
-}
-
-.mediaError {
-  display: grid;
-  place-items: center;
-  text-align: center;
-
-  background-color: #d9d9d9;
-  height: 300px;
-}
-
-.mediaError p {
-  font-size: 14px;
-}
-
-.postMedia {
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
 }
 
 .actionIconRow {

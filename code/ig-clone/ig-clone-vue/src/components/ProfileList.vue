@@ -1,5 +1,5 @@
 <script setup>
-import ImageComponent from "@/components/ImageComponent.vue";
+import MediaComponent from "@/components/MediaComponent.vue";
 </script>
 
 <template>
@@ -10,7 +10,7 @@ import ImageComponent from "@/components/ImageComponent.vue";
       v-for="profile in profiles"
       :key="profile.handle"
     >
-      <ImageComponent
+      <MediaComponent
         class="profileImage"
         :src="profile.profileImageSource"
         :alt="profile.handle"

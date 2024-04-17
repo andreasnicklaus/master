@@ -1,0 +1,19 @@
+<header>
+  <a [routerLink]="['/']" routerLinkActive="router-link-active">
+    <app-not-instagram-logo />
+  </a>
+  <a [routerLink]="['/']" routerLinkActive="router-link-active">
+    <app-xicon />
+  </a>
+</header>
+
+<div id="profileContainer">
+  <app-profile-comp
+    [username]="username"
+    [handle]="handle"
+    [profileImageSource]="profileImageSource"
+    [caption]="caption"
+    [createdAt]="createdAt"
+    [images]="images"
+  />
+</div>

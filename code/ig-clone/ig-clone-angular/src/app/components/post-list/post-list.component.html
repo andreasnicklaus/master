@@ -1,0 +1,10 @@
+<div id="postList">
+  <app-post
+    *ngFor="let post of posts"
+    [userhandle]="post.userhandle"
+    [caption]="post.caption"
+    [mediaSource]="post.mediaSource"
+    [likeCount]="post.likeCount"
+    [createdAt]="post.createdAt"
+  />
+</div>

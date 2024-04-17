@@ -1,0 +1,39 @@
+<a
+  [routerLink]="['/user/' + userhandle]"
+  routerLinkActive="router-link-active"
+  *ngIf="user"
+  class="postUserInfo"
+>
+  <app-media-component
+    class="profileImage"
+    [src]="user?.profileImageSource"
+    alt=""
+    width="44"
+    height="44"
+  />
+  <span class="username">{{ user?.username }}</span>
+</a>
+<app-media-component
+  class="postMedia"
+  [src]="mediaSource"
+  [alt]="caption"
+  width="100%"
+/>
+<div class="actionIconRow" v-if="!hideActionIcons">
+  <div class="leftActionIcons">
+    <app-heart-icon />
+    <app-comment-icon />
+    <app-send-icon />
+  </div>
+  <app-bookmark-icon />
+</div>
+<p class="likeCount">{{ likeCount }} likes</p>
+<p class="caption">
+  <span
+    *ngFor="let word of caption.split(' ')"
+    [style]="word.startsWith('#') ? 'color: #0091E2' : ''"
+  >
+    {{ word }}&hairsp;
+  </span>
+</p>
+<p class="creationTime">{{ creationTimeToString() }}</p>

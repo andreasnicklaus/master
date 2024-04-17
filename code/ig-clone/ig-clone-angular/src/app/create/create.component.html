@@ -1,0 +1,44 @@
+<header>
+  <a [routerLink]="['/']" routerLinkActive="router-link-active">
+    <app-not-instagram-logo />
+  </a>
+  <a [routerLink]="['/']" routerLinkActive="router-link-active">
+    <app-xicon />
+  </a>
+</header>
+
+<form id="newPostForm" action="" method="post">
+  <input
+    [(ngModel)]="mediaUrl"
+    type="url"
+    name="mediaUrl"
+    id="mediaUrl"
+    placeholder="Insert your media URL here..."
+  />
+  <p>or</p>
+  <select name="preloaded-image" id="preloaded-image" [(ngModel)]="mediaChoice">
+    <option value="">Choose one of our media files here...</option>
+    <option *ngFor="let media of preloadedMedia" [value]="media">
+      <span> {{ media }} </span>
+    </option>
+  </select>
+  <textarea
+    [(ngModel)]="caption"
+    name="caption"
+    id="caption"
+    cols="30"
+    rows="3"
+    placeholder="Type your caption here"
+  ></textarea>
+  <button type="submit" [disabled]="!(caption && mediaSource)">Post it!</button>
+</form>
+
+<hr />
+
+<app-post
+  [userhandle]="userhandle"
+  [caption]="caption"
+  [likeCount]="0"
+  [mediaSource]="mediaUrl || mediaChoice"
+  [hideActionIcons]="true"
+/>

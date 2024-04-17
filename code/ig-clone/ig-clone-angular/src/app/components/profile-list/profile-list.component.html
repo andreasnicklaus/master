@@ -1,0 +1,17 @@
+<div id="profileList">
+  <a
+    [routerLink]="['/user/' + profile.handle]"
+    routerLinkActive="router-link-active"
+    class="profileListItem"
+    *ngFor="let profile of profiles"
+  >
+    <app-media-component
+      class="profileImage"
+      [src]="profile.profileImageSource"
+      [alt]="profile.handle"
+      width="91"
+      height="91"
+    />
+    <p class="username">{{ profile.username }}</p>
+  </a>
+</div>

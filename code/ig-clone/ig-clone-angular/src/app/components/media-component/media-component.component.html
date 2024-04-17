@@ -1,0 +1,30 @@
+<img
+  class="postMedia"
+  *ngIf="mediaSource && mediaSource.endsWith('jpg'); else videoMedia"
+  [src]="mediaSource"
+  [alt]="alt"
+  [attr.width]="width"
+  [attr.height]="height"
+  [id]="id"
+  [class]="class"
+/>
+<ng-template #videoMedia>
+  <video
+    class="postMedia"
+    *ngIf="mediaSource && mediaSource.endsWith('mp4'); else mediaError"
+    [attr.width]="width"
+    autoplay="true"
+    controls
+    controlslist="nodownload,nofullscreen,noremoteplayback"
+    disablepictureinpicture
+    loop
+    [muted]="true"
+  >
+    <source [src]="mediaSource" type="video/mp4" />
+  </video>
+</ng-template>
+<ng-template #mediaError>
+  <div class="mediaError">
+    <p>Nothing to see yet...<br />Choose an image to continue!</p>
+  </div>
+</ng-template>

@@ -1,0 +1,10 @@
+<app-logo-header />
+
+<app-profile-list [profiles]="profiles" />
+<app-post-list [posts]="posts" />
+<footer>
+  <hr />
+  <a [routerLink]="['/about']" routerLinkActive="router-link-active">
+    <app-info-icon /> <span> Info </span>
+  </a>
+</footer>

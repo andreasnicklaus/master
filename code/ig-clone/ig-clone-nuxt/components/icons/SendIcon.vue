@@ -1,0 +1,9 @@
+<template>
+  <img
+    class="transparent"
+    id="sendicon"
+    src="~/assets/send.svg"
+    alt=""
+    width="27"
+  />
+</template>

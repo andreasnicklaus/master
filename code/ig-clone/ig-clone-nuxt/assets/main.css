@@ -1,0 +1,29 @@
+* {
+  font-family: "Inter Variable", sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 600px;
+  margin: auto;
+}
+
+img {
+  object-fit: cover;
+  background-color: #adadad;
+}
+
+img.transparent {
+  background-color: transparent;
+}
+
+p {
+  font-size: 16px;
+}
+
+span {
+  line-height: 100%;
+}

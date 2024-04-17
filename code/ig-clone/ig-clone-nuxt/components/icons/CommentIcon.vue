@@ -1,0 +1,9 @@
+<template>
+  <img
+    class="transparent"
+    id="commenticon"
+    src="~/assets/comment.svg"
+    alt=""
+    width="29"
+  />
+</template>

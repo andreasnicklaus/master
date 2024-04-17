@@ -1,0 +1,9 @@
+<template>
+  <img
+    class="transparent"
+    id="hearticon"
+    src="~/assets/heart.svg"
+    alt=""
+    width="29"
+  />
+</template>

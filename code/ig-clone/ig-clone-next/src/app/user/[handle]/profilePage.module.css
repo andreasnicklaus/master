@@ -1,0 +1,15 @@
+header.profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 32px 16px;
+}
+
+header.profileHeader a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+#profileContainer {
+  margin: 8px 16px;
+}

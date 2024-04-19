@@ -16,7 +16,7 @@ export default defineConfig({
   reporter: [['html'], ['json', { outputFile: 'playwright-report/test-results.json' }]],
   use: {
     actionTimeout: 0,
-    baseURL: 'http://localhost:5173',
+    baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
     headless: !!process.env.CI
   },
@@ -71,8 +71,8 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: process.env.CI ? 'vite preview --port 5173' : 'vite dev',
-    port: 5173,
+    command: process.env.CI ? 'react-scripts build && serve -s build' : 'react-scripts start',
+    port: 3000,
     reuseExistingServer: !process.env.CI
   }
 })

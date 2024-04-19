@@ -56,7 +56,6 @@ const CreatePost = () => {
 
   useEffect(() => {
     setMediaSource(mediaUrl || mediaChoice);
-    console.log({ mediaUrl, mediaChoice, mediaSource });
   });
   // function mediaSource() {
   //   return mediaUrl || mediaChoice;

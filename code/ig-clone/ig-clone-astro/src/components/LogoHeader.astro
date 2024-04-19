@@ -1,0 +1,37 @@
+---
+import NotInstagramLogo from "./NotInstagramLogo.astro";
+import PlusIcon from "./icons/PlusIcon.astro";
+import SendIcon from "./icons/SendIcon.jsx";
+import HeartIcon from "./icons/HeartIcon.jsx";
+---
+
+<header>
+  <a href="/">
+    <NotInstagramLogo />
+  </a>
+  <div id="actionLogos">
+    <a href="/create"> <PlusIcon /> </a>
+    <HeartIcon />
+    <SendIcon />
+  </div>
+</header>
+
+<style>
+  header {
+    margin: 16px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  #actionLogos {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    place-items: center;
+    column-gap: 12px;
+  }
+</style>

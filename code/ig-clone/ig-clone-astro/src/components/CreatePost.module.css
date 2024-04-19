@@ -1,0 +1,68 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 32px 16px;
+}
+
+header a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+#newPostForm {
+  display: flex;
+  flex-direction: column;
+  margin: 8px 16px;
+}
+
+#newPostForm p {
+  font-size: 14px;
+  color: #adadad;
+  margin: 4px;
+}
+
+#newPostForm *:not(p) {
+  margin-bottom: 16px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 4px 4px 10px #00000033;
+}
+
+#newPostForm input,
+select,
+textarea {
+  resize: none;
+  padding: 8px 16px;
+  color: #6d6d6d;
+}
+
+#newPostForm textarea::placeholder,
+input::placeholder {
+  color: #6d6d6d;
+}
+
+#newPostForm button {
+  padding: 16px;
+  background-image: linear-gradient(to right, #bb5ada, #ff3040);
+  color: white;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+#newPostForm button:not(:disabled):hover {
+  cursor: pointer;
+  box-shadow: none;
+}
+
+#newPostForm button:disabled {
+  background-color: #adadad;
+  background-image: none;
+  box-shadow: none;
+}
+
+hr {
+  width: 70%;
+  border-color: #adadad44;
+  margin-bottom: 32px;
+}

@@ -1,0 +1,18 @@
+---
+const { title } = Astro.props;
+---
+
+<h2>{title}</h2>
+<p>
+  <slot />
+</p>
+
+<style>
+  h2 {
+    font-family: "Kaushan Script", sans-serif;
+    margin-bottom: 0;
+  }
+  p {
+    margin-top: 0;
+  }
+</style>

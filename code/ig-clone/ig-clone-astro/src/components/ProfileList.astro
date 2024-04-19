@@ -1,0 +1,61 @@
+---
+import MediaComponent from "./MediaComponent";
+const { profiles } = Astro.props;
+---
+
+<div id="profileList">
+  {
+    profiles.map((profile: any) => (
+      <a href={`/user/${profile.handle}`} class="profileListItem">
+        <MediaComponent
+          client:load
+          className="profileImage"
+          src={profile.profileImageSource}
+          alt={profile.handle}
+          width="91"
+          height="91"
+        />
+        <p class="username">{profile.username}</p>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  #profileList {
+    margin: 8px 0;
+    padding: 0 16px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  #profileList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .profileListItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-right: 16px;
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  .profileListItem:last-of-type {
+    margin-right: 0;
+  }
+
+  .profileImage {
+    border-radius: 50%;
+  }
+
+  .username {
+    white-space: nowrap;
+  }
+</style>

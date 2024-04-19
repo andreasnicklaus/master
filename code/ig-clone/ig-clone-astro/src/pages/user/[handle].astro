@@ -1,0 +1,64 @@
+---
+export const prerender = false;
+
+import Profile from "../../components/Profile.astro";
+import NotInstagramLogo from "../../components/NotInstagramLogo.astro";
+import XIcon from "../../components/icons/XIcon.astro";
+import HtmlLayout from "../../Layouts/HtmlLayout.astro";
+import ProfileService from "../../services/ProfileService";
+import PostService from "../../services/PostService";
+
+const handle = Astro.params.handle;
+
+const { username, profileImageSource, caption, images } = await Promise.all([
+  ProfileService.getByHandle(handle),
+  PostService.getByUserHandle(handle),
+]).then(([user, images]) => {
+  return {
+    username: user?.username,
+    profileImageSource: user?.profileImageSource,
+    caption: user?.caption,
+    images: images.map((i) => i.mediaSource),
+  };
+});
+---
+
+<HtmlLayout>
+  <header>
+    <a href="/">
+      <NotInstagramLogo />
+    </a>
+    <a href="/">
+      <XIcon />
+    </a>
+  </header>
+
+  <div id="profileContainer">
+    <Profile
+      username={username}
+      handle={handle}
+      profileImageSource={profileImageSource}
+      caption={caption}
+      createdAt={new Date()}
+      images={images}
+    />
+  </div>
+</HtmlLayout>
+
+<style>
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 32px 16px;
+  }
+
+  header a {
+    color: inherit;
+    text-decoration: inherit;
+  }
+
+  #profileContainer {
+    margin: 8px 16px;
+  }
+</style>

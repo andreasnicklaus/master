@@ -1,16 +1,50 @@
 ---
+import LogoHeader from "../components/LogoHeader.astro";
+import ProfileList from "../components/ProfileList.astro";
+import PostList from "../components/PostList.astro";
+import InfoIcon from "../components/icons/InfoIcon.astro";
+import HtmlLayout from "../Layouts/HtmlLayout.astro";
+import PostService from "../services/PostService";
+import ProfileService from "../services/ProfileService";
 
+let profileList: any[] = await ProfileService.getAll();
+let postList: any[] = await PostService.getAll();
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<HtmlLayout>
+  <LogoHeader />
+  <ProfileList profiles={profileList} />
+  <PostList posts={postList} />
+  <footer>
+    <hr />
+    <a href="/about">
+      <InfoIcon />
+      <span> Info </span>
+    </a>
+  </footer>
+</HtmlLayout>
+
+<style>
+  footer {
+    margin: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  hr {
+    width: 70%;
+    border-color: #97979788;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    width: max-content;
+  }
+
+  span {
+    margin-left: 8px;
+  }
+</style>

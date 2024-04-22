@@ -10,3 +10,6 @@
 [submodule "code/ig-clone/ig-clone-nuxt"]
 	path = code/ig-clone/ig-clone-nuxt
 	url = https://github.com/andreasnicklaus/ig-clone-nuxt
+[submodule "code/ig-clone/ig-clone-react"]
+	path = code/ig-clone/ig-clone-react
+	url = https://github.com/andreasnicklaus/ig-clone-react

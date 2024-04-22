@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Test results</title>
+  </head>
+  <body>
+    <img id="lighthouse" alt="" width="600" />
+    <img id="lighthouse2" alt="" width="600" />
+
+    <script>
+      const results = `IG clone with Angular on Vercel: 33.6
+      IG clone with Angular: 44
+IG clone with Astro on Vercel: 16.8
+IG clone with Astro: 25.6
+IG clone with Next on Vercel: 56.8
+IG clone with Next: 68.2
+IG clone with Nuxt on Vercel: 32.6
+IG clone with Nuxt: 44
+IG clone with React on Vercel: 21.8
+IG clone with React: 29
+IG clone with Vue on Vercel: 24.4
+IG clone with Vue: 43.4`;
+      const data = {
+        labels: [],
+        datasets: [
+          { label: "Lighthouse Performance Score on Vercel", data: [] },
+        ],
+      };
+      results.split("\n").forEach((line) => {
+        const [descriptor, score] = line.split(":");
+        data.datasets[0].data.push(parseFloat(score));
+        data.labels.push(descriptor);
+      });
+
+      const imageSource = new URL(
+        `https://quickchart.io/chart?c={type:'bar',data:${JSON.stringify(
+          data
+        )}}`
+      );
+
+      document
+        .querySelector("#lighthouse")
+        .setAttribute("src", imageSource.href);
+
+      // ################################################
+
+      const data2 = {
+        labels: [],
+        datasets: [
+          { label: "Lighthouse Performance Score on Vercel", data: [] },
+          { label: "Lighthouse Performance Score locally", data: [] },
+        ],
+      };
+      results.split("\n").forEach((line) => {
+        const [descriptor, score] = line.split(":");
+        if (descriptor.endsWith("on Vercel"))
+          data2.datasets[0].data.push(parseFloat(score));
+        else {
+          data2.datasets[1].data.push(parseFloat(score));
+          data2.labels.push(descriptor);
+        }
+      });
+
+      const imageSource2 = new URL(
+        `https://quickchart.io/chart?c={type:'bar',data:${JSON.stringify(
+          data2
+        )}}`
+      );
+
+      document
+        .querySelector("#lighthouse2")
+        .setAttribute("src", imageSource2.href);
+    </script>
+  </body>
+</html>

@@ -7,3 +7,6 @@
 [submodule "code/ig-clone/ig-clone-next"]
 	path = code/ig-clone/ig-clone-next
 	url = https://github.com/andreasnicklaus/ig-clone-next
+[submodule "code/ig-clone/ig-clone-nuxt"]
+	path = code/ig-clone/ig-clone-nuxt
+	url = https://github.com/andreasnicklaus/ig-clone-nuxt

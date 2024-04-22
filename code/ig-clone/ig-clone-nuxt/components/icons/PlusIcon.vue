@@ -1,9 +1,0 @@
-<template>
-  <img
-    class="transparent"
-    id="plusicon"
-    src="~/assets/plus.svg"
-    alt=""
-    width="29"
-  />
-</template>

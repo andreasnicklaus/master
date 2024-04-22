@@ -1,9 +1,0 @@
-<template>
-  <img
-    class="transparent"
-    id="bookmarkicon"
-    src="~/assets/bookmark.svg"
-    alt=""
-    width="29"
-  />
-</template>

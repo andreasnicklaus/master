@@ -13,3 +13,6 @@
 [submodule "code/ig-clone/ig-clone-react"]
 	path = code/ig-clone/ig-clone-react
 	url = https://github.com/andreasnicklaus/ig-clone-react
+[submodule "code/ig-clone/ig-clone-vue"]
+	path = code/ig-clone/ig-clone-vue
+	url = https://github.com/andreasnicklaus/ig-clone-vue

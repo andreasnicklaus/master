@@ -1,3 +1,6 @@
 [submodule "code/ig-clone/ig-clone-astro"]
 	path = code/ig-clone/ig-clone-astro
 	url = https://github.com/andreasnicklaus/ig-clone-astro
+[submodule "code/ig-clone/ig-clone-angular"]
+	path = code/ig-clone/ig-clone-angular
+	url = https://github.com/andreasnicklaus/ig-clone-angular

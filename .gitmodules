@@ -4,3 +4,6 @@
 [submodule "code/ig-clone/ig-clone-angular"]
 	path = code/ig-clone/ig-clone-angular
 	url = https://github.com/andreasnicklaus/ig-clone-angular
+[submodule "code/ig-clone/ig-clone-next"]
+	path = code/ig-clone/ig-clone-next
+	url = https://github.com/andreasnicklaus/ig-clone-next

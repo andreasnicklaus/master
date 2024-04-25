@@ -60,8 +60,8 @@ function build(projectConfig) {
           return;
         }
 
-        logger.debug(stdout)
-        logger.error(stderr)
+        if (stdout) logger.debug(stdout)
+        if (stderr) logger.error(stderr)
         resolve()
       })
     }
@@ -75,15 +75,15 @@ function build(projectConfig) {
 
 async function stopServer(hostProcess, projectConfig) {
   return new Promise((resolve, reject) => exec(`taskkill /pid ${hostProcess.pid} /f /t`, (error, stdout, stderr) => {
-    if (error) console.error(error)
-    logger.debug(stdout)
-    logger.error(stderr)
+    if (error) logger.error(error)
+    if (stdout) logger.debug(stdout)
+    if (stderr) logger.error(stderr)
     resolve()
   }))
 }
 
 for (let projectConfig of config.projects) {
-  logger.info("Testing project", projectConfig.name)
+  logger.info(`Testing project ${projectConfig.name}`)
 
   // BUILD PHASE
   await build(projectConfig)
@@ -112,11 +112,11 @@ for (let projectConfig of config.projects) {
 
   if (serverCommand) {
     hostProcess.stdout.on('data', (data) => {
-      console.debug(`stdout: ${data}`);
+      logger.debug(`stdout: ${data}`);
     });
 
     hostProcess.stderr.on('data', (data) => {
-      console.error(`stderr: ${data}`);
+      logger.error(`stderr: ${data}`);
     });
 
     hostProcess.on('close', (code) => {
@@ -125,7 +125,7 @@ for (let projectConfig of config.projects) {
     });
 
     hostProcess.on('error', (error) => {
-      console.error(`error: ${error.message}`);
+      logger.error(`error: ${error.message}`);
     });
 
     process.on("SIGINT", async () => {
@@ -155,13 +155,13 @@ for (let projectConfig of config.projects) {
       fs.writeFileSync(`${projectConfig.reportDirectory}${route == "/" ? "/index" : route}/lighthouse-report-${new URL(url).hostname}-${dateToUriSafeString(new Date())}.html`, reportHtml);
       fs.writeFileSync(`${projectConfig.reportDirectory}${route == "/" ? "/index" : route}/lighthouse-report-${new URL(url).hostname}-${dateToUriSafeString(new Date())}.json`, JSON.stringify({ artifacts, lhr }, null, 2));
 
-      logger.info(`Performance score on run #${i + 1} was`, runnerResult.lhr.categories.performance.score * 100, '(in', Math.round(timing.total / 10) / 100, 'seconds)');
+      logger.info(`Performance score on run #${i + 1} was ${runnerResult.lhr.categories.performance.score * 100} (in ${Math.round(timing.total / 10) / 100} seconds)`);
       perf_Scores.push(runnerResult.lhr.categories.performance.score * 100)
     }
 
     const average_score = perf_Scores.reduce((partialSum, a) => partialSum + a, 0) / perf_Scores.length
     fs.writeFileSync(`${projectConfig.reportDirectory}${route == "/" ? "/index" : route}/summary-${new URL(url).hostname}-${dateToUriSafeString(new Date())}.json`, JSON.stringify({ average_score, perf_Scores }, null, 2));
-    logger.info("Average Performance Score", `(route "${route}")`, ":", average_score, '(MIN:', Math.min(...perf_Scores), ', MAX:', Math.max(...perf_Scores), ')')
+    logger.info(`Average Performance Score (route "${route}"): ${average_score} (MIN: ${Math.min(...perf_Scores)} MAX: ${Math.max(...perf_Scores)})`)
     performances.push(`${projectConfig.name} (route "${route}"): ${average_score}`)
   }
 

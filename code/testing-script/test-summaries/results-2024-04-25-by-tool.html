@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Results by Tool</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <img alt="performanceScore" id="performanceScore" />
+    <img alt="observedLastVisualChange" id="observedLastVisualChange" />
+    <img alt="totalbyteweight" id="totalbyteweight" />
+    <img alt="timeToFirstByte" id="timeToFirstByte" />
+    <img alt="cumulativeLayoutShift" id="cumulativeLayoutShift" />
+    <img alt="firstContentfulPaint" id="firstContentfulPaint" />
+    <img alt="firstMeaningfulPaint" id="firstMeaningfulPaint" />
+    <img alt="largestContentfulPaint" id="largestContentfulPaint" />
+    <img alt="interactive" id="interactive" />
+    <img alt="speedIndex" id="speedIndex" />
+    <img alt="totalBlockingTime" id="totalBlockingTime" />
+    <img alt="observedFirstContentfulPaint" id="observedFirstContentfulPaint" />
+    <img alt="observedFirstMeaningfulPaint" id="observedFirstMeaningfulPaint" />
+    <img
+      alt="observedLargestContentfulPaint"
+      id="observedLargestContentfulPaint"
+    />
+    <img alt="observedDomContentLoaded" id="observedDomContentLoaded" />
+    <img alt="observedFirstVisualChange" id="observedFirstVisualChange" />
+    <img alt="observedSpeedIndex" id="observedSpeedIndex" />
+    <img alt="firstcontentfulpaint" id="firstcontentfulpaint" />
+    <img alt="largestcontentfulpaint" id="largestcontentfulpaint" />
+
+    <script>
+      const routes = ["/", "/about", "/create", "/user/@PeterPoster"];
+
+      fetch("./summary-2024-04-05.json")
+        .then((data) => data.json())
+        .then((data) => {
+          const { name, url, files, route, ...metrics } = data[0];
+
+          const names = [...new Set(data.map((run) => run.name))];
+
+          Object.keys(metrics).forEach((metric) => {
+            const chartData = {
+              labels: names,
+              datasets: routes.map((route) => {
+                return {
+                  label: `${route}`,
+                  data: data
+                    .filter((run) => run.route == route)
+                    .map((run) => run[metric]),
+                };
+              }),
+            };
+
+            const options = {
+              legend: { labels: { fontSize: 8 } },
+              scales: {
+                yAxes: [{ ticks: { fontSize: 8 } }],
+                xAxes: [{ ticks: { fontSize: 8 } }],
+              },
+              title: {
+                display: true,
+                text: metric,
+              },
+            };
+
+            const imageSource = new URL(
+              `https://quickchart.io/chart?c={type:'bar',data:${JSON.stringify(
+                chartData
+              )},options:${JSON.stringify(options)}}`
+            );
+            try {
+              document
+                .querySelector(`#${metric}`)
+                .setAttribute("src", imageSource.href);
+            } catch (e) {
+              console.debug(e);
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

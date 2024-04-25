@@ -50,7 +50,7 @@ export default {
     {
       name: "IG clone with Astro",
       projectPath: "../ig-clone/ig-clone-astro",
-      buildCommand: "npm run build",
+      buildCommand: "npm run astro build",
       hostCommand: "npm run preview",
       reportDirectory: "./lighthouse-reports/ig-clone-astro/localhost",
       url: "http://localhost:4321",

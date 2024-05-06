@@ -34,13 +34,13 @@ siehe [https://www.dirk-heuzeroth.de/forschung-und-lehre/#theses](https://www.di
 
 ## Erste Wahl: Messungsthesis
 
-| Messungsthesis                                                                          |                                                                                                                                          |
-| :-------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-|                                                                                         | Ich will anhand von klassischen Web-Performance-Zahlen & Reactivity-Codeexecution-Zeiten Plugins für Webbundler miteinander vergleichen. |
-| Welche Frage will man anhand des Vergleichs beantworten?                                | Welche unterschiede machen Frameworks und Plugins für die Performance und Reactivity?                                                    |
-| In welcher Umgebung will man den Vergleich machen? Warum?                               | *???*                                                                                                                                    |
-| Herausarbeiten, welche Metriken für diesen Vergleich Sinn ergeben                       | Lighthouse, Codeexecutionzeit für Reactivity                                                                                             |
-| Wie relevant sind die Messergebnisse? Welche Entscheidungen kann man mit ihnen treffen? | *???*                                                                                                                                    |
+| Messungsthesis                                                                          |                                                                                                                                                                                                                 |
+| :-------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|                                                                                         | Ich will anhand von klassischen Web-Performance-Zahlen & Reactivity-Codeexecution-Zeiten Plugins für Webbundler miteinander vergleichen.                                                                        |
+| Welche Frage will man anhand des Vergleichs beantworten?                                | Welche unterschiede machen Frameworks und Plugins für die Performance und Reactivity?                                                                                                                           |
+| In welcher Umgebung will man den Vergleich machen? Warum?                               | lokale Entwicklungsumgebung für Developer (*Macht meine Änderung die Ladezeiten der Anwendung kaputt?*) und Live-Hosting-Umgebung (*Macht es einen Unterschied, ob ich die Performance lokal oder Live teste?*) |
+| Herausarbeiten, welche Metriken für diesen Vergleich Sinn ergeben                       | Lighthouse, Codeexecutionzeit für Reactivity                                                                                                                                                                    |
+| Wie relevant sind die Messergebnisse? Welche Entscheidungen kann man mit ihnen treffen? | Messwerte an sich sind irrelevant, interessant sich die Unterschiede zwischen Frameworks und die Methodik, an die Ergebnisse zu kommen (Testtools, -konfiguration etc.)                                         |
 
 Mögl. Gliederung:
 

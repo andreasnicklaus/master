@@ -13,6 +13,7 @@ Autor: Andreas Nicklaus
 2. [Zeitplan, Milestones & Arbeitspakete](doc/Zeitplan.md)
 3. [Untersuchte oder gefundene Quellen](https://andreasnicklaus.notion.site/8698753ca6ea4ee3ac8dcdeea56148f2?v=77e17697b4a44d68bd455c35e42a96ae){:target="_blank"}
 4. Laufdokumente
-   1. [Statusreport 05.04.2024](doc/statusreports/status-2024-04.05.md)
+   1. [Statusreport 05.04.2024](doc/statusreports/status-2024-04-05.md)
    2. [Experimentplan 08.04.2024](doc/experiments/2024-04-08-plan.md)
    3. [Entwurf Beispielanwendung 11.04.2024](doc/experiments/2024-04-11-example-app.md)
+   4. [Statusreport 06.05.2024](doc/statusreports/status-2024-05-06.md)

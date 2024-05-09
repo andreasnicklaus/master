@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test Results by Tool</title>
+    <title>Test Results By Path</title>
     <style>
       body {
         display: flex;
@@ -40,21 +40,27 @@
     <script>
       const routes = ["/", "/about", "/create", "/user/@PeterPoster"];
 
-      fetch("./summary-2024-04-25.json")
+      const excludedProjects = ["IG clone with React"];
+
+      fetch("./summary-2024-04-29-react-optimize-images.json")
         .then((data) => data.json())
         .then((data) => {
           const { name, url, files, route, ...metrics } = data[0];
 
-          const names = [...new Set(data.map((run) => run.name))];
+          const names = [...new Set(data.map((run) => run.name))].filter(
+            (name) => !excludedProjects.includes(name)
+          );
 
           Object.keys(metrics).forEach((metric) => {
             const chartData = {
-              labels: names,
-              datasets: routes.map((route) => {
+              labels: routes,
+              datasets: names.map((name) => {
                 return {
-                  label: `${route}`,
+                  label: name,
                   data: data
-                    .filter((run) => run.route == route)
+                    .filter(
+                      (run) => run.name == name && routes.includes(run.route)
+                    )
                     .map((run) => run[metric]),
                 };
               }),

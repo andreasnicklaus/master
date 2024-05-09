@@ -136,8 +136,10 @@ for (let projectConfig of config.projects) {
   // START LIGHTHOUSE TEST
   logger.info("Starting lighthouse tests...")
   const url = projectConfig.url
-  const chrome = await chromeLauncher.launch({ chromeFlags: ['--headless'] });
-  const options = { logLevel: 'warn', output: 'html', onlyCategories: ['performance'], port: chrome.port };
+  const chrome = await chromeLauncher.launch(
+    { chromeFlags: ['--headless'] }
+  );
+  const options = { logLevel: 'warn', output: 'html', onlyCategories: ['performance'], port: chrome.port, ignoreStatusCode: true };
 
   for (const route of (projectConfig.paths || ["/"])) {
     const perf_Scores = []

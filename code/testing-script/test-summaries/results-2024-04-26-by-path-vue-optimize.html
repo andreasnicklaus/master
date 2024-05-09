@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test Results by Tool</title>
+    <title>Test Results By Path</title>
     <style>
       body {
         display: flex;
@@ -40,7 +40,7 @@
     <script>
       const routes = ["/", "/about", "/create", "/user/@PeterPoster"];
 
-      fetch("./summary-2024-04-25.json")
+      fetch("./summary-2024-04-26-vue-optimize.json")
         .then((data) => data.json())
         .then((data) => {
           const { name, url, files, route, ...metrics } = data[0];
@@ -49,12 +49,12 @@
 
           Object.keys(metrics).forEach((metric) => {
             const chartData = {
-              labels: names,
-              datasets: routes.map((route) => {
+              labels: routes,
+              datasets: names.map((name) => {
                 return {
-                  label: `${route}`,
+                  label: `${name}`,
                   data: data
-                    .filter((run) => run.route == route)
+                    .filter((run) => run.name == name)
                     .map((run) => run[metric]),
                 };
               }),

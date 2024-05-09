@@ -3,13 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test Results by Tool</title>
+    <title>Test Results By Path</title>
     <style>
       body {
         display: flex;
-        flex-direction: column;
+        /* flex-direction: column; */
         justify-content: center;
         align-items: center;
+        flex-wrap: wrap;
+      }
+      img {
+        width: 50%;
       }
     </style>
   </head>
@@ -38,24 +42,50 @@
     <img alt="largestcontentfulpaint" id="largestcontentfulpaint" />
 
     <script>
+      function nFormatter(num, digits = 3) {
+        const lookup = [
+          { value: 1, symbol: "" },
+          { value: 1e3, symbol: "k" },
+          { value: 1e6, symbol: "M" },
+          { value: 1e9, symbol: "G" },
+          { value: 1e12, symbol: "T" },
+          { value: 1e15, symbol: "P" },
+          { value: 1e18, symbol: "E" },
+        ];
+        const regexp = /\.0+$|(?<=\.[0-9]*[1-9])0+$/;
+        const item = lookup.findLast((item) => num >= item.value);
+        return item
+          ? (num / item.value)
+              .toFixed(digits)
+              .replace(regexp, "")
+              .concat(item.symbol)
+          : "0";
+      }
+
       const routes = ["/", "/about", "/create", "/user/@PeterPoster"];
 
-      fetch("./summary-2024-04-25.json")
+      const excludedProjects = [];
+
+      fetch("./summary-2024-05-07-astro-optimize.json")
         .then((data) => data.json())
         .then((data) => {
           const { name, url, files, route, ...metrics } = data[0];
 
-          const names = [...new Set(data.map((run) => run.name))];
+          const names = [...new Set(data.map((run) => run.name))].filter(
+            (name) => !excludedProjects.includes(name)
+          );
 
           Object.keys(metrics).forEach((metric) => {
             const chartData = {
-              labels: names,
-              datasets: routes.map((route) => {
+              labels: routes,
+              datasets: names.map((name) => {
                 return {
-                  label: `${route}`,
+                  label: name,
                   data: data
-                    .filter((run) => run.route == route)
-                    .map((run) => run[metric]),
+                    .filter(
+                      (run) => run.name == name && routes.includes(run.route)
+                    )
+                    .map((run) => Math.round(run[metric] * 1000) / 1000),
                 };
               }),
             };
@@ -63,13 +93,25 @@
             const options = {
               legend: { labels: { fontSize: 8 } },
               scales: {
-                yAxes: [{ ticks: { fontSize: 8 } }],
+                yAxes: [{ ticks: { min: 0, fontSize: 8 } }],
                 xAxes: [{ ticks: { fontSize: 8 } }],
               },
               title: {
                 display: true,
                 text: metric,
               },
+              // plugins: {
+              //   datalabels: {
+              //     color: "white",
+              //     anchor: "start",
+              //     align: "top",
+              //     offset: 10,
+              //     backgroundColor: "rgba(34, 139, 34, 0.8)",
+              //     borderWidth: 1,
+              //     borderRadius: 5,
+              //     font: { weight: "bold", size: 8 },
+              //   },
+              // },
             };
 
             const imageSource = new URL(
@@ -77,6 +119,7 @@
                 chartData
               )},options:${JSON.stringify(options)}}`
             );
+
             try {
               document
                 .querySelector(`#${metric}`)

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Results By Path</title>
+    <style>
+      ol {
+        display: flex;
+      }
+      li {
+        margin-left: 30px;
+      }
+      body {
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #charts {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      img {
+        width: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Overall Winner: <span id="winner"></span></h1>
+
+    <ol id="order"></ol>
+
+    <div id="charts">
+      <img alt="performanceScore" id="performanceScore" />
+      <img alt="observedLastVisualChange" id="observedLastVisualChange" />
+      <img alt="totalbyteweight" id="totalbyteweight" />
+      <img alt="timeToFirstByte" id="timeToFirstByte" />
+      <img alt="cumulativeLayoutShift" id="cumulativeLayoutShift" />
+      <img alt="firstContentfulPaint" id="firstContentfulPaint" />
+      <img alt="firstMeaningfulPaint" id="firstMeaningfulPaint" />
+      <img alt="largestContentfulPaint" id="largestContentfulPaint" />
+      <img alt="interactive" id="interactive" />
+      <img alt="speedIndex" id="speedIndex" />
+      <img alt="totalBlockingTime" id="totalBlockingTime" />
+      <img
+        alt="observedFirstContentfulPaint"
+        id="observedFirstContentfulPaint"
+      />
+      <img
+        alt="observedFirstMeaningfulPaint"
+        id="observedFirstMeaningfulPaint"
+      />
+      <img
+        alt="observedLargestContentfulPaint"
+        id="observedLargestContentfulPaint"
+      />
+      <img alt="observedDomContentLoaded" id="observedDomContentLoaded" />
+      <img alt="observedFirstVisualChange" id="observedFirstVisualChange" />
+      <img alt="observedSpeedIndex" id="observedSpeedIndex" />
+      <img alt="firstcontentfulpaint" id="firstcontentfulpaint" />
+      <img alt="largestcontentfulpaint" id="largestcontentfulpaint" />
+    </div>
+
+    <script>
+      function colorByName(name) {
+        if (name.includes("Vue")) return "rgb(66,184,131)";
+        if (name.includes("React")) return "rgb(97,219,251)";
+        if (name.includes("Angular")) return "rgb(195,0,47)";
+        if (name.includes("Astro")) return "rgb(247, 85, 5)";
+        if (name.includes("Next")) return "rgb(28,100,251)";
+        if (name.includes("Nuxt")) return "rgb(1, 212, 127)";
+        else return undefined;
+      }
+
+      const routes = ["/", "/about", "/create", "/user/@PeterPoster"];
+
+      const excludedProjects = [];
+
+      fetch("./summary-2024-05-08-vercel.json")
+        .then((data) => data.json())
+        .then((data) => {
+          const { name, url, files, route, ...metrics } = data[0];
+
+          const names = [...new Set(data.map((run) => run.name))].filter(
+            (name) => !excludedProjects.includes(name)
+          );
+
+          const placementCounts = names.map((name) => {
+            return { name, placementCount: 0 };
+          });
+
+          Object.keys(metrics).forEach((metric) => {
+            const chartData = {
+              labels: routes,
+              datasets: names.map((name) => {
+                const dataset_data = {
+                  label: name,
+                  data: data
+                    .filter(
+                      (run) => run.name == name && routes.includes(run.route)
+                    )
+                    .map((run) => Math.round(run[metric] * 1000) / 1000),
+                };
+                const color = colorByName(name);
+                if (color) {
+                  dataset_data.backgroundColor = color;
+                  dataset_data.borderColor = color;
+                }
+                return dataset_data;
+              }),
+            };
+
+            const options = {
+              legend: { labels: { fontSize: 8 } },
+              scales: {
+                yAxes: [{ ticks: { min: 0, fontSize: 8 } }],
+                xAxes: [{ ticks: { fontSize: 8 } }],
+              },
+              title: {
+                display: true,
+                text: metric,
+              },
+              plugins: {
+                datalabels: {
+                  color: "white",
+                  anchor: "start",
+                  align: "top",
+                  // offset: 10,
+                  backgroundColor: "rgba(34, 139, 34, 0.8)",
+                  borderWidth: 1,
+                  borderRadius: 2,
+                  rotation: -90,
+                  padding: 2,
+                  font: { weight: "bold", size: 6 },
+                },
+              },
+            };
+
+            const imageSource = new URL(
+              `https://quickchart.io/chart?c={type:'bar',data:${JSON.stringify(
+                chartData
+              )},options:${JSON.stringify(options)}}`
+            );
+
+            try {
+              document
+                .querySelector(`#${metric}`)
+                .setAttribute("src", imageSource.href);
+            } catch (e) {
+              console.debug(e);
+            }
+
+            let placementData = names.map((name) => {
+              const dataset_data = {
+                label: name,
+                data: data
+                  .filter(
+                    (run) => run.name == name && routes.includes(run.route)
+                  )
+                  .map((run) => Math.round(run[metric] * 1000) / 1000),
+              };
+              return dataset_data;
+            });
+
+            for (let index = 0; index < routes.length; index++) {
+              const tmp = placementData
+                .map((a) => {
+                  return { label: a.label, data: a.data[index], metric };
+                })
+                .sort((a, b) =>
+                  metric === "performanceScore"
+                    ? b.data - a.data
+                    : a.data - b.data
+                );
+              // console.table(tmp);
+              tmp.forEach((pd, i) => {
+                placementCounts.find(
+                  (pc) => pc.name == pd.label
+                ).placementCount += i;
+              });
+            }
+          });
+
+          console.table(
+            placementCounts.sort((a, b) => a.placementCount - b.placementCount)
+          );
+
+          const winnerName = placementCounts.sort(
+            (a, b) => a.placementCount - b.placementCount
+          )[0].name;
+
+          try {
+            document.querySelector(`#winner`).textContent = winnerName;
+          } catch (e) {
+            console.debug(e);
+          }
+          try {
+            document.querySelector(`#order`).innerHTML = placementCounts
+              .sort((a, b) => a.placementCount - b.placementCount)
+              .map(
+                (pc) =>
+                  `<li><strong>${pc.name}</strong> (${pc.placementCount})</li>`
+              )
+              .join("");
+          } catch (e) {
+            console.debug(e);
+          }
+        });
+    </script>
+  </body>
+</html>

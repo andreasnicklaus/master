@@ -3,13 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Test Results by Tool</title>
+    <title>Test Results By Path</title>
     <style>
       body {
         display: flex;
-        flex-direction: column;
+        /* flex-direction: column; */
         justify-content: center;
         align-items: center;
+        flex-wrap: wrap;
+      }
+      img {
+        width: 50%;
       }
     </style>
   </head>
@@ -40,21 +44,31 @@
     <script>
       const routes = ["/", "/about", "/create", "/user/@PeterPoster"];
 
-      fetch("./summary-2024-04-25.json")
+      const excludedProjects = [
+        "IG clone with Angular (small media)",
+        "IG clone with Angular (pseudo-autoplay)",
+        "IG clone with Nuxt (optimized)",
+      ];
+
+      fetch("./summary-2024-05-06-next-optimize.json")
         .then((data) => data.json())
         .then((data) => {
           const { name, url, files, route, ...metrics } = data[0];
 
-          const names = [...new Set(data.map((run) => run.name))];
+          const names = [...new Set(data.map((run) => run.name))].filter(
+            (name) => !excludedProjects.includes(name)
+          );
 
           Object.keys(metrics).forEach((metric) => {
             const chartData = {
-              labels: names,
-              datasets: routes.map((route) => {
+              labels: routes,
+              datasets: names.map((name) => {
                 return {
-                  label: `${route}`,
+                  label: name,
                   data: data
-                    .filter((run) => run.route == route)
+                    .filter(
+                      (run) => run.name == name && routes.includes(run.route)
+                    )
                     .map((run) => run[metric]),
                 };
               }),
@@ -77,6 +91,7 @@
                 chartData
               )},options:${JSON.stringify(options)}}`
             );
+
             try {
               document
                 .querySelector(`#${metric}`)

@@ -87,4 +87,4 @@ for (const projectConfig of config.projects) {
   console.log("Done with", name)
 }
 
-fs.writeFileSync(`./test-summaries/summary-${new Date().toISOString().split("T")[0]}.json`, JSON.stringify(data, null, 2))
+fs.writeFileSync(`./test-summaries/summary-${new Date().toISOString().split("T")[0]}-all.json`, JSON.stringify(data, null, 2))

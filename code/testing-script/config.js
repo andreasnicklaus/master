@@ -3,88 +3,120 @@ export default {
   preferredServeCommand: "serve",
   projects: [
     {
-      name: "IG clone with Angular on Vercel",
+      name: "Angular on Vercel",
       reportDirectory: "./lighthouse-reports/ig-clone-angular/vercel",
-      url: "https://ig-clone-angular.vercel.app",
+      url: "https://ig-clone-angular-alpha.vercel.app",
+      // url: "https://ig-clone-angular.vercel.app",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Astro on Vercel",
+      name: "Astro on Vercel",
       reportDirectory: "./lighthouse-reports/ig-clone-astro/vercel",
-      url: "https://ig-clone-astro.vercel.app",
+      url: "https://ig-clone-astro-ebon.vercel.app",
+      // url: "https://ig-clone-astro.vercel.app",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Next on Vercel",
+      name: "Next on Vercel",
       reportDirectory: "./lighthouse-reports/ig-clone-next/vercel",
-      url: "https://ig-clone-next-omega.vercel.app",
+      url: "https://ig-clone-next-alpha.vercel.app",
+      // url: "https://ig-clone-next-omega.vercel.app",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Nuxt on Vercel",
-      reportDirectory: "./lighthouse-reports/ig-clone-nuxt/vercel",
-      url: "https://ig-clone-nuxt.vercel.app",
-      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
-    },
-    {
-      name: "IG clone with React on Vercel",
+      name: "React on Vercel",
       reportDirectory: "./lighthouse-reports/ig-clone-react/vercel",
-      url: "https://ig-clone-react-theta.vercel.app",
+      url: "https://ig-clone-react-xi.vercel.app",
+      // url: "https://ig-clone-react-theta.vercel.app",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Vue on Vercel",
+      name: "Nuxt (build) on Vercel",
+      reportDirectory: "./lighthouse-reports/ig-clone-nuxt/vercel",
+      url: "https://ig-clone-nuxt-iota.vercel.app",
+      // url: "https://ig-clone-nuxt.vercel.app",
+      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
+    },
+    {
+      name: "Nuxt (generate) on Vercel",
+      reportDirectory: "./lighthouse-reports/ig-clone-nuxt-generate/vercel",
+      url: "https://ig-clone-nuxt-generate.vercel.app",
+      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
+    },
+    {
+      name: "Vue on Vercel",
       reportDirectory: "./lighthouse-reports/ig-clone-vue/vercel",
-      url: "https://ig-clone-vue.vercel.app",
+      url: "https://ig-clone-vue-rho.vercel.app",
+      // url: "https://ig-clone-vue.vercel.app",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Angular",
+      name: "Angular",
       projectPath: "../ig-clone/ig-clone-angular",
       buildCommand: "npm run build",
       serveCommand: "serve -s dist/ig-clone-angular/browser",
-      reportDirectory: "./lighthouse-reports/ig-clone-angular/localhost",
+      reportDirectory: "./lighthouse-reports/ig-clone-angular-autoplay/localhost",
       url: "http://localhost:3000",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Astro",
+      name: "Astro (mixed)",
       projectPath: "../ig-clone/ig-clone-astro",
       buildCommand: "npm run astro build",
       hostCommand: "npm run preview",
-      reportDirectory: "./lighthouse-reports/ig-clone-astro/localhost",
+      reportDirectory: "./lighthouse-reports/ig-clone-astro-optimized/localhost",
       url: "http://localhost:4321",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Next",
+      name: "Astro (duplicate)",
+      projectPath: "../ig-clone/ig-clone-astro",
+      buildCommand: "npm run astro build",
+      hostCommand: "npm run preview",
+      reportDirectory: "./lighthouse-reports/ig-clone-astro-optimized-mixed/localhost",
+      url: "http://localhost:4321",
+      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
+    },
+    {
+      name: "Next",
       projectPath: "../ig-clone/ig-clone-next",
       buildCommand: "npm run build",
       hostCommand: "npm run start",
-      reportDirectory: "./lighthouse-reports/ig-clone-next/localhost",
+      reportDirectory: "./lighthouse-reports/ig-clone-next-optimized-2/localhost",
       url: "http://localhost:3000",
-      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
+      paths: [
+        "/",
+        "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Nuxt",
+      name: "Nuxt (build)",
       projectPath: "../ig-clone/ig-clone-nuxt",
       buildCommand: "npm run build",
       hostCommand: "npm run preview",
-      reportDirectory: "./lighthouse-reports/ig-clone-nuxt/localhost",
+      reportDirectory: "./lighthouse-reports/ig-clone-nuxt-optimized/localhost",
       url: "http://localhost:3000",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with React",
+      name: "Nuxt (generate)",
+      projectPath: "../ig-clone/ig-clone-nuxt",
+      buildCommand: "npm run generate",
+      hostCommand: "npm run preview",
+      reportDirectory: "./lighthouse-reports/ig-clone-nuxt-generate/localhost",
+      url: "http://localhost:3000",
+      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
+    },
+    {
+      name: "React",
       projectPath: "../ig-clone/ig-clone-react",
       buildCommand: "npm run build",
       serveCommand: "serve -s build",
-      reportDirectory: "./lighthouse-reports/ig-clone-react/localhost",
+      reportDirectory: "./lighthouse-reports/ig-clone-react-video/localhost",
       url: "http://localhost:3000",
       paths: ["/", "/about", "/create", "/user/@PeterPoster"]
     },
     {
-      name: "IG clone with Vue",
+      name: "Vue",
       projectPath: "../ig-clone/ig-clone-vue",
       buildCommand: "npm run build",
       hostCommand: "npm run preview",

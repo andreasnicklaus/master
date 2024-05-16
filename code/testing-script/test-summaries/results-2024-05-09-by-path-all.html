@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Test Results By Path</title>
     <style>
-      ol {
+      #order {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -21,49 +21,236 @@
       }
       #charts {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         flex-wrap: wrap;
       }
       img {
-        width: 50%;
+        width: 100%;
+        max-width: 1200px;
+      }
+
+      #order-by-path,
+      #order-vue-react-base,
+      .row {
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+      }
+
+      ol {
+        padding-left: 0;
+        background-color: #eee;
+        padding: 8px;
+        margin: 8px;
+        border-radius: 8px;
+        border: 1px solid #ddd
+      }
+
+      summary {
+        text-align: center;
+        padding: 8px 16px;
+      }
+      summary:hover {
+        cursor: pointer;
+      }
+      #charts summary {
+        color: grey;
+        font-size: smaller;
+      }
+
+      hr {
+        width: 100%;
+        border-top: 1px solid #ddd;
       }
     </style>
   </head>
   <body>
     <h1>Overall Winner: <span id="winner"></span></h1>
+    <h2>Rankings</h2>
 
     <ol id="order"></ol>
 
+    <details>
+      <summary>Ranking pro Pfad</summary>
+
+      <div id="order-by-path">
+        <div>
+          <h3>/ (index)</h3>
+          <ol id="index-order"></ol>
+        </div>
+        <div>
+          <h3>/create</h3>
+          <ol id="create-order"></ol>
+        </div>
+        <div>
+          <h3>/about</h3>
+          <ol id="about-order"></ol>
+        </div>
+        <div>
+          <h3>/user/@PeterPoster</h3>
+          <ol id="user-order"></ol>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Ranking nach Technologie-Kategorie</summary>
+      <div class="row">
+        <div>
+          <h3>Vue-based</h3>
+          <ol id="vue-order"></ol>
+        </div>
+        <div>
+          <h3>React-based</h3>
+          <ol id="react-order"></ol>
+        </div>
+        <div>
+          <h3>SPA vs SSR</h3>
+          <ol id="client-server-order"></ol>
+        </div>
+      </div>
+    </details>
+
+    <details>
+      <summary>Ranking nach Metrik-Art</summary>
+      <div class="row">
+        <div>
+          <h3>Observed metrics</h3>
+          <ol id="observed-order"></ol>
+        </div>
+        <div>
+          <h3>Throttled metrics</h3>
+          <ol id="throttled-order"></ol>
+        </div>
+      </div>
+    </details>
+
+    <h2>Charts</h2>
     <div id="charts">
       <img alt="performanceScore" id="performanceScore" />
+      <details>
+        <summary>Ranking für performanceScore</summary>
+        <ol id="performanceScore-order"></ol>
+      </details>
+      <hr />
       <img alt="cumulativeLayoutShift" id="cumulativeLayoutShift" />
+      <details>
+        <summary>Ranking für cumulativeLayoutShift</summary>
+        <ol id="cumulativeLayoutShift-order"></ol>
+      </details>
+      <hr />
       <img alt="observedFirstVisualChange" id="observedFirstVisualChange" />
+      <details>
+        <summary>Ranking für observedFirstVisualChange</summary>
+        <ol id="observedFirstVisualChange-order"></ol>
+      </details>
+      <hr />
       <img alt="observedLastVisualChange" id="observedLastVisualChange" />
+      <details>
+        <summary>Ranking für observedLastVisualChange</summary>
+        <ol id="observedLastVisualChange-order"></ol>
+      </details>
+      <hr />
       <img alt="totalbyteweight" id="totalbyteweight" />
+      <details>
+        <summary>Ranking für totalbyteweight</summary>
+        <ol id="totalbyteweight-order"></ol>
+      </details>
+      <hr />
       <img alt="timeToFirstByte" id="timeToFirstByte" />
+      <details>
+        <summary>Ranking für timeToFirstByte</summary>
+        <ol id="timeToFirstByte-order"></ol>
+      </details>
+      <hr />
       <img alt="firstContentfulPaint" id="firstContentfulPaint" />
+      <details>
+        <summary>Ranking für firstContentfulPaint</summary>
+        <ol id="firstContentfulPaint-order"></ol>
+      </details>
+      <hr />
       <img alt="firstcontentfulpaint" id="firstcontentfulpaint" />
+      <details>
+        <summary>Ranking für firstcontentfulpaint</summary>
+        <ol id="firstcontentfulpaint-order"></ol>
+      </details>
+      <hr />
       <img
         alt="observedFirstContentfulPaint"
         id="observedFirstContentfulPaint"
       />
+      <details>
+        <summary>Ranking für observedFirstContentfulPaint/summary>
+        <ol id="observedFirstContentfulPaint-order"></ol>
+      </details>
+      <hr />
       <img
         alt="observedFirstMeaningfulPaint"
         id="observedFirstMeaningfulPaint"
       />
+      <details>
+        <summary>Ranking für observedFirstMeaningfulPaint</summary>
+        <ol id="observedFirstMeaningfulPaint-order"></ol>
+      </details>
+      <hr />
       <img alt="firstMeaningfulPaint" id="firstMeaningfulPaint" />
+      <details>
+        <summary>Ranking für firstMeaningfulPaint/summary>
+        <ol id="firstMeaningfulPaint-order"></ol>
+      </details>
+      <hr />
       <img alt="largestContentfulPaint" id="largestContentfulPaint" />
+      <details>
+        <summary>Ranking für largestContentfulPaint</summary>
+        <ol id="largestContentfulPaint-order"></ol>
+      </details>
+      <hr />
       <img alt="largestcontentfulpaint" id="largestcontentfulpaint" />
+      <details>
+        <summary>Ranking für largestcontentfulpaint</summary>
+        <ol id="largestcontentfulpaint-order"></ol>
+      </details>
+      <hr />
       <img
         alt="observedLargestContentfulPaint"
         id="observedLargestContentfulPaint"
       />
+      <details>
+        <summary>Ranking für observedLargestContentfulPaint</summary>
+        <ol id="observedLargestContentfulPaint-order"></ol>
+      </details>
+      <hr />
       <img alt="interactive" id="interactive" />
+      <details>
+        <summary>Ranking für interactive</summary>
+        <ol id="interactive-order"></ol>
+      </details>
+      <hr />
       <img alt="speedIndex" id="speedIndex" />
+      <details>
+        <summary>Ranking für speedIndex</summary>
+        <ol id="speedIndex-order"></ol>
+      </details>
+      <hr />
       <img alt="totalBlockingTime" id="totalBlockingTime" />
+      <details>
+        <summary>Ranking für totalBlockingTime</summary>
+        <ol id="totalBlockingTime-order"></ol>
+      </details>
+      <hr />
       <img alt="observedDomContentLoaded" id="observedDomContentLoaded" />
+      <details>
+        <summary>Ranking für observedDomContentLoaded</summary>
+        <ol id="observedDomContentLoaded-order"></ol>
+      </details>
+      <hr />
       <img alt="observedSpeedIndex" id="observedSpeedIndex" />
+      <details>
+        <summary>Ranking für observedSpeedIndex</summary>
+        <ol id="observedSpeedIndex-order"></ol>
+      </details>
     </div>
 
     <script>
@@ -74,6 +261,8 @@
         if (name.includes("Astro")) return "rgb(247, 85, 5)";
         if (name.includes("Next")) return "rgb(28,100,251)";
         if (name.includes("Nuxt")) return "rgb(1, 212, 127)";
+        if (name == "SSR") return "blue";
+        if (name == "SPA") return "red";
         else return undefined;
       }
 
@@ -100,6 +289,38 @@
           const placementCounts = names.map((name) => {
             return { name, placementCount: 0 };
           });
+
+          const placementCountsByPath = routes.map((route) => {
+            return {
+              route,
+              placements: names.map((name) => {
+                return { name, placementCount: 0 };
+              }),
+            };
+          });
+          const placementCountsObserved = names.map((name) => {
+            return { name, placementCount: 0 };
+          });
+
+          const placementCountsThrottled = names.map((name) => {
+            return { name, placementCount: 0 };
+          });
+          const throttledMetrics = Object.keys(metrics)
+            .filter((m) => m.startsWith("observed"))
+            .map((m) => m[8].toLowerCase() + m.slice(9));
+
+          const placementCountVue = [
+            { name: "Vue", placementCount: 0 },
+            { name: "Nuxt", placementCount: 0 },
+          ];
+          const placementCountReact = [
+            { name: "React", placementCount: 0 },
+            { name: "Next", placementCount: 0 },
+          ];
+          const placementCountSSR = [
+            { name: "SPA", placementCount: 0 },
+            { name: "SSR", placementCount: 0 },
+          ];
 
           Object.keys(metrics).forEach((metric) => {
             const chartData = {
@@ -174,28 +395,214 @@
               return dataset_data;
             });
 
+            const placementCountPerMetric = names.map((name) => {
+              return { name, placementCount: 0 };
+            });
+
             for (let index = 0; index < routes.length; index++) {
-              const tmp = placementData
-                .map((a) => {
-                  return { label: a.label, data: a.data[index], metric };
-                })
-                .sort((a, b) =>
-                  metric === "performanceScore"
-                    ? b.data - a.data
-                    : a.data - b.data
-                );
-              // console.table(tmp);
-              tmp.forEach((pd, i) => {
+              const tmp = placementData.map((a) => {
+                return { label: a.label, data: a.data[index], metric };
+              });
+
+              const overallRanking = tmp.sort((a, b) =>
+                metric === "performanceScore"
+                  ? b.data - a.data
+                  : a.data - b.data
+              );
+
+              console.log(metric, routes[index]);
+              console.table(overallRanking);
+
+              overallRanking.forEach((pd, i) => {
                 placementCounts.find(
                   (pc) => pc.name == pd.label
                 ).placementCount += i;
+
+                placementCountPerMetric.find(
+                  (pc) => pc.name == pd.label
+                ).placementCount += i;
+
+                if (metric.startsWith("observed"))
+                  placementCountsObserved.find(
+                    (pc) => pc.name == pd.label
+                  ).placementCount += i;
+
+                if (throttledMetrics.includes(metric))
+                  placementCountsThrottled.find(
+                    (pc) => pc.name == pd.label
+                  ).placementCount += i;
+
+                placementCountsByPath
+                  .find((pc) => pc.route == routes[index])
+                  .placements.find((p) => p.name == pd.label).placementCount +=
+                  i;
               });
+
+              const ssrVsSpaRanking = tmp.filter(
+                (pd) =>
+                  !pd.label.includes("(mixed)") && !pd.label.includes("(build)")
+              );
+
+              ssrVsSpaRanking.forEach((pd, i) => {
+                if (
+                  pd.label.includes("React") ||
+                  pd.label.includes("Vue") ||
+                  pd.label.includes("Angular")
+                )
+                  placementCountSSR.find(
+                    (pc) => pc.name == "SPA"
+                  ).placementCount += i;
+
+                if (
+                  pd.label.includes("Next") ||
+                  pd.label.includes("Nuxt") ||
+                  pd.label.includes("Astro")
+                )
+                  placementCountSSR.find(
+                    (pc) => pc.name == "SSR"
+                  ).placementCount += i;
+              });
+
+              const vueBasedRanking = tmp.filter(
+                (a) => a.label.includes("Vue") || a.label.includes("Nuxt")
+              );
+
+              vueBasedRanking.forEach((pd, i) => {
+                if (pd.label.includes("Vue"))
+                  placementCountVue.find(
+                    (pc) => pc.name == "Vue"
+                  ).placementCount += i;
+                if (pd.label.includes("Nuxt"))
+                  placementCountVue.find(
+                    (pc) => pc.name == "Nuxt"
+                  ).placementCount += i;
+              });
+
+              const reactBasedRanking = tmp.filter(
+                (a) => a.label.includes("React") || a.label.includes("Next")
+              );
+
+              reactBasedRanking.forEach((pd, i) => {
+                if (pd.label.includes("React"))
+                  placementCountReact.find(
+                    (pc) => pc.name == "React"
+                  ).placementCount += i;
+                if (pd.label.includes("Next"))
+                  placementCountReact.find(
+                    (pc) => pc.name == "Next"
+                  ).placementCount += i;
+              });
+            }
+
+            try {
+              document.querySelector(`#${metric}-order`).innerHTML =
+                placementCountPerMetric
+                  .sort((a, b) => a.placementCount - b.placementCount)
+                  .map(
+                    (pc) =>
+                      `<li style="color: ${colorByName(pc.name)}">${
+                        pc.name
+                      } <small>(${pc.placementCount})</small></li>`
+                  )
+                  .join("");
+            } catch (e) {
+              console.log(e);
             }
           });
 
-          console.table(
-            placementCounts.sort((a, b) => a.placementCount - b.placementCount)
-          );
+          try {
+            document.querySelector("#throttled-order").innerHTML =
+              placementCountsThrottled
+                .sort((a, b) => a.placementCount - b.placementCount)
+                .map(
+                  (pc) =>
+                    `<li style="color: ${colorByName(pc.name)}">${
+                      pc.name
+                    } <small>(${pc.placementCount})</small></li>`
+                )
+                .join("");
+          } catch (e) {
+            console.log(e);
+          }
+
+          try {
+            document.querySelector("#observed-order").innerHTML =
+              placementCountsObserved
+                .sort((a, b) => a.placementCount - b.placementCount)
+                .map(
+                  (pc) =>
+                    `<li style="color: ${colorByName(pc.name)}">${
+                      pc.name
+                    } <small>(${pc.placementCount})</small></li>`
+                )
+                .join("");
+          } catch (e) {
+            console.log(e);
+          }
+
+          try {
+            document.querySelector("#client-server-order").innerHTML =
+              placementCountSSR
+                .sort((a, b) => a.placementCount - b.placementCount)
+                .map(
+                  (pc) =>
+                    `<li style="color: ${colorByName(pc.name)}">${
+                      pc.name
+                    } <small>(${pc.placementCount})</small></li>`
+                )
+                .join("");
+          } catch (e) {
+            console.log(e);
+          }
+
+          try {
+            document.querySelector("#vue-order").innerHTML = placementCountVue
+              .sort((a, b) => a.placementCount - b.placementCount)
+              .map(
+                (pc) =>
+                  `<li style="color: ${colorByName(pc.name)}">${
+                    pc.name
+                  } <small>(${pc.placementCount})</small></li>`
+              )
+              .join("");
+          } catch (e) {
+            console.log(e);
+          }
+
+          try {
+            document.querySelector("#react-order").innerHTML =
+              placementCountReact
+                .sort((a, b) => a.placementCount - b.placementCount)
+                .map(
+                  (pc) =>
+                    `<li style="color: ${colorByName(pc.name)}">${
+                      pc.name
+                    } <small>(${pc.placementCount})</small></li>`
+                )
+                .join("");
+          } catch (e) {
+            console.log(e);
+          }
+
+          placementCountsByPath.forEach((i) => {
+            const elementId = `#${
+              i.route == "/" ? "index" : i.route.split("/")[1]
+            }-order`;
+
+            try {
+              document.querySelector(elementId).innerHTML = i.placements
+                .sort((a, b) => a.placementCount - b.placementCount)
+                .map(
+                  (pc) =>
+                    `<li style="color: ${colorByName(pc.name)}">${
+                      pc.name
+                    } <small>(${pc.placementCount})</small></li>`
+                )
+                .join("");
+            } catch (e) {
+              console.log(e);
+            }
+          });
 
           const winnerName = placementCounts.sort(
             (a, b) => a.placementCount - b.placementCount
@@ -206,6 +613,7 @@
           } catch (e) {
             console.debug(e);
           }
+
           try {
             document.querySelector(`#order`).innerHTML = placementCounts
               .sort((a, b) => a.placementCount - b.placementCount)
@@ -219,6 +627,8 @@
           } catch (e) {
             console.debug(e);
           }
+
+          console.table(placementCountsByPath);
         });
     </script>
   </body>

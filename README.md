@@ -17,3 +17,7 @@ Autor: Andreas Nicklaus
    2. [Experimentplan 08.04.2024](doc/experiments/2024-04-08-plan.md)
    3. [Entwurf Beispielanwendung 11.04.2024](doc/experiments/2024-04-11-example-app.md)
    4. [Statusreport 06.05.2024](doc/statusreports/status-2024-05-06.md)
+   5. [Notizen zu Experimenten 09.05.2024](doc/experiments/2042-05-09-notes.md)
+   6. [Notizen zu Experimenten 14.05.2024](doc/experiments/2042-05-14-notes.md)
+5. [Forschungsplan 22.05.2024](doc/2024-05-22-plan.md)
+6. [Probelesen](doc/Proofread.md)

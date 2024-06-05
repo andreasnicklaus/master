@@ -7,3 +7,7 @@ _site
 .jekyll-cache
 pages/**/*.md
 pages/doc
+
+# paper
+paper/out/*
+# !paper/out/*.pdf

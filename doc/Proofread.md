@@ -12,8 +12,8 @@ nav_order: 4
 
 # Dokumente
 
-- [Version vom 05.06.2024 (Introduction)](./proofread/performance_of_webpages_built_with_js_frameworks.pdf)
+- [Version vom 05.06.2024 (Introduction)](./proofread/2024-06-05_performance_of_webpages_built_with_js_frameworks.pdf) - [Feedback geben](mailto:an067@hdm-stuttgart.de?subject=Feedback%20zur%20Masterarbeit%20(Version%20vom%2005.06.2024))
 
 # Feedback geben
 
-Feedback habe ich am liebsten als E-Mail an [an067@hdm-stuttgart.de](mailto:an067@hdm-stuttgart.de) oder [andreas.nicklaus@googlemail.com](mailto:andreas.nicklaus@googlemail.com) ♥️
+Nutze bitte für Feedback den Link neben der Version oder schicke für generelles Feedback eine E-Mail an [an067@hdm-stuttgart.de](mailto:an067@hdm-stuttgart.de) oder [andreas.nicklaus@googlemail.com](mailto:andreas.nicklaus@googlemail.com) ♥️

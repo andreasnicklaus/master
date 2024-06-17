@@ -1,3 +1,5 @@
+.vscode
+
 HdM-Dokumente
 Quellen
 
@@ -10,4 +12,3 @@ pages/doc
 
 # paper
 paper/out/*
-# !paper/out/*.pdf

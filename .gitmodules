@@ -16,3 +16,6 @@
 [submodule "code/ig-clone/ig-clone-vue"]
 	path = code/ig-clone/ig-clone-vue
 	url = https://github.com/andreasnicklaus/ig-clone-vue
+[submodule "code/ig-clone/ig-clone-svelte"]
+	path = code/ig-clone/ig-clone-svelte
+	url = https://github.com/andreasnicklaus/ig-clone-svelte

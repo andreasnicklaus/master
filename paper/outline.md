@@ -81,7 +81,9 @@
 For each component unoptimized and optimized version
 
 1. MediaComponent
-2. Astro CreateForm
+2. About Aufbau
+3. Post mit und ohne Daten
+4. Astro CreateForm
 <!-- TODO: Add other components -->
 
 ## Test code

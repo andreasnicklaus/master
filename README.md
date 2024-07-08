@@ -24,5 +24,6 @@ Autor: Andreas Nicklaus
    8. [Notizen zu Experimenten 13.06.2024](doc/experiments/2024-06-13-notes.md)
    9. [Notizen zu Experimenten 17.06.2024](doc/experiments/2024-06-17-notes.md)
    9. [Notizen zu Experimenten 18.06.2024](doc/experiments/2024-06-18-notes.md)
+   9. [Notizen zu Experimenten 04.07.2024](doc/experiments/2024-07-04-notes.md)
 5. [Forschungsplan 22.05.2024](doc/2024-05-22-plan.md)
 6. [Probelesen](doc/Proofread.md)

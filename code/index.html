@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playwright test presentation</title>
+    <style>
+      body {
+        max-width: 1200pt;
+        margin: auto;
+        padding: 20px;
+      }
+
+      h1,
+      summary {
+        text-align: center;
+      }
+
+      ol {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Overview</h1>
+
+    <ol>
+      <li><a href="#frameworkComparison">Framework Comparisons</a></li>
+      <li><a href="#browserComparison">Browser Comparisons</a></li>
+    </ol>
+
+    <hr />
+
+    <div>
+      <canvas id="allActions"></canvas>
+      <details open>
+        <summary>Averages</summary>
+        <canvas id="allActions-average"></canvas>
+      </details>
+    </div>
+
+    <h1 id="frameworkComparison">Framework Comparisons</h1>
+    <div>
+      <h2>Caption Change</h2>
+      <canvas id="CaptionChange"></canvas>
+      <details open>
+        <summary>Averages</summary>
+        <canvas id="CaptionChange-average"></canvas>
+      </details>
+      <h2>Media Selection</h2>
+      <canvas id="MediaSelection"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="MediaSelection-average"></canvas>
+      </details>
+      <h2>Media Source Insert</h2>
+      <canvas id="MediaSourceInsert"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="MediaSourceInsert-average"></canvas>
+      </details>
+      <h2>Post Creation</h2>
+      <canvas id="PostCreation"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="PostCreation-average"></canvas>
+      </details>
+    </div>
+
+    <hr />
+
+    <h1 id="browserComparison">Browser Comparisons</h1>
+    <div>
+      <h2>Angular</h2>
+      <canvas id="angularBrowsers"></canvas>
+      <details open>
+        <summary>Averages</summary>
+        <canvas id="angularBrowsers-average"></canvas>
+      </details>
+      <h2>Astro</h2>
+      <canvas id="astroBrowsers"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="astroBrowsers-average"></canvas>
+      </details>
+      <h2>Next</h2>
+      <canvas id="nextBrowsers"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="nextBrowsers-average"></canvas>
+      </details>
+      <h2>Nuxt</h2>
+      <canvas id="nuxtBrowsers"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="nuxtBrowsers-average"></canvas>
+      </details>
+      <h2>React</h2>
+      <canvas id="reactBrowsers"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="reactBrowsers-average"></canvas>
+      </details>
+      <h2>Svelte</h2>
+      <canvas id="svelteBrowsers"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="svelteBrowsers-average"></canvas>
+      </details>
+      <h2>Vue</h2>
+      <canvas id="vueBrowsers"></canvas>
+      <details>
+        <summary>Averages</summary>
+        <canvas id="vueBrowsers-average"></canvas>
+      </details>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      const opacity = "22";
+
+      const tooltip = {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label || "Unknown dataset"}: ${
+              context.parsed.y
+            } ms`;
+          },
+          afterLabel: function (context) {
+            return (
+              context.raw.xpath?.split("/").pop() ||
+              context.raw.id + " (element was removed)" ||
+              ""
+            );
+          },
+        },
+      };
+
+      const tooltipAverageForBrowsers = {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label || "Unknown dataset"}: ${
+              Math.round(context.parsed.y * 100) / 100
+            } ms`;
+          },
+          afterLabel: function (context) {
+            const currentAction = context.label;
+            const chartData = context.dataset.domUpdates;
+            let currentBrowser = context.dataset.label.split(" ");
+            if (
+              currentBrowser.slice(-1)[0] == "(min)" ||
+              currentBrowser.slice(-1)[0] == "(max)" ||
+              currentBrowser.slice(-1)[0] == "(range)"
+            )
+              currentBrowser.pop();
+            currentBrowser = currentBrowser.join(" ");
+
+            const updateTimes = chartData
+              .filter(
+                (i) => i.tag == currentAction && i.projectName == currentBrowser
+              )
+              .map((i) => i.lastUpdated);
+
+            return `Max: ${Math.max(...updateTimes)} ms\nMin: ${Math.min(
+              ...updateTimes
+            )} ms\nRange: ${
+              Math.max(...updateTimes) - Math.min(...updateTimes)
+            } ms`;
+          },
+        },
+      };
+
+      const tooltipAverageForFrameworks = {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label || "Unknown dataset"}: ${
+              Math.round(context.parsed.y * 100) / 100
+            } ms`;
+          },
+          afterLabel: function (context) {
+            const currentBrowser = context.label;
+            const chartData = context.dataset.domUpdates;
+            let currentFramework = context.dataset.label.split(" ");
+
+            if (
+              currentFramework.slice(-1)[0] == "(min)" ||
+              currentFramework.slice(-1)[0] == "(max)" ||
+              currentFramework.slice(-1)[0] == "(range)"
+            )
+              currentFramework.pop();
+            currentFramework = currentFramework.join(" ");
+
+            const updateTimes = chartData
+              .filter(
+                (i) =>
+                  i.framework == currentFramework &&
+                  i.projectName == currentBrowser
+              )
+              .map((i) => i.lastUpdated);
+
+            return `Max: ${Math.max(...updateTimes)} ms\nMin: ${Math.min(
+              ...updateTimes
+            )} ms\nRange: ${
+              Math.max(...updateTimes) - Math.min(...updateTimes)
+            } ms`;
+          },
+        },
+      };
+
+      const scatterLegendPlugin = {
+        beforeDraw: function (chart) {
+          const legendEntries = chart.legend.legendItems;
+          legendEntries.forEach(
+            (entry) => (entry.fillStyle = entry.fillStyle.substring(0, 7))
+          );
+        },
+      };
+
+      function createBrowserComparison(canvasId, data, title = null) {
+        const ctx = document.getElementById(canvasId);
+        const ctxAverage = document.getElementById(canvasId + "-average");
+
+        const stateChangeData = data.suites.find(
+          (s) => s.title == "state-change.spec.js"
+        );
+
+        const chartData = stateChangeData.suites
+          .map((suite) => {
+            return suite.specs
+              .map((spec) => [spec.tags, spec.tests])
+              .map(([tags, tests]) => {
+                return tests.map((test) => {
+                  return test.results.map((result) => {
+                    const status = result.status;
+                    return JSON.parse(
+                      atob(
+                        result.attachments.find((att) =>
+                          att.name.startsWith("domUpdates")
+                        ).body
+                      )
+                    ).map((update) => ({
+                      ...update,
+                      status,
+                      tag: tags[0],
+                      projectName: test.projectName,
+                    }));
+                  });
+                });
+              })
+              .flat(Infinity);
+          })
+          .flat();
+
+        const tags = Array.from(new Set(chartData.map((u) => u.tag)));
+
+        const browserColors = [
+          { name: "chromium", color: "#4483ec" },
+          { name: "Mobile Chrome", color: "#df3c32" },
+          { name: "Google Chrome", color: "#fbc31e" },
+          { name: "Microsoft Edge", color: "#4fd572" },
+          { name: "firefox", color: "#d86f1a" },
+          { name: "Mobile Safari", color: "#15b8ee" },
+          { name: "webkit", color: "#f7c501" },
+        ];
+
+        const labels = browserColors.map((i) => i.name);
+        const colors = browserColors.map((i) => i.color);
+
+        new Chart(ctx, {
+          type: "scatter",
+          data: {
+            datasets: [
+              ...labels.map((label) => ({
+                label,
+                data: chartData
+                  .filter((c) => c.projectName == label)
+                  .map((domUpdate) => ({
+                    ...domUpdate,
+                    x:
+                      tags.indexOf(domUpdate.tag) +
+                      (labels.indexOf(domUpdate.projectName) / labels.length) *
+                        0.5 -
+                      3 / 14,
+                    y: domUpdate.lastUpdated,
+                  })),
+                backgroundColor: colors[labels.indexOf(label)] + opacity,
+                borderColor: colors[labels.indexOf(label)] + opacity,
+              })),
+              {
+                type: "line",
+                // label: "100 ms Threshold",
+                data: Array(labels.length).fill(100),
+                xAxisID: "x2",
+                pointRadius: 0,
+                backgroundColor: "#e5e5e5",
+                borderColor: "#e5e5e5",
+              },
+            ],
+            labels: tags,
+          },
+          options: {
+            plugins: {
+              tooltip,
+              legend: {
+                labels: {
+                  filter: function (item, chart) {
+                    return item.text;
+                  },
+                },
+              },
+              title: {
+                display: Boolean(title),
+                text: title,
+              },
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: "ms until DOM update",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return value + "ms";
+                  },
+                },
+              },
+              x: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "User Action",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return tags[value] || "";
+                  },
+                },
+                grid: {
+                  color: function (context) {
+                    return context.tick.value % 1 == 0
+                      ? "#00000000"
+                      : "#e5e5e5";
+                  },
+                },
+              },
+              x2: {
+                type: "category",
+                display: false,
+              },
+            },
+          },
+          plugins: [scatterLegendPlugin],
+        });
+
+        new Chart(ctxAverage, {
+          type: "line",
+          data: {
+            datasets: [
+              ...labels.map((label) => ({
+                label,
+                data: tags.map(
+                  (tag) =>
+                    chartData
+                      .filter((c) => c.projectName == label && c.tag == tag)
+                      .map((i) => i.lastUpdated)
+                      .reduce((a, b) => a + b, 0) /
+                    chartData.filter(
+                      (c) => c.projectName == label && c.tag == tag
+                    ).length
+                ),
+                backgroundColor: colors[labels.indexOf(label)],
+                borderColor: colors[labels.indexOf(label)],
+                domUpdates: chartData,
+              })),
+              ...labels.map((label) => ({
+                label: label + " (range)",
+                data: tags.map((tag) => {
+                  const d = chartData
+                    .filter((c) => c.projectName == label && c.tag == tag)
+                    .map((i) => i.lastUpdated);
+                  return Math.max(...d) - Math.min(...d);
+                }),
+                backgroundColor: colors[labels.indexOf(label)] + "44",
+                borderColor: colors[labels.indexOf(label)] + "44",
+                domUpdates: chartData,
+              })),
+            ],
+            labels: tags,
+          },
+          options: {
+            plugins: {
+              tooltip: tooltipAverageForBrowsers,
+              title: {
+                display: Boolean(title),
+                text: title,
+              },
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: "ms until DOM update",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return value + "ms";
+                  },
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "User Action",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return tags[value] || "";
+                  },
+                },
+                grid: {
+                  color: function (context) {
+                    return context.tick.value % 1 == 0
+                      ? "#00000000"
+                      : "#e5e5e5";
+                  },
+                },
+              },
+            },
+          },
+        });
+
+        return chartData;
+      }
+
+      function createFrameworkComparison(
+        canvasId,
+        data,
+        title = null,
+        dotOpacity = opacity
+      ) {
+        const ctx = document.getElementById(canvasId);
+        const ctxAverage = document.getElementById(canvasId + "-average");
+
+        const browsers = Array.from(new Set(data.map((i) => i.projectName)));
+
+        const frameWorkColors = [
+          { name: "Nuxt", color: "#01d491" },
+          { name: "Astro", color: "#f75505" },
+          { name: "Vue", color: "#42b883" },
+          { name: "React", color: "#61dbfb" },
+          { name: "Angular", color: "#c3002f" },
+          { name: "Svelte", color: "#f73c00" },
+          { name: "Next", color: "#1c64fb" },
+        ];
+
+        const frameworks = frameWorkColors.map((f) => f.name);
+        const colors = frameWorkColors.map((f) => f.color);
+
+        new Chart(ctx, {
+          type: "scatter",
+
+          data: {
+            labels: browsers,
+            datasets: [
+              ...frameworks.map((framework) => ({
+                label: framework,
+                data: data
+                  .filter((d) => d.framework == framework)
+                  .map((domUpdate) => ({
+                    ...domUpdate,
+                    x:
+                      browsers.indexOf(domUpdate.projectName) +
+                      (frameworks.indexOf(framework) / frameworks.length) *
+                        0.5 -
+                      3 / 14,
+                    y: domUpdate.lastUpdated,
+                  })),
+                backgroundColor:
+                  colors[frameworks.indexOf(framework)] + dotOpacity,
+                borderColor: colors[frameworks.indexOf(framework)] + dotOpacity,
+              })),
+              {
+                type: "line",
+                // label: "100 ms Threshold",
+                data: Array(browsers.length + 1).fill(100),
+                xAxisID: "x2",
+                pointRadius: 0,
+                backgroundColor: "#e5e5e5",
+                borderColor: "#e5e5e5",
+              },
+            ],
+          },
+          options: {
+            plugins: {
+              tooltip,
+              legend: {
+                labels: {
+                  filter: function (item, chart) {
+                    return item.text;
+                  },
+                },
+              },
+              title: {
+                display: Boolean(title),
+                text: title,
+              },
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: "ms until DOM update",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return value + "ms";
+                  },
+                },
+              },
+              x: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "Browser",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return browsers[value] || "";
+                  },
+                  stepSize: 0.5,
+                },
+                grid: {
+                  color: function (context) {
+                    return context.tick.value % 1 == 0
+                      ? "#00000000"
+                      : "#e5e5e5";
+                  },
+                },
+              },
+              x2: {
+                type: "category",
+                display: false,
+              },
+            },
+          },
+          plugins: [scatterLegendPlugin],
+        });
+
+        new Chart(ctxAverage, {
+          type: "line",
+
+          data: {
+            labels: browsers,
+            datasets: [
+              ...frameworks.map((framework) => ({
+                label: framework,
+                type: "line",
+                data: browsers.map(
+                  (browser) =>
+                    data
+                      .filter(
+                        (d) =>
+                          d.framework == framework && d.projectName == browser
+                      )
+                      .map((i) => i.lastUpdated)
+                      .reduce((a, b) => a + b, 0) /
+                    data.filter(
+                      (d) =>
+                        d.framework == framework && d.projectName == browser
+                    ).length
+                ),
+                domUpdates: data,
+                backgroundColor: colors[frameworks.indexOf(framework)],
+                borderColor: colors[frameworks.indexOf(framework)],
+                order: 99,
+              })),
+              ...frameworks.map((framework) => ({
+                label: framework + " (range)",
+                type: "line",
+                data: browsers.map((browser) => {
+                  const d = data
+                    .filter(
+                      (d) =>
+                        d.framework == framework && d.projectName == browser
+                    )
+                    .map((i) => i.lastUpdated);
+                  return Math.max(...d) - Math.min(...d);
+                }),
+                domUpdates: data,
+                backgroundColor: colors[frameworks.indexOf(framework)] + "44",
+                borderColor: colors[frameworks.indexOf(framework)] + "44",
+              })),
+              // ...frameworks.map((framework) => ({
+              //   label: framework + " (min)",
+              //   type: "line",
+              //   data: browsers.map((browser) => {
+              //     const d = data
+              //       .filter(
+              //         (d) =>
+              //           d.framework == framework && d.projectName == browser
+              //       )
+              //       .map((i) => i.lastUpdated);
+              //     return Math.min(...d);
+              //   }),
+              //   domUpdates: data,
+              //   backgroundColor: colors[frameworks.indexOf(framework)] + "44",
+              //   borderColor: colors[frameworks.indexOf(framework)] + "44",
+              //   borderDash: [2, 2],
+              // })),
+              // ...frameworks.map((framework) => ({
+              //   label: framework + " (max)",
+              //   type: "line",
+              //   data: browsers.map((browser) => {
+              //     const d = data
+              //       .filter(
+              //         (d) =>
+              //           d.framework == framework && d.projectName == browser
+              //       )
+              //       .map((i) => i.lastUpdated);
+              //     return Math.max(...d);
+              //   }),
+              //   domUpdates: data,
+              //   backgroundColor: colors[frameworks.indexOf(framework)] + "44",
+              //   borderColor: colors[frameworks.indexOf(framework)] + "44",
+              //   borderDash: [5, 5],
+              // })),
+            ],
+          },
+          options: {
+            plugins: {
+              tooltip: tooltipAverageForFrameworks,
+              title: {
+                display: Boolean(title),
+                text: title,
+              },
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: "ms until DOM update",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return value + "ms";
+                  },
+                },
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: "Browser",
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return browsers[value] || "";
+                  },
+                  stepSize: 0.5,
+                },
+                grid: {
+                  color: function (context) {
+                    return context.tick.value % 1 == 0
+                      ? "#00000000"
+                      : "#e5e5e5";
+                  },
+                },
+              },
+              x2: {
+                type: "category",
+                display: false,
+              },
+            },
+          },
+        });
+      }
+
+      Promise.all([
+        fetch("./ig-clone/ig-clone-angular/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "angularBrowsers",
+              data,
+              "Browser reaction times - Angular"
+            ).map((i) => ({ ...i, framework: "Angular" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-astro/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "astroBrowsers",
+              data,
+              "Browser reaction times - Astro"
+            ).map((i) => ({ ...i, framework: "Astro" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-next/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "nextBrowsers",
+              data,
+              "Browser reaction times - Next"
+            ).map((i) => ({ ...i, framework: "Next" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-nuxt/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "nuxtBrowsers",
+              data,
+              "Browser reaction times - Nuxt"
+            ).map((i) => ({ ...i, framework: "Nuxt" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-react/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "reactBrowsers",
+              data,
+              "Browser reaction times - React"
+            ).map((i) => ({ ...i, framework: "React" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-svelte/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "svelteBrowsers",
+              data,
+              "Browser reaction times - Svelte"
+            ).map((i) => ({ ...i, framework: "Svelte" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-vue/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "vueBrowsers",
+              data,
+              "Browser reaction times - Vue"
+            ).map((i) => ({ ...i, framework: "Vue" }))
+          ),
+      ]).then((chartDataList) => {
+        chartDataList = chartDataList.flat();
+
+        const userActions = [
+          "CaptionChange",
+          "MediaSelection",
+          "MediaSourceInsert",
+          "PostCreation",
+        ];
+
+        userActions.forEach((action) => {
+          createFrameworkComparison(
+            action,
+            chartDataList.filter((i) => i.tag == action),
+            "Framework Reaction Times - " + action
+          );
+        });
+
+        createFrameworkComparison(
+          "allActions",
+          chartDataList,
+          "Framework Reaction Times",
+          "11"
+        );
+      });
+
+      Array.from(document.getElementsByTagName("details")).forEach(
+        (element) => {
+          // element.setAttribute("open", true)
+          // element.removeAttribute("open")
+        }
+      );
+    </script>
+  </body>
+</html>

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "readResults": "node lighthouse-report-reader.js"
+    "readResults": "node lighthouse-report-reader.js",
+    "read": "node reader.js"
   },
   "author": "",
   "license": "ISC",

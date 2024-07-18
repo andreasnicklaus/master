@@ -73,7 +73,13 @@
 
 ### Component update times
 
-¯\\_(ツ)_/¯
+- Interesting comparisons with reasoning and expectation
+  - MPA vs SPA
+  - Angular vs React vs Vue
+  - Nuxt vs Vue und Next vs React
+  - Vue-basiert vs React-basiert
+  - Svelte vs Astro
+- Page Load Times
 
 # Implementation
 ## Component code
@@ -87,12 +93,37 @@ For each component unoptimized and optimized version
 <!-- TODO: Add other components -->
 
 ## Test code
+
+- Test categories
+  - Page Load
+  - Dynamic Component Load Times
+  - State Change Times
+- Playwright test configuration
+- Browser Choices: Reasoning and test implementation
+
 # Evaluation
 ## Page load times
+
+1. Which pages load fast?
+2. How much does much post-rendering-data add to load time?
+3. Which frameworks creates fast-loading pages?
+4. Does it match my expectations?
+
 ## Component load times
+
+1. Which components load with delay?
+2. Which frameworks have fast-loading delayed components?
+3. Do pre-rendered pages even have delayed components?
+
 ## Component Update times
+
+1. Which differences can be made out towards [Component update times](#component-update-times)?
+2. Which HTML-Elements even update?
+3. Which frameworks update HTML-Elements faster than others?
+
 # Conclusion
 1. Which framework works best with page load times?
 2. Which framework works best with component load times?
 3. Which framework works best with component update times?
+
 # Summary

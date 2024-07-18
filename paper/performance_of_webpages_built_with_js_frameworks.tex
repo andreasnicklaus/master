@@ -178,19 +178,114 @@ The goals of this paper are to propose a set of metrics that allow comparing mai
 \section{Related Work}\label{sec:relatedwork}
 \section{Design}\label{sec:design}
 \subsection{Example Application}\label{subsec:exampleapplication}
+% What goals does should the example app fulfil?
+% What parts does the example app consist of?
+% What requirements does the app cover?
+%
+% 1. App Idea
+% 2. Pages
+% 3. Page intention & type
+% 4. Multimedia Files & Video Autoplay
+% 
+% MOSCOW-Analyse
+% UML-Diagramme: Services, Pages, Entities
+
 \subsection{Hosting Environments}\label{subsec:hostingenvironments}
+% Based on former work, networking plays a vital role in performance and load times
+% 
+% What exactly should be tested?
+% What requirements do the environments have to cover?
+% What properties should be considered for the environments?
+% TODO: what are the most used hosting environments?
+% 
+% 1. Vercel
+%    1. Reason
+%    2. Problems
+%    3. Solutions
+% 2. Local
+%    1. Reason (Network delay)
+%    2. Problems
+
 \subsection{Testing Tools}\label{subsec:testingtools}
+% What tools were using testing and how do they work? 
+% What requirements should be fulfilled by the tools
+% 
+% 1. Introduction into Playwright
+% 2. Introduction into Lighthouse CLI
+% 
+% What problems are expected to arise from these tools?
+% What requirements are covered by which tool?
+
+\subsubsection{Performance Metrics}
+% What metrics can be measured?
+% What metrics should be used?
+% What metrics will be used?
+% 
+% 1. Lighthouse performance
+% 2. Page weight
+% 3. Largest/First Contentful/Meaningful Paint
+% 4. TTFB/TTI/SpeedIndex
+
+\subsubsection{Component Load Times}
+% Measuring JS-dependent parts of the webpage
+% 
+% 1. Dom Updates with MutationObserver
+% 2. Problems with MutationObservers and Playwright
+
+\subsubsection{Component Update Times}
+% 3rd type of update through JS
+% 
+% - Interesting comparisons with reasoning and expectation
+%   - MPA vs SPA
+%   - Angular vs React vs Vue
+%   - Nuxt vs Vue und Next vs React
+%   - Vue-basiert vs React-basiert
+%   - Svelte vs Astro
+% - Page Load Times
 
 \section{Implementation}\label{sec:implementation}
 \subsection{Components}\label{subsec:components}
+% Notable components and HTML elements
+% How are they constructed?
+% How are they projected onto the DOM?
+% 
+% 1. MediaComponent
+% 2. About Aufbau
+% 3. Post mit und ohne Daten
+% 4. Astro CreateForm
 \subsection{Tests}\label{subsec:tests}
+% How are tests configured and implemented?
+% What is measured, stored and evaluated?
+% 
+% - Test categories
+%   - Page Load
+%   - Dynamic Component Load Times
+%   - State Change Times
+% - Playwright test configuration
+% - Browser Choices: Reasoning and test implementation
 
 \section{Evaluation}\label{sec:evaluation}
 \subsection{Page Load Times}\label{subsec:pageloadtimes}
-\subsection{Component Load Times}\label{subsec:componentloadtimes}
-\subsection{Component Update Times}\label{subsec:componentupdatetimes}
+% 1. Which pages load fast?
+% 2. How much does much post-rendering-data add to load time?
+% 3. Which frameworks creates fast-loading pages?
+% 4. Does it match my expectations?
 
-\section{Conclusion}\label{sec:conclustion}
+\subsection{Component Load Times}\label{subsec:componentloadtimes}
+% 1. Which components load with delay?
+% 2. Which frameworks have fast-loading delayed components?
+% 3. Do pre-rendered pages even have delayed components?
+
+\subsection{Component Update Times}\label{subsec:componentupdatetimes}
+% 1. Which differences can be made out towards [Component update times](#component-update-times)?
+% 2. Which HTML-Elements even update?
+% 3. Which frameworks update HTML-Elements faster than others?
+
+\section{Conclusion}\label{sec:conclusion}
+% 1. Which framework works best with page load times?
+% 2. Which framework works best with component load times?
+% 3. Which framework works best with component update times?
+
 \section{Summary}\label{sec:summary}
 
 \pagebreak

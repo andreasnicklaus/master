@@ -3,6 +3,7 @@ layout: page
 title: Entwurf der Beispielanwendung 11.04.2024
 permalink: /example-app-2024-04-11.html
 parent: Experimente
+nav_order: 2
 ---
 
 <h1>Entwurf der Beispielanwendung 11.04.2024</h1>
@@ -10,13 +11,7 @@ parent: Experimente
 - [Anforderungen](#anforderungen)
 - [Vorschläge](#vorschläge)
   - [01: Kontaktlisten-App](#01-kontaktlisten-app)
-    - [Beschreibung](#beschreibung)
-    - [Vorteile](#vorteile)
-    - [Abstriche](#abstriche)
   - [02: Instagram-Klon](#02-instagram-klon)
-    - [Beschreibung](#beschreibung-1)
-    - [Vorteile](#vorteile-1)
-    - [Abstriche](#abstriche-1)
 
 
 # Anforderungen

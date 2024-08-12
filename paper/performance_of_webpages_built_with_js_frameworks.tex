@@ -16,6 +16,39 @@
 % \usepackage{pgf-pie}
 % \usepackage{pgfplots}
 \usepackage[acronym, toc, numberedsection]{glossaries}
+\usepackage{listings}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, const, let},
+  ndkeywords={class, export, boolean, throw, implements, import, this, string, number, date},
+  sensitive=false,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]"
+}
+\lstdefinestyle{mystyle}{
+    % backgroundcolor=\color{backcolour},   
+    commentstyle=\color{teal},
+    keywordstyle=\color{red},
+    ndkeywordstyle=\color{blue},
+    numberstyle=\footnotesize\color{gray},
+    stringstyle=\color{violet},
+    % basicstyle=\ttfamily\normalsize,
+    % basicstyle=\ttfamily\small,
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=true,         
+    breaklines=true,                 
+    captionpos=b,                    
+    % keepspaces=true,                 
+    numbers=left,                    
+    % numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    % showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
 
 \usepackage{hyphenat}
 % \hyphenation{Mathe-matik wieder-gewinnen}
@@ -34,7 +67,7 @@
 \newacronym{cicd}{CI/CD}{Continuous Integration and Continuous Delivery}
 \newacronym{tbw}{TBW}{Total Byte Weight}
 \newacronym{ttfb}{TTFB}{Time To First Byte}
-\newacronym{tti}{TTI}{Time To Tnteractive}
+\newacronym{tti}{TTI}{Time To Interactive}
 \newacronym{tbt}{TBT}{Total Blocking Time}
 \newacronym{lvc}{LVC}{Last Visual Change}
 \newacronym{olvc}{OLVC}{Observed Last Visual Change}
@@ -44,6 +77,8 @@
 \newacronym{seo}{SEO}{Search Engine Optimization}
 \newacronym{pwa}{PWA}{Progressive Web App}
 \newacronym{cli}{CLI}{Command Line Interface}
+\newacronym{url}{URL}{Uniform Resource Locator}
+\newacronym{http}{HTTP}{Hypertext Transfer Protocol}
 
 \title{WIP: Mega-fast or just super-fast? Performance differences of mainstream JavaScript frameworks for web application}
 \author{Andreas Nicklaus}
@@ -58,6 +93,10 @@
   \section{\listtablename}%
   \@mkboth{\MakeUppercase\listtablename}{\MakeUppercase\listtablename}%
   \@starttoc{lot}%
+}
+\renewcommand\lstlistoflistings{
+  \section{\lstlistlistingname}
+  \@starttoc{lol}%
 }
 \let\Title\@title
 \let\Author\@author
@@ -260,7 +299,7 @@ The following goals were considered during the design process:
   \end{enumerate}
   
   \item \textbf{\acrshort{css}}: Even though the usage of \acrshort{css} can in no way be considered a modern practice, it is still used on effectively every webpage. % TODO: source for effectivvely every webpage
-  Additionally, stylesheets are considered render-blocking resources that impact performance negatively. % TODO: source for render-blocking resource
+  Additionally, stylesheets are considered render-blocking resources that impact performance negatively \citep{renderblocking,eliminateRenderBlocking}.
   For this purpose, \acrshort{css} shall be implemented for both pages and components.
   
   \item \textbf{Rendering time}: In addition to page type depending on the time of data load, the machine and time of composing the \acrshort{dom} is dependent on the content availability.
@@ -282,13 +321,13 @@ The following goals were considered during the design process:
 \end{enumerate}
 
 Based on these considerations, the application \enquote{NotInstagram} was designed as a comparable example application.
-It is heavily inspired by Instagram and a partial reproduction of its app design. % TODO: source to IG
+It is heavily inspired by Instagram and a partial reproduction of its app design \citep{instagram}.
 \enquote{NotInstagram} consists of four pages (see figure \ref{fig:screenshots}).
 \ref{subfig:index} shows the design of the Feed page.
 It is the start page of the app and contains 4 parts: the header, the profile list, the post list and a footer.
 Each item of the feed page is to be implemented as its own component or components.
 The plus icon in the header links to the create page, the footer links to the about page and every instance of a profile picture and profile name links to a profile page.
-The later contains profile information including a profile picture, name, user handle / ID, profile creation time, caption and a grid of all the user's posts (see figure \ref{subfig:user}).
+The latter contains profile information including a profile picture, name, user handle / ID, profile creation time, caption and a grid of all the user's posts (see figure \ref{subfig:user}).
 The profile component encapsulates all \acrshort{html} elements of that page except the header containing the app logo and X icon, which both link back to the feed page.
 Both the feed page and the profile page are generally expected to classify as delayed pages, because the content of profile and posts lists can only be loaded after the page load.
 
@@ -310,32 +349,28 @@ The Create page is the only page with dynamic content.
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Feed.png}
-      % TODO: Plus-Icon im Screenshot fehlt
     \end{center}
     \caption{Feed / Index Page (/)}\label{subfig:index}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
-      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Informationsseite.png}
-      % TODO: Profilseite
+      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Profil.png}
     \end{center}
     \caption{Profile Page (/user/@PeterPoster)}\label{subfig:user}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Beitrag erstellen.png}
-      % TODO: X-Icon fehlt
     \end{center}
     \caption{Create Page (/create)}\label{subfig:create}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Informationsseite.png}
-      % TODO: Backlink fehlt
     \end{center}
     \caption{About Page (/about)}\label{subfig:about}
   \end{subfigure}
-  \caption{Screenshots of the NotInstagram application's pages (path in parentheses) \textcolor{red}{(Bilder müssen noch geändert werden)}}\label{fig:screenshots}
+  \caption{Screenshots of the NotInstagram application's pages (path in parentheses)}\label{fig:screenshots}
 \end{figure}
 
 The data fetching and loading is designed to be implemented as \hyperref[enum:services]{services}.
@@ -364,7 +399,6 @@ Their only function is styling text or projecting \acrshort{html} elements with 
 
 \begin{figure}
   \includegraphics[width=\linewidth]{diagrams/uml.png}
-  % TODO: LogoHeader references NotInstagramLogo
   \caption{Pages, Components ands Services of the NotInstagram application}\label{fig:uml}
 \end{figure}
 \begin{figure}
@@ -408,7 +442,7 @@ Both tools are highly-used frameworks and have the appearance and goal of improv
 For this reason, they are interesting choices for this study.
 All selected frameworks fulfil the requirements.
 The application is implementable with all frameworks or intended addition of tools.
-Next.js and Nuxt require the usage of React or Vue tools and dynamic components cannot be written in pure Astro. % TODO: source
+Next.js and Nuxt require the usage of React or Vue.js tools and dynamic components cannot be written in pure Astro. % TODO: source
 Astro intends the usage of other frameworks to implement so-called \enquote{islands}.
 For those components, React was chosen for its top usage rate.
 
@@ -465,7 +499,7 @@ Therefore the time needed for fulfilling network requests should be considered i
   \begin{center}
     \includegraphics[width=\linewidth]{img/request-timing.png}
   \end{center}
-  \caption{Timing attributes defined by PerformanceTiming interface and the PerformanceNavigation interface}\label{fig:timing} %TODO: source https://www.w3.org/TR/navigation-timing/
+  \caption{Timing attributes defined by the PerformanceTiming interface and the PerformanceNavigation interface \citep{navigationTimings}}\label{fig:timing}
 \end{figure}
 
 Figure \ref{fig:timing} illustrates how a slow network may delay the rendering process of a webpage.
@@ -504,18 +538,18 @@ Table \ref{tab:hostCommands} lists the used commands for building and starting t
     \textbf{Framework} & \textbf{Build Command} & \textbf{Host Command} \\ \hline
     Angular & \verb|ng build| & \verb|serve| \\ \hline
     Astro & \verb|astro build| & \verb|astro preview| \\ \hline
-    Next & \verb|next build| & \verb|next start| \\ \hline
+    Next.js & \verb|next build| & \verb|next start| \\ \hline
     Nuxt & \verb|nuxt build| & \verb|nuxt preview| \\
      & \verb|nuxt generate| & \verb|nuxt preview| \\ \hline
     React & \verb|react-scripts build| & \verb|serve| \\ \hline
     Svelte & \verb|vite build| & \verb|vite preview| \\ \hline
-    Vue & \verb|vite build| & \verb|serve| \\ \hline
+    Vue.js & \verb|vite build| & \verb|serve| \\ \hline
   \end{tabular}
 \end{center}
 \caption{Build and host command for each used framework as used for testing the applications hosted locally}\label{tab:hostCommands}
 \end{table}
 
-\subsection{Performance Metrics}
+\subsection{Performance Metrics}\label{subsec:performancemetrics}
 % What metrics can be measured?
 % What metrics should be used?
 % What metrics will be used?
@@ -554,8 +588,7 @@ In order to focus on this time frame, these metrics describe the application's p
   By navigation events described as the time between \verb|navigationStart| and \verb|domInteractive|.
   Notably, the timing of \verb|domInteractive| is not reliable because a \acrshort{dom} may become interactive, but the browser may not be interactive yet.
   Additionally, resources may still be loading.
-  For example, a \acrshort{dom} from a \acrshort{html} skeleton may be \enquote{interactive} after a few milliseconds, but no content may be rendered for the user to see, %TODO: source https://html.spec.whatwg.org/multipage/dom.html#current-document-readiness
-  because \acrshort{csr} code is still loading \citep{htmlLivingStandard}.
+  For example, a \acrshort{dom} from a \acrshort{html} skeleton may be \enquote{interactive} after a few milliseconds, but no content may be rendered for the user to see \citep{htmlLivingStandard}, because \acrshort{csr} code is still loading \citep{htmlLivingStandard}.
   \item \textbf{DomContentLoaded}: Similar to \acrshort{tti}, DomContentLoaded measures the time between \verb|navigationStart| and \verb|domContentLoaded|.
   At this point in time, \enquote{all subresources apart from async script elements have loaded} \citep{htmlLivingStandard}.
   A large difference between \acrshort{ttfb} and DomContentLoaded indicates a great size or at least long load time of subresources.
@@ -669,9 +702,7 @@ To summarize some comparisons between frameworks or groups of frameworks, the mo
 \begin{enumerate}
   \item \textbf{\acrshort{csr} - \acrshort{ssr}}: Before testing, deifferences between \acrshort{csr} and prerendered pages are expected, but the metrics and amount of differences are a probable subject of interest.
   Because there is no perceivable differences between prerendered  pages and server-side rendered pages from a client perspective, they are grouped together in this context.
-  \item \textbf{Angular - React - Vue}: Because these \acrshort{csr} frameworks have been competing for \textcolor{red}{X} %TODO: how many years
-  years at this point and they are still the most famous front-end frameworks, % TODO: source
-  the comparison of these frameworks is relevant for this study.
+  \item \textbf{Angular - React - Vue.js}: Because these \acrshort{csr} frameworks have been competing for eight years at this point and they are still the most famous front-end frameworks \citep{stateOfJs2023}, the comparison of these frameworks is relevant for this study.
   \item \textbf{Nuxt - Vue.js}:As a next generation of the Vue.js framework, the actual performance increase of Nuxt is interesting for developers.
   \item \textbf{Next.js - React}: Same as above
   \item \textbf{Vue-based - React-based}: Because a direct comparison of frameworks based on React and based on Vue.js is possible with multiple candidates, a difference in performance is an actual relevant factor for the choice between the ecosystems.
@@ -707,7 +738,7 @@ To this end, two different tools for automating tests were chosen:
   Testing with Lighthouse therefore needs to include building and hosting the application locally while tests are running.
   \item \textbf{Playwright}: Playwright is a front-end testing tools for web applications in development.
   It mainly supports checking page content, but also supports the execution of injected \acrlong{js} and full control over the browser.
-  This also means that the control over the user inputs enables measurement of timings connected to user behaviour such as clicking links and buttons, hover the mouse over elements or using \verb|<input>| elements.
+  This also means that the control over the user inputs enables measurement of timings connected to user behavior such as clicking links and buttons, hover the mouse over elements or using \verb|<input>| elements.
   Such options are needed to evaluate the timings of interactive elements.
   The development-focused design also bears the advantage of its initialization being included in some framework's initialization options.
   Both Svelte and Vue.js support installing and initializing configuration for Playwright in their own initialization (see chapter \ref{sec:implementation} for more on this).
@@ -719,7 +750,7 @@ Although all requirements can be fulfilled with these tools, multiple problems w
 Because Lighthouse reports include data that is influenced by all actors and constraints regarding the web page, many factors contribute to the variability of its results.
 \cite{lighthouseVariability} contains a list of sources of variability.
 The relevant sublist of factors for this study contains for local tests client resource contention, client hardware variability and browser nondeterminism.
-Client hardware variability is mitigated throught the usage of the same client device for all tests.
+Client hardware variability is mitigated through the usage of the same client device for all tests.
 The client device in question is a HP Envy x360 Convertible 15-eu0xxx with an AMD Ryzen 5 5500U processor and 16GB RAM.
 The operating system on the device is Windows 11 Home (Version 10.0.22631) during testing.
 Client resource contention could not be fully mitigated.
@@ -749,12 +780,40 @@ Objects such as the needed navigation timings are no longer available after the 
 The solution to this problem was to attach all necessary information as a file to the report so it is readable after the context closed.
 
 With all tools and workarounds in place, the data needed for the study could be collected.
-Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt}, \acrshort{lcp}, \acrshort{fvc}, \acrshort{ofvc} and \acrshort{olvc} whereas Playwright cover all naviation and \acrshort{html} event times, namely DomContentLoaded, LoadEventEnd, user input times, state change times and mutation times.
+Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt}, \acrshort{lcp}, \acrshort{fvc}, \acrshort{ofvc} and \acrshort{olvc} whereas Playwright cover all navigation and \acrshort{html} event times, namely DomContentLoaded, LoadEventEnd, user input times, state change times and mutation times.
 
 
 \section{Implementation}\label{sec:implementation} 
 % Project creation strategy
 % Project separation strategy
+% 
+% Goals: reproducability, interpretability, tracability of implementation choices
+
+This chapter contains details of the implementation and the strategies for creation of the project as well as for the separation of projects for each framework.
+The goal is to define taken steps to ensure reproducability and tracability of implementation choices and, as a result, interpretability of the results in the following chapter.
+
+The implementation for each framework was started using the official \enquote{get started} guide on the framework's website \citep{AngularGetStarted,AstroGetStarted,NextGetStarted,NuxtGetStarted,ReactGetStarted,SvelteGetStarted,VueGetStarted}.
+Each website provides a command which creates a project directory and project files.
+The initialization options for the creation process were chosen with the following rules.
+
+\begin{enumerate}
+  \item The project is to be created as empty as possible to ensure the focus on the framework \enquote{as is} rather than how it can be configured.
+  No demo projcet is chosen if an option with fewer preconfigured files is available.
+  \item No testing tools is to be preconfigured except Playwright.
+  If Playwright is not an option, then no testing tool should be chosen.
+  \item Otherwise the default options (recommended or first) should be chosen.
+  If \enquote{none} is an option, it it should be selected.
+\end{enumerate}
+
+After the initialization under these rules, the app's four pages and components as well as routing between the pages were configured.
+After creation of the Vue.js and React app, each component's template, code and style information was copied from either their Vue.js or React counterparts and adapted to the framework in question to speed up the creation process.
+Only after this process optimization efforts such as configuring image components (see section \ref{subsec:components}) and adaptation to the hosting environment were performed.
+
+Additionally, project directories were separated into Github repositories.
+The separation is a requirement for hosting with Vercel as a maximum of three Vercel projects can be hosted from the same repository.
+This study exceeds this limit.
+This limiting condition entails that all testing configuration could not be centralized, but had to be duplicated across repositories.
+The setup of the testing environment has been the last step of the project creation (see section \ref{subsec:tests}).
 
 \subsection{Components}\label{subsec:components}
 % Notable components and HTML elements
@@ -765,6 +824,414 @@ Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt
 % 2. About Aufbau
 % 3. Post mit und ohne Daten
 % 4. Astro CreateForm
+
+While most of the design decisions for the components of the application have been made during the design of the application itself, the design choices concerning the implementation of said components are open to adaptation to the framework.
+The goals for this implementation period are few.
+First, the implementation for each framework should be as similar to the others as possible, meaning the \acrshort{html} elements should be the same.
+Second, the implementation should follow the design language of the framework.
+Therefore no principles should translate from one implementation to another if they do not fit to the framework's design principles.
+Third, it has to follow the component design as described in section \ref{subsec:exampleapplication}.
+If the design of the example application cannot be followed, changes are to be as minimal as possible.
+This section describes selected components and code snippets where they are either interesting for the performance, unforeseen choices or where they differ notably inbetween frameworks.
+The author of this study had had the most experience with Vue.js prior to this project.
+For this reason, code snippets in Vue.js have the most presentability and code snippets in this paper are shown in Vue.js wherever possible.
+The components described in this section are the About and the Create page, the Post component because it has two variations and the MediaComponent.
+
+The About page is an interesting case because, as described in section \ref{subsec:exampleapplication}, it is the only static page of the application.
+Its components and \acrshort{html} children are therefore also static.
+Figure \ref{fig:graphicalAboutPage} shows a graphical overview of the page's contents from a \acrshort{dom} perspective.
+Because of its static nature, it is also the only page that can be fully prerendered.
+Notably, the lower part of the page consists of multiple subcomponents \verb|<Infoblock>| with a title passed as a prop and a paragraph passed in a slot as a \acrshort{html} child for the component.
+Functionally, its only purpose is styling and its only effect on the \acrshort{dom} is the addition of a \verb|<h2>| and a \verb|<p>| element.
+The other imported subcomponents \verb|<NotInstagramLogo>| and \verb|<SendIcon>| are also wrappers for a \verb|<h1>| and a \verb|<img>| element, respectively.
+Listing \ref{lst:Vue:About} demonstrates the static nature of the page view and the hard-coded addition of all text and multimedia in the template.
+
+\begin{figure}
+  \begin{center}
+    \begin{subfigure}{0.49\linewidth}
+      \begin{center}
+        \includegraphics[width=\linewidth, keepaspectratio]{diagrams/about-dom.png}
+      \end{center}
+    \end{subfigure}
+    \begin{subfigure}{0.49\linewidth}
+      \begin{center}
+        \includegraphics[width=\linewidth, keepaspectratio]{diagrams/about-dom-2.png}
+      \end{center}
+    \end{subfigure}
+  \end{center}
+  \caption{Graphical subdivision of the About page into components \textcolor{red}{(Welches Diagramm ist besser?)}}\label{fig:graphicalAboutPage}
+\end{figure}
+
+\begin{lstlisting}[caption=About page in Vue.js, label={lst:Vue:About}, language=HTML]
+<!-- AboutView.vue -->
+<template>
+  <div id="AboutView">
+    <RouterLink id="top-backlink" class="backlink" :to="{ name: 'Feed' }"> back </RouterLink>
+
+    <p class="cursive">This is</p>
+    <NotInstagramLogo />
+    <img class="transparent logo" alt="" width="40%" height="240" loading="lazy" :src="Logo" />
+
+    <p class="cursive">created by</p>
+    <p class="cursive big">Andreas Nicklaus</p>
+    <div id="socials">
+      <p>
+        <a href="https://github.com/andreasnicklaus" target="_blank">
+          <img class="transparent" width="29" height="29" loading="lazy" :src="Github" />
+          @andreasnicklaus
+        </a>
+      </p>
+      <p>
+        <a href="https://www.linkedin.com/in/andreasnicklaus/" target="_blank">
+          <img class="transparent" width="29" height="29" loading="lazy" :src="LinkedIn" />
+          @andreasnicklaus
+        </a>
+      </p>
+      <p>
+        <a href="mailto:an067@hdm-stuttgart.de">
+          <SendIcon/> an067@hdm-stuttgart.de
+        </a>
+      </p>
+    </div>
+
+    <InfoBlock title="What is this?">
+      This project is part of the master thesis by ...
+    </InfoBlock>
+    <InfoBlock title="Placeholder 1">
+      Lorem ipsum dolor sit amet, consectetur adipiscing ...
+    </InfoBlock>
+    <InfoBlock title="Placeholder 2">
+      Pellentesque diam volutpat commodo sed egestas ...
+    </InfoBlock>
+    <InfoBlock title="Placeholder 3">
+      Nec feugiat nisl pretium fusce. Sagittis id ...
+    </InfoBlock>
+    <InfoBlock title="Placeholder 4">
+      Ullamcorper malesuada proin libero nunc. Netus et ...
+    </InfoBlock>
+    <InfoBlock title="Placeholder 5">
+      Adipiscing elit pellentesque habitant morbi ...
+    </InfoBlock>
+
+    <RouterLink id="bottom-backlink" class="backlink" :to="{ name: 'Feed' }"> back </RouterLink>
+  </div>
+</template>
+\end{lstlisting}
+
+The Create page poses an opposite to the About page.
+In contrast to a static page with non-changing content, the purpose of the Create page is to preview a new post.
+Its purpose is to update after user input.
+Listing \ref{lst:Vue:Create:Template} and \ref{lst:Vue:Create:Script} show the implementation of the Create page in Vue.js.
+The data of the component has four dynamic parts: The options and the choice for the selection of the post image in a \verb|<select>| element, the caption of the new post and the media \acrshort{url} for the \verb|<input>| element.
+The last data point for the component is the user handle, which is static for the preview in this example application.
+The computed property mediaSource (see listing \ref{lst:Vue:Create:Script}, line \ref{line:computedMediaSource:createPage}) represents the logical choice between the media selection and source \acrshort{url} for the multimedia file in the previewed post.
+This template contains a static \verb|<header>|, the \verb|<form>| with dynamic attributes and a Post component.
+This subcomponent hast to be dynamic and reactive to its props as they are changing throughout the process of post creation.
+
+\begin{lstlisting}[caption=Create Page in Vue.js (Template), label={lst:Vue:Create:Template}, language=HTML]
+<!-- CreateView.vue -->
+<template>
+  <header>
+    <RouterLink :to="{ name: 'Feed' }"> <NotInstagramLogo/> </RouterLink>
+    <RouterLink :to="{ name: 'Feed' }"> <XIcon/> </RouterLink>
+  </header>
+
+  <form id="newPostForm" action="" method="post">
+    <input type="url" name="mediaUrl" id="mediaUrl" placeholder="Insert your media URL here..." v-model="mediaUrl" />
+    <p>or</p>
+    <select name="preloaded-image" id="preloaded-image" v-model="mediaChoice">
+      <option value="">Choose one of our media files here...</option>
+      <option v-for="media in preloadedMedia" :key="media" :value="media">
+        <span>{{ media }}</span>
+      </option>
+    </select>
+    <textarea name="caption" id="caption" cols="30" rows="3" placeholder="Type your caption here" v-model="caption"/>
+    <button type="submit" :disabled="!(caption && mediaSource)"> Post it! </button>
+  </form>
+
+  <hr />
+
+  <Post :userhandle="userhandle" :caption="caption" :likeCount="0" :mediaSource="mediaSource" :hideActionIcons="true" />
+</template>
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create Page in Vue.js (Script), label={lst:Vue:Create:Script}, language=JavaScript, firstnumber=25, escapechar=°]
+// CreateView.vue
+export default {
+  name: "CreateView",
+  data() {
+    return {
+      preloadedMedia: [
+        "canyon.mp4", "abstract-circles.webp", ...
+      ],
+      userhandle: "@you",
+      caption: "",
+      mediaUrl: "",
+      mediaChoice: "",
+    };
+  },
+  computed: {
+    mediaSource() { °\label{line:computedMediaSource:createPage}°
+      if (this.mediaUrl) return this.mediaUrl;
+      return this.mediaChoice;
+    },
+  },
+};
+\end{lstlisting}
+ 
+Listings \ref{lst:Vue:Post:Template} and \ref{lst:Vue:Post:Script} show the implementation of the Post component in Vue.js.
+It requires seven props for the five data points of a post (see figure \ref{fig:classes}) and two additional props for the control over the design and loading behavior of the post's image or video.
+Additionally, the \verb|mounted| method loads the user data through the \verb|ProfileService| (see listing \ref{lst:Vue:Post:Script}, line \ref{line:postMounted}).
+The template of the component uses MediaComponent twice, once for the profile picture and once for the post image or video.
+The attributes for the profile picture are mainly static because the user data is not edited through the create form.
+The attributes of the post multimedia except the class, width and height are dynamic and editable.
+Additionally, the projection of the post's caption onto the \acrshort{dom} is dynamic.
+Every time the caption changes, the string is split by whitespaces and each word is projected onto a \verb|<span>| element, so it can be styled as an hashtag if applicable.
+Afterwards, the list of \verb|<span>| elements is joined using whitespaces.
+The purpose of this method for the projection of the caption is only for the styling of hashtags.
+
+\begin{lstlisting}[caption=Post in Vue.js (Template), label={lst:Vue:Post:Template}, language=HTML]
+<!-- Post.vue -->
+<template>
+  <div class="post">
+    <RouterLink v-if="user" :to="{ name: 'Profile', params: { handle: userhandle } }" class="postUserInfo" >
+      <MediaComponent class="profileImage" :src="user?.profileImageSource" alt="" width="44" height="44" />
+      <span class="username">{{ user?.username }}</span>
+    </RouterLink>
+    <MediaComponent class="postMedia" :src="mediaSource" :alt="caption" width="100%" height="100%" :eagerLoading="eagerLoading" />
+    <div class="actionIconRow" v-if="!hideActionIcons">
+      <div class="leftActionIcons">
+        <HeartIcon />
+        <CommentIcon />
+        <SendIcon />
+      </div>
+      <BookmarkIcon />
+    </div>
+    <p class="likeCount">{{ likeCount }} likes</p>
+    <p class="caption">
+      <span v-for="(word, i) in caption.split(' ')" :key="i" :style="word.startsWith('#') ? 'color: #0091E2' : ''">
+        {{ word }}{{ " " }}
+      </span>
+    </p>
+    <p class="creationTime">{{ creationTimeToString }}</p>
+  </div>
+</template>
+\end{lstlisting}
+  
+\begin{lstlisting}[caption=Post in Vue.js (Script), label={lst:Vue:Post:Script}, language=JavaScript, firstnumber=26, escapechar=°]
+// Post.vue
+import ProfileService from "@/services/ProfileService";
+
+export default {
+  name: "Post",
+  props: {
+    userhandle: String,
+    caption: String,
+    mediaSource: String,
+    likeCount: Number,
+    createdAt: Date,
+    hideActionIcons: Boolean,
+    eagerLoading: { type: Boolean, default: false },
+  },
+  data() {
+    return { user: null };
+  },
+  mounted() {°\label{line:postMounted}°
+    ProfileService.getByHandle(this.userhandle).then(
+      (user) => (this.user = user)
+    );
+  },
+  computed: {
+    creationTimeToString() {
+      ...
+    },
+  },
+};
+\end{lstlisting}
+
+Because the creation of such a dynamic component is an intended use case for Angular, Next.js, Nuxt, React, Svelte and Vue.js, their implementation is not unusual (see listings \ref{lst:Vue:Create:Template}, \ref{lst:Vue:Create:Script}, \ref{lst:Angular:Create:Template}, \ref{lst:Angular:Create:Module}, \ref{lst:Next:Create}, \ref{lst:Nuxt:Create:Template}, \ref{lst:Nuxt:Create:Script}, \ref{lst:React:Create}, \ref{lst:Svelte:Create:Script} and \ref{lst:Svelte:Create:Template}).
+Astro poses as an opposite to this.
+Because dynamic or reactive components are not implementable natively as Astro components, another framework has to be used in Astro Islands.
+For this reason, other components had to be invented in addition to the components as described in figure \ref{fig:uml}.
+\verb|CreateForm| encapsulates the dynamic parts of the Create Page.
+It is a React component with the form and post preview.
+Because Astro components cannot be used in Islands, every subcomponent used here had to be implemented with React as a duplicate to an Astro component.
+
+Listings \ref{lst:Astro:Create:Script}, \ref{lst:Astro:Create:HTML} and \ref{lst:Astro:Createform} show the implementation of this unique design in Astro.
+The Create component imports and inserts the React component \verb|CreateForm| into \acrshort{html} snippets for the page and marks it as a \acrshort{csr} component with \verb|client:load| (see listing \ref{lst:Astro:Create:HTML}, line \ref{line:clientLoad}).
+From this component inwards, all \acrshort{html} is generated on the client and purely as a React application.
+The CreateForm itself contains the form and Post subcomponent.
+Because of this structure, the components Post, MediaComponent, BookmarkIcon, CommentIcon, HeartIcon and SendIcon had to be implemented as Astro components and as React components.
+Figure \ref{fig:astroUml} shows this updated component structure with Astro Islands.
+
+\begin{lstlisting}[caption=Create page in Astro (Frontmatter), label={lst:Astro:Create:Script}, language=JavaScript]
+// create.astro 
+export const prerender = false;
+import HtmlLayout from "../Layouts/HtmlLayout.astro";
+  
+import NotInstagramLogo from "../components/NotInstagramLogo.astro";
+import XIcon from "../components/icons/XIcon.astro";
+import CreateForm from "../components/CreateForm.jsx";
+import React from "react";
+
+const userhandle = "@you";
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create page in Astro (HTML), label={lst:Astro:Create:HTML}, language=HTML, firstnumber=11, escapechar=°]
+<!-- create.astro -->
+<HtmlLayout>
+  <header>
+    <a href="/"> <NotInstagramLogo /> </a>
+    <a href="/"> <XIcon /> </a>
+  </header>
+  <React.StrictMode>
+    <CreateForm userhandle={userhandle} client:load />°\label{line:clientLoad}°
+  </React.StrictMode>
+</HtmlLayout>
+\end{lstlisting}
+    
+\begin{lstlisting}[caption=Create form in Astro, label={lst:Astro:Createform}, language=JavaScript]
+// CreateForm.jsx
+import { useState } from "react";
+import styles from "./CreatePost.module.css";
+import Post from "./Post";
+
+const preloadedMedia = [
+  "canyon.mp4", "abstract-circles.webp", ...
+];
+
+const CreateForm = ({ userhandle }) => {
+  const [caption, setCaption] = useState("");
+  const [mediaUrl, setmediaUrl] = useState("");
+  const [mediaChoice, setmediaChoice] = useState("");
+
+  function mediaSource() {
+    return mediaUrl || mediaChoice;
+  }
+
+  return (
+    <>
+      <form id={styles.newPostForm} action="" method="post">
+        <input type="url" name="mediaUrl" id={styles.mediaUrl} placeholder="Insert your media URL here..." value={mediaUrl} onChange={(event) => setmediaUrl(event.target.value)} />
+
+        <p>or</p>
+
+        <select name="preloaded-image" id={"preloaded-image"} value={mediaChoice} onChange={(event) => setmediaChoice(event.target.value)}>
+          <option value="">Choose one of our media files here...</option>
+          {preloadedMedia.map((media) => (
+            <option key={media} value={media}>{media}</option>
+          ))}
+        </select>
+        <textarea name="caption" id={styles.caption} cols="30" rows="3" placeholder="Type your caption here" value={caption} onChange={(event) => setCaption(event.target.value)}/>
+        <button type="submit" disabled={!(caption && mediaSource())}> Post it! </button>
+      </form>
+      <Post userhandle={userhandle} caption={caption} likeCount={0} mediaSource={mediaSource()} hideActionIcons={true} />
+    </>
+  );
+};
+
+export default CreateForm;
+\end{lstlisting}
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=\linewidth]{diagrams/uml-astro.png}
+  \end{center}
+  \caption{Adapted component structure for Astro Islands (React components are marked blue, duplicate components are white and blue)}\label{fig:astroUml}
+\end{figure}
+
+The MediaComponent is a presenter component for multimedia content, namely an image or a video.
+It is used within the ProfileList, Profile and Post components (see figure \ref{fig:uml}).
+As described in section \ref{subsec:exampleapplication}, the main use of this component for a developer is to centralize the optimization of multimedia files and to ensure its correct size and style.
+As such, it is a catchall component for many kinds of multimedia sources. Listings \ref{lst:Vue:MediaComponent:Template} and \ref{lst:Vue:MediaComponent:Script} show parts of its implementation in Vue.js.
+
+\begin{lstlisting}[caption=MediaComponent in Vue.js (Template), label={lst:Vue:MediaComponent:Template}, language=HTML]
+<!-- MediaComponent.vue -->
+<template>
+  <img ref="image" class="postMedia" v-if="mediaSource.endsWith('webp')" :alt="alt" :width="width" :height="height" :loading="eagerLoading ? 'eager' : 'lazy'" :src="mediaSource" />
+  <video ref="video" class="postMedia" v-else-if="mediaSource.endsWith('mp4')" :width="width" :preload="eagerLoading ? 'auto' : 'metadata'" controls controlslist="nodownload,nofullscreen,noremoteplayback" disablepictureinpicture loop muted >
+    <source :src="mediaSource" type="video/mp4" />
+  </video>
+  <div v-else class="mediaError" ref="mediaError">
+    <p>Nothing to see yet...<br />Choose an image to continue!</p>
+  </div>
+</template>
+  
+<script>//see listing below</script>
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in Vue.js (Script), label={lst:Vue:MediaComponent:Script}, language=JavaScript, firstnumber=13, escapechar=°]
+// MediaComponent.vue
+import { playPauseVideo } from "@/utils/autoplay.js";
+
+export default {
+  name: "MediaComponent",
+  props: {°\label{line:mediaComponentProps}°
+    src: { type: String },
+    alt: { type: String,  default: "" },
+    width: String,
+    height: String,
+    eagerLoading: { type: Boolean, default: false },
+  },
+  computed: {
+    mediaSource() {°\label{line:computedMediaSource}°
+      if (
+        this.src == null ||
+        this.src == undefined ||
+        this.src.startsWith("http")
+      )
+        return this.src;
+      return new URL(`/src/assets/stock-footage/${this.src}`, import.meta.url)
+        .href;
+    },
+  },
+  mounted() {
+    const video = this.$refs.video;
+    if (video) playPauseVideo(video);
+  },
+};
+\end{lstlisting}
+
+First, the component takes five props that can be passed to it as \acrshort{html} attributes (see listing \ref{lst:Vue:MediaComponent:Script}, line \ref{line:mediaComponentProps} ff.).
+The \verb|src| string contains either the file name or \acrshort{url} to the file.
+The \verb|alt| prop is the alternative text for an image to simple pass to the \verb|alt| attribtue of the \verb|<img>| tag, as well as the width and height of the image or video.
+These props are primarily needed for optimization of layout shifts and to optionally tell the browser which image variant is needed from a source set on the page.
+Lastly, the \verb|eagerLoading| prop is a boolean indicator for whether the file need to be loaded first for images or preloaded fully for videos.
+
+Second, the computed property \verb|mediaSource| returns the correct link to either the image or video source based on the start of the \verb|src| prop.
+This allows the component to identify faulty or external source \acrshort{url}s and only import needed local multimedia files.
+This implementation design is unique to Vue.js and Nuxt.
+Looking at the implementation in React and Next.js, the same effect is achieved through the \verb|useState| and \verb|useEffect| hooks.
+The \verb|ngOnChanges| hook is used in Angular.
+In Svelte, the \verb|mediaSource| is defined with a leading \verb|$:|, making it reactive. Because of its non-dynamic nature the native Astro component defines \verb|mediaSource| statically server-side.
+On the other hand, the dynamic component uses the same implementation as the React application.
+
+Third, every framework uses conditional rendering to project either an image, a video or an error message onto the \acrshort{dom}.
+Additionally, the Svelte component checks another condition: external and internal images.
+For image source strings starting with \enquote{http}, an \acrshort{html}-native \verb|<img>| element is used, whereas the Svelte-native \verb|<enhanced:img>| tag is used for all other images.
+The remaining frameworks use either one or the other method to insert images.
+Vue.js, React and Angular do not support enhanced image elements.
+These frameworks only include images using the \verb|<img>| tag.
+In contrast, Astro, Next.js, Nuxt and Svelte do have commponents that improve the performance of image elements.
+Astro natively supports an \verb|<Image>| component that outputs an \verb|<img>| tag with optimized attributes.
+Next.js comes with another \verb|<Image>| component that optimizes images with a predefined width and height and Nuxt has a \verb|<NuxtImg>| component to optimize images and define presets for its images.
+Svelte is the only one of that group that does not support full \acrshort{url}s to be passed to its image component.
+
+Fourth, the attributes of the \verb|<img>| elements are designed to optimize their load performance, size and image quality.
+While no way to optimize the size and quality of the source of simple \verb|<img>| elements is apparent, the load performance is adapted to the usage of a \verb|<MediaComponent>|.
+The first Post of a PostList is always eager-loaded, whereas all other images are lazy-loaded.
+The size of the bounding box of the image is also defined in order to prevent layout shifts during or after the loading of the image.
+Enhanced image components are configured to ideally optimize the size and quality of the requested image, as well as to insert placeholder images if possible.
+
+The \verb|<video>| elements are designed to optimize the load behavior of the browser and to change the default presentation and styling.
+Each video has a defined width and height, controls and playback behavior.
+In order to come as close to the application's model, Instagram, videos should autoplay, but stay muted.
+Each single behavior is a single attribute to set, but autoplaying every video requires every video to be loaded on page load.
+This network load bears a performance decrease.
+For this reason, only the metadata is preloaded unless it is the first post in the PostList.
+To ensure the wanted autoplay feature, each \verb|<video>| element is referenced using the framework and custom code ensures videos play when they are in the viewport and pause when they are outside of it.
+This is achieved using an \verb|IntersectionObserver| \citep{IntersectionObserver}.
+
 \subsection{Tests}\label{subsec:tests}
 % How are tests configured and implemented?
 % What is measured, stored and evaluated?
@@ -779,6 +1246,673 @@ Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt
 %   - Screenshots
 % - Browser Choices: Reasoning and test implementation
 
+As described above, the implemention of tests and test configuration were the last step in the process of project creation.
+As such, tests were either left \enquote{as is} or not configured until the application could be considered \enquote{done}.
+The test suite for this project can be split into two halves: Lighthouse \acrshort{cli} automation and Playwright tests (see section \ref{subsec:testingtools}).
+Lighthouse is used to mostly cover aggregate metrics, while Playwright is used to export navigation and \acrshort{html} event times.
+
+To this end, a script was written to automate the execution of Lighthouse tests and to store Lighthouse reports in a comprehensive way.
+Listing \ref{lst:lighthouse-script} shows parts of the implementation of the testing script.
+It reads project configurations from an external configuration file and iterates over them, executing the tests for every framework multiple times.
+Listing \ref{lst:lighthouse-config} contains an excerpt of the configuration file.
+Every project is built and hosted, if either a host command, e.g. using \verb|npm run <script>|, or a serve command using \verb|serve| is defined in the configuration file.
+While the application is hosted, a headless Google Chrome browser window is launched and multiple lighthouse tests are preformed.
+The report is generated using the \acrshort{url} as it is specified in the configuration and with static options.
+These options define among other things that an \acrshort{html} report is to be generated, only performance metrics are to be collected and the \acrshort{http} status code is to be ignored.
+The last option is necessary because web servers started using \verb|serve| return a 404 status code for files that do not exist in the hosted directory.
+For applications that rely on \verb|index.html| to be returned if a requested resource is not available, this behavior is not desired.
+For example, requesting the defined path \verb|/about| results in a 404 code with the \verb|index.html| file as the response body.
+Withouth the option \verb|ignoreStatusCode: true|, the Lighthouse test would fail as the page is considered to be unavailable.
+
+\begin{lstlisting}[caption={Automation script for Lighthouse tests}, language=JavaScript, label={lst:lighthouse-script}]
+// testing-script/index.js
+import fs from 'fs';
+import lighthouse from 'lighthouse';
+import * as chromeLauncher from 'chrome-launcher';
+import config from "./config.js"
+import { exec, spawn } from 'child_process';
+
+import { createLogger, transports, format } from "winston"
+
+const logger = createLogger({...})
+
+//...
+
+function dateToUriSafeString(d) {...}
+
+function build(projectConfig) {
+  return new Promise((resolve, reject) => {
+
+    if (projectConfig.buildCommand) {
+      logger.info("Starting build...")
+      exec(`${projectConfig.buildCommand}`, { cwd: projectConfig.projectPath, maxBuffer: 1024 * 1024 * 1024 }, (error, stdout, stderr) => {
+        // ...
+      })
+    }
+    else {
+      logger.info("Skipping build because buildCommand was not specified")
+      resolve()
+    }
+  })
+
+}
+
+async function stopServer(hostProcess, projectConfig) {
+  return new Promise((resolve, reject) => exec(`taskkill /pid ${hostProcess.pid} /f /t`, (error, stdout, stderr) => {
+    // ...
+  }))
+}
+
+for (let projectConfig of config.projects) {
+  logger.info(`Testing project ${projectConfig.name}`)
+
+  // BUILD PHASE
+  await build(projectConfig)
+
+  // STARTING HOST PROCESS
+  // ...
+
+  if (serverCommand) {
+    logger.info("starting server...")
+    const [command, ...options] = serverCommand.split(" ");
+    hostProcess = spawn(command, options, { cwd: projectConfig.projectPath, shell: true })
+  }
+  else {
+    if (projectConfig.url.startsWith('http://localhost')) throw new Error("Server was not properly configured. Check prefferedServeCommand, hostCommand and/or serveCommand for project", projectConfig.name)
+    else ("Server was not started because no command was specified")
+  }
+
+  // ...
+
+  // START LIGHTHOUSE TEST
+  logger.info("Starting lighthouse tests...")
+  const url = projectConfig.url
+  const chrome = await chromeLauncher.launch( { chromeFlags: ['--headless'] } );
+  const options = { logLevel: 'warn', output: 'html', onlyCategories: ['performance'], port: chrome.port, ignoreStatusCode: true };
+
+  for (const route of (projectConfig.paths || ["/"])) {
+    // ...
+
+    for (let i = 0; i < config.runsPerProject; i++) {
+
+      const runnerResult = await lighthouse(url + route, options);
+
+      const { report: reportHtml, artifacts, lhr } = runnerResult;
+      const { timing, fetchTime, categories, ...rest } = lhr
+
+      fs.mkdirSync(`${projectConfig.reportDirectory}${route == "/" ? "/index" : route}`, { recursive: true }, (err) => {
+        if (err) throw err;
+      });
+      fs.writeFileSync(`${projectConfig.reportDirectory}${route == "/" ? "/index" : route}/lighthouse-report-${new URL(url).hostname}-${dateToUriSafeString(new Date())}.html`, reportHtml);
+      fs.writeFileSync(`${projectConfig.reportDirectory}${route == "/" ? "/index" : route}/lighthouse-report-${new URL(url).hostname}-${dateToUriSafeString(new Date())}.json`, JSON.stringify({ artifacts, lhr }, null, 2));
+
+      // ...
+    }
+
+    // ...
+  }
+
+  await chrome.kill();
+  if (serverCommand) await stopServer(hostProcess, projectConfig)
+}
+
+logger.info("ALL DONE")
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Test configuration for Lighthouse tests}, language=JavaScript, label={lst:lighthouse-config}]
+// testing-script/config.js
+export default {
+  runsPerProject: 20,
+  preferredServeCommand: "serve",
+  projects: [
+    // ...
+    {
+      name: "Svelte on Vercel",
+      reportDirectory: "./lighthouse-reports/ig-clone-svelte/vercel",
+      url: "https://ig-clone-svelte.vercel.app",
+      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
+    },
+    // ...
+    {
+      name: "Svelte",
+      projectPath: "../ig-clone/ig-clone-svelte",
+      buildCommand: "npm run build",
+      serveCommand: "npm run preview",
+      reportDirectory: "./lighthouse-reports/ig-clone-svelte/localhost",
+      url: "http://localhost:4173",
+      paths: ["/", "/about", "/create", "/user/@PeterPoster"]
+    },
+    // ...
+  ]
+}
+\end{lstlisting}
+
+Once the test results are available, the relevant metrics are collected, stored in a \acrshort{json} file and the \acrshort{html} report is stored as a means to debugging.
+After the tests are finished and results are stored, the Google Chrome window is killed and the webserver is stopped.
+
+In order to evaluate and summarize the collection of tests performed using the automation script, another script was written so that test summaries are created.
+This report reader iterates over the list of \acrshort{json} files and calculates the average per metric, route and project configuration from the configuration file.
+It makes it easier to compare the test results and interpret the performance of the frameworks (see chapter \ref{sec:evaluation}).
+
+Similar to the test method for Lighthouse, Playwright tests can be triggered using a script to unify the output files.
+Listing \ref{lst:playwright-trigger} shows the implementation of this trigger script.
+Project directories are defined and the test command is executed in the directory with the configured environment variables.
+\verb|PW_TEST_HTML_REPORT_OPEN| tells Playwright to not open a report even if a test fails, \verb|PLAYWRIGHT_HTML_REPORT| defines the report directory as a directory with a timestamp, so that no test results are overwritten, and \verb|PLAYWRIGHT_JSON_OUTPUT_FILE| specifies the location where a \acrshort{json} reports shall be stored.
+
+\begin{lstlisting}[caption={Trigger script for Playwright tests}, label={lst:playwright-trigger}, language=JavaScript]
+// playwright-trigger.mjs
+import { spawn } from 'child_process'
+
+const projects = [
+  // ...
+  {
+    name: "IG Clone Svelte",
+    cwd: "ig-clone-svelte"
+  },
+  // ...
+]
+
+const testArguments = [
+  // "/.*change\.spec\.js/"
+]
+
+function generateUriSafeTimestamp() {
+  //...
+}
+
+console.log(`Found projects: ${projects.map(p => `"${p.name}"`).join(', ')}`)
+
+console.log(`Starting tests for ${projects.length} ${projects.length == 1 ? 'project' : 'projects'}...`)
+
+for (const project of projects) {
+
+  console.log(`Starting with "${project.name}"`)
+
+  const now = new Date()
+  const reportDirectory = `playwright-report-${generateUriSafeTimestamp()}`
+
+  await new Promise(resolve => {
+
+    const testProcess = spawn("npm", ["run", "test:e2e", ...testArguments], {
+      cwd: project.cwd,
+      shell: true,
+      env: {
+        ...process.env,
+        PW_TEST_HTML_REPORT_OPEN: 'never',
+        PLAYWRIGHT_HTML_REPORT: reportDirectory,
+        PLAYWRIGHT_JSON_OUTPUT_FILE: reportDirectory + "/test-results.json"
+      }
+    })
+
+    // ...
+  }).then(() => {
+    console.log(`Finished "${project.name}" (${projects.indexOf(project) + 1}/${projects.length})`)
+  })
+}
+
+console.log("DONE")
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Playwright configuration for Vue.js}, label={lst:playwright-config}, language=JavaScript]
+// ig-clone-vue/playwright.config.js
+import process from 'node:process'
+import { defineConfig, devices } from '@playwright/test'
+
+export default defineConfig({
+  testDir: './tests',
+  timeout: 60 * 1000,
+  expect: { timeout: 5000 },
+  forbidOnly: !!process.env.CI,
+  retries: 2,
+  workers: 1,
+  reporter: [['html'], ['json', { outputFile: 'playwright-report/test-results.json' }]],
+  use: {
+    actionTimeout: 0,
+    baseURL: 'http://localhost:3000',
+    trace: 'on',
+    headless: true
+  },
+
+  projects: [
+    { name: 'Chromium', use: {...devices['Desktop Chrome']} },
+    { name: 'Firefox', use: {...devices['Desktop Firefox']} },
+    { name: 'Webkit', use: {...devices['Desktop Safari']} },
+
+    /* Test against mobile viewports. */
+    { name: 'Mobile Chrome', use: {...devices['Pixel 5']} },
+    { name: 'Mobile Safari', use: {...devices['iPhone 12']} },
+
+    /* Test against branded browsers. */
+    { name: 'Microsoft Edge', use: {channel: 'msedge'} },
+    { name: 'Google Chrome', use: {channel: 'chrome'} },
+  ],
+
+  webServer: {
+    command: 'vite build && serve -sd dist',
+    port: 3000,
+    reuseExistingServer: !process.env.CI
+  }
+})
+
+\end{lstlisting}
+
+The tests and test configuration are similar for all frameworks.
+Listing \ref{lst:playwright-config} shows how the test suite is configured.
+Timeouts are defined for all tests so that even slowly loading pages are tested properly and retries are specified to repeat failing tests twice.
+The reason for this specification is that fluctuating timings close to the limit of failure should be tested multiple times to ensure that the test is supposed to fail.
+All test executions and repetitions are configured to run in sequence to minimize the influence of the availability of resources on the testing machine.
+This is especially important because Playwright both opens the application in a browser and runs a webserver for local tests.
+It is set to start a webserver, wait for its availability and then open the application under the specified \verb|baseURL|.
+The webserver command, port and \verb|baseURL| are different for every framework.
+The test configuration also specifies a list of browsers to test the application in.
+For this study, seven browsers were chosen based on the most used browsers \citep{browserUsage} and their mobile versions.
+The browsers are Chromium, Google Chrome, Mobile Chrome, Safari, Mobile Safari, Microsoft Edge and Firefox.
+
+The tests written for this application are threefold as they reflect the separation of performance metrics (see section \ref{subsec:performancemetrics}).
+Listings \ref{lst:page-load-spec}, \ref{lst:dynamic-performance-spec} and \ref{lst:state-change-spec} show the test files.
+
+First, page load times are measured using \verb|page-load.spec.js| (see listing \ref{lst:page-load-spec}).
+Every defined route is opened in a browser window, the navigation timings are extracted through a \verb|page.evaluate(<evalFunction>)| method and the timings are attached and annotated so that they can be read after the test execution.
+The test for every page is that the timings \verb|loadEventEnd| and \verb|domComplete| are faster than a time budget.
+The paths and time budget per page configed in \verb|pages.js| (see listing \ref{lst:pages-config}).
+To ensure a fast performance, the time budgets are defined to be under two seconds for all pages.
+Because no network requests are made in the design of the application on the About page, the time budget was lowered to 1.5 seconds here.
+
+\begin{lstlisting}[caption={Test file for page load times}, label={lst:page-load-spec}, language=JavaScript]
+// page-load.spec.js
+import { test, expect } from '@playwright/test';
+import routes from "./pages.js"
+
+test.describe("Load Time", () => {
+  for (const route of routes) {
+    test(`${route.name} loads within the page load budget`, { tag: [`@${route.name}`, '@pageLoad'] }, async ({ page }, TestInfo) => {
+
+      await page.goto(route.path)
+      await page.waitForLoadState()
+
+      const timing = await measurePerformance(page)
+      TestInfo.attach("timing.json", { body: JSON.stringify(timing, null, 2), contentType: "application/json" })
+
+      const [{ responseStart, responseEnd, domContentLoadedEventEnd, domComplete, loadEventEnd }] = timing;
+
+      test.info().annotations.push({ type: 'Page Load Budget', description: `The time budget for this page was ${route.pageLoadBudgetMs}ms` });
+      // ...
+
+      expect.soft(domComplete, `domComplete event should happen within ${route.pageLoadBudgetMs} ms`).toBeLessThanOrEqual(route.pageLoadBudgetMs)
+      expect.soft(loadEventEnd, `loadEventEnd event should happen within ${route.pageLoadBudgetMs} ms`).toBeLessThanOrEqual(route.pageLoadBudgetMs)
+    })
+  }
+})
+
+async function measurePerformance(page) {
+  return await page.evaluate(() => performance.getEntriesByType('navigation'));
+}
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Test pages configuration}, label={lst:pages-config}, language=JavaScript]
+// pages.js
+const routes = [
+  { name: "Index page", path: "/", pageLoadBudgetMs: 2_000 },
+  { name: "About page", path: "/about", pageLoadBudgetMs: 1_500 },
+  { name: "Create page", path: "/create", pageLoadBudgetMs: 2_000 },
+  { name: "Profile page", path: "/user/@PeterPoster", pageLoadBudgetMs: 2_000 },
+]
+
+export default routes;
+\end{lstlisting}
+
+Second, component load times are measured with the help of \verb|dynamic-performance.spec.js|.
+The same routes are opened after in initialization script is injected into the browser window.
+Listings \ref{lst:dynamic-performance-spec} and \ref{lst:performance-recorder} show parts of the test definition and the injected script.
+The latter waits for a specific element to appear in the \acrshort{dom} that does not appear in the \acrshort{html} skeleton, if it exists. % TODO: which element is that for each framework?
+Afterwards, it initializes a \verb|MutationObserver| on that element.
+Each observation is stored with an xpath, id and the last mutation time.
+The mutation time is overwritten every time so that only the latest update is recorded and the list of times is published as a member of the window object.
+Recorded mutations are added or removed children, addition or removal of the element itself and a changed attribute.
+Because the time of mutation is only measured as the time difference to the addition of the application-specific root element, the recorded times are an estimation of the execution time between framework initialization and the latest \acrshort{dom} mutation.
+
+The test script waits for ten seconds after the injection of the recording script and then evaluates the recorded timings.
+The update times are also attached to the test as a \acrshort{json} file so that they can be traced after the test context no longer exists.
+The test to pass for the page is that the latest \acrshort{dom} mutation happens within the page's load time budget.
+In order to trace the failing components more easily, screenshots are token of each slow \acrshort{html} element.
+Additionally, a screenshot of the whole page is taken in which slow elements are colored. Every screenshot is then attached to the test.
+This method ensures that slow components can be identified visually even if xpath and id of the element change between component lifecycles or application builds.
+
+\begin{lstlisting}[caption={Test file for component load times}, label={lst:dynamic-performance-spec}, language=JavaScript]
+// dynamic-performance.spec.js
+import { test, expect } from '@playwright/test';
+import routes from "./pages"
+
+test.describe("Dynamic load time", () => {
+
+  for (const route of routes) {
+
+    test(`Dynamic components on ${route.name} load within the load budget`, { tag: [`@${route.name}`, '@componentLoad'] }, async ({ page }, TestInfo) => {
+      // Inject performance measurement script into the page
+      await page.addInitScript({ path: './tests/performance.js' })
+
+      // Go to the measured page
+      await page.goto(route.path)
+      await page.waitForLoadState('domcontentloaded')
+
+      // Start evaluation
+      const latestUpdateComponents = await new Promise(resolve => setTimeout(resolve, 10_000)).then(() => {
+
+        // Return the sorted load times
+        return page.evaluate(() => {
+          if (!window.dynamic_component_performance) return null
+
+          // Sort the components by their latest dom update time
+          const sortedEntries = Object.entries(window.dynamic_component_performance)
+            .map(([key, value]) => { return { id: key, ...value } })
+            .sort((a, b) => a.lastUpdated - b.lastUpdated)
+
+          return sortedEntries
+        })
+      })
+
+      // Attach the measurements in JSON format
+      TestInfo.attach("update-times.json", { body: JSON.stringify(latestUpdateComponents, null, 2), contentType: "application/json" })
+
+      latestUpdateComponents.forEach(comp => {
+        const latestUpdateTime = comp.lastUpdated
+
+        // Assert the latest update occurs in time
+        return expect.soft(latestUpdateTime, `Component with identifier ${comp.id} should load within ${route.pageLoadBudgetMs} ms`).toBeLessThan(route.pageLoadBudgetMs)
+      })
+
+      // Create screenshots of slow components
+      const componentScreenshots = await Promise.all(
+        latestUpdateComponents.map((el) => {
+          if (el.lastUpdated > route.pageLoadBudgetMs) {
+            return page.locator(el.id).screenshot().then(screenshot => [el, screenshot])
+          }
+        }).filter(i => i)
+      )
+
+      // Capture a screenshot of the whole page with highlighted slow components
+      if (latestUpdateComponents.some(comp => comp.lastUpdated > route.pageLoadBudgetMs)){
+        // Hightlight slow components in HTML
+        await page.evaluateHandle(([latestUpdateComponents]) => {
+          //...
+         }, [latestUpdateComponents.filter(comp => comp.lastUpdated >= route.pageLoadBudgetMs)])
+
+        // Create the screenshot
+        const screenshot = await page.screenshot({fullPage: true})
+
+        // Attach the screenshot to the test
+        await TestInfo.attach("fullpage_screenshot.png",  {body: screenshot, contentType: 'image/png'})
+      }
+
+      // Attach the screenshots of the slow components to the test
+      await Promise.all(
+        componentScreenshots.map(([el, screenshot]) => {
+          return TestInfo.attach( `${el.id}-${el.lastUpdated}ms.png`, {body: screenshot, contentType: 'image/png'})
+        })
+      )
+    })
+
+  }
+})
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Injected mutation recorder script}, label={lst:performance-recorder}, language=JavaScript]
+// performance.js
+let loadTimes = {}
+let startTime = Date.now()
+
+function observe(targetNode) {
+  // Options for the observer (which mutations to observe)
+  const config = { attributes: true, childList: true, subtree: true };
+
+  // Callback function to execute when mutations are observed
+  const callback = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+
+      if (mutation.type === "childList") {
+        const targetId = getId(mutation.target)
+
+        const skipAttribute =
+          mutation.target.attributes.skipperformance?.value ||
+          mutation.target.attributes.skipPerformance?.value
+
+        if (!(skipAttribute == true || skipAttribute == 'true')) {
+
+          if (mutation.addedNodes.length > 0) {
+            let addedElements = Array.from(mutation.addedNodes).map(el => el.nodeName !== "#comment" && el.nodeName !== "#text" ? getXPath(el) : el)
+            if (addedElements.length === 1) addedElements = addedElements[0]
+
+            if (Array.from(mutation.addedNodes)
+            ) {
+              loadTimes[targetId] = { ...loadTimes[targetId], lastUpdated: Date.now() - startTime, xpath: loadTimes[targetId]?.xpath || getXPath(mutation.target) }
+
+              Array.from(mutation.addedNodes).forEach(node => {
+                try {
+                  const nodeId = getId(node)
+                  loadTimes[nodeId] = { ...loadTimes[nodeId], lastUpdated: Date.now() - startTime, xpath: loadTimes[nodeId]?.xpath || getXPath(node)}
+                } catch (e) {
+                  console.warn(e)
+                }
+              })
+            }
+          }
+
+          else if (mutation.removedNodes.length > 0) {
+            let removedElements = Array.from(mutation.removedNodes).map(el => el.nodeName !== "#comment" && el.nodeName !== "#text" ? getXPath(el) : el)
+            if (removedElements.length === 1) removedElements = removedElements[0]
+
+            if (Array.from(mutation.removedNodes)
+            ) {
+              loadTimes[targetId] = { ...loadTimes[targetId], lastUpdated: Date.now() - startTime, xpath: loadTimes[targetId]?.xpath || getXPath(mutation.target) }
+
+              Array.from(mutation.removedNodes).forEach(node => {
+                try {
+                  const nodeId = getId(node)
+                  loadTimes[nodeId] = { ...loadTimes[nodeId], lastUpdated: Date.now() - startTime, xpath: loadTimes[nodeId]?.xpath || getXPath(node) }
+                } catch (e) {}
+              })
+            }
+          }
+
+        }
+
+      } else if (mutation.type === "attributes") {
+        console.log(`The ${mutation.attributeName} attribute was modified.`, mutation);
+
+        const targetId = getId(mutation.target)
+
+        const skipAttribute =
+          mutation.target.attributes.skipperformance?.value ||
+          mutation.target.attributes.skipPerformance?.value
+
+        if (!(skipAttribute == true || skipAttribute == 'true')) {
+          loadTimes[targetId] = { ...loadTimes[targetId], lastUpdated: Date.now() - startTime, xpath: loadTimes[targetId]?.xpath || getXPath(mutation.target) }
+        }
+
+      }
+    }
+
+    window.dynamic_component_performance = loadTimes
+  };
+
+  // Create an observer instance linked to the callback function
+  const observer = new MutationObserver(callback);
+
+  // Start observing the target node for configured mutations
+  observer.observe(targetNode, config);
+}
+
+function getId(element) {
+  // ...
+}
+
+function reset() {
+  loadTimes = {}
+  startTime = Date.now()
+}
+
+/**
+ * Get absolute xPath position from dom element
+ * @param {Element} element element to get position
+ * @returns {String} xPath string
+ */
+function getXPath(element) {
+  // ...
+}
+
+let interval;
+
+function initObservation() {
+  // The id of the targetNode has to be adapted to the framework or application
+  const targetNode = document.getElementById("app")
+  if (targetNode) {
+    observe(targetNode)
+    if (interval) clearInterval(interval)
+  }
+}
+
+interval = setInterval(initObservation, 100)
+
+// initialize window.dynamic_component_performance
+window.dynamic_component_performance = loadTimes
+\end{lstlisting}
+
+Third, tests for the component update times are specified in \verb|state-change.spec.js| (see listing \ref{lst:state-change-spec}).
+In this test specification two other time budgets are defined.
+The first update to the \acrshort{dom} and the slowest update to the \acrshort{dom} are tested.
+The idea behind these time budgets is that users may perceive the \enquote{reaction time} as the time frame in which their action had any effect or the time frame in which the effect of their actions finishes.
+To this end, user actions are defined in combination with a route to perform these actions on.
+For this work, four actions are defined on the Create page: The changing of the caption, the selection of an image, the insertion of a media source and the creation of a new post, which is a combination of caption change and media selection.
+
+In order to evaluate the reaction speed to those user actions, the same mutation recording script is inserted as for component load times.
+The page is then opened and the recorded mutation timings are reset. Afterwards, the user action is performaned and the new mutation times are extracted, attached to the test and evaluated.
+The tests to pass are then that the earliest mutation timing is within 100 ms of the user input and the latest mutation timing is within 500 ms of the user input.
+Again, screenshots are taken of all \acrshort{html} elements that were recorded as mutated and do not pass the tests.
+These screenshots are also attached to the test in order to debug applications that do no pass the tests.
+
+\begin{lstlisting}[caption={Test file for component update times}, label={lst:state-change-spec}, language=JavaScript]
+// state-change.spec.js
+import { test, expect } from '@playwright/test';
+
+const minReactionTime = 100;
+const maxUpdateTime = 500;
+
+const actions = [
+  {
+    route: '/create',
+    inputActions: [
+      {
+        name: 'Caption Change',
+        action: async (page) => {
+          const captionInputField = page.getByPlaceholder('Type your caption here')
+          return captionInputField.fill('Lorem ipsum ...')
+        }
+      },
+      {
+        name: 'Media Selection',
+        action: async (page) => {
+          const mediaSelector = page.locator('#preloaded-image')
+          return mediaSelector.selectOption('moon.webp')
+        }
+      },
+      {
+        name: 'Media Source Insert',
+        action: async (page) => {
+          const captionInputField = page.getByPlaceholder('Insert your media URL here...')
+          return captionInputField.fill(`${new URL(await page.url()).origin}/abstract-circles.webp`)
+        }
+      },
+      {
+        name: 'Post Creation',
+        action: async (page) => {
+          const mediaSelector = page.locator('#preloaded-image')
+          const captionInputField = page.getByPlaceholder('Type your caption here')
+          await mediaSelector.selectOption('moon.webp')
+          return captionInputField.fill('Lorem ipsum ...')
+        }
+      }
+    ]
+  }
+]
+
+for (const actionGroup of actions) {
+  for (const inputAction of actionGroup.inputActions) {
+
+    test.describe(`State Change DOM Update: ${inputAction.name}`, { tag: [`@${inputAction.name.replace(/\s/g, '')}`, '@stateChange'] }, () => {
+      let page;
+      let domUpdates = null;
+
+      test.beforeAll(async ({ browser }) => {
+        page = await browser.newPage();
+        await page.addInitScript({path: './tests/performance.js'})
+
+        await page.goto(actionGroup.route)
+        await page.waitForLoadState('domcontentloaded')
+
+        await new Promise(resolve => setTimeout(resolve, 3_000))
+        await page.evaluate(() => {reset()})
+
+        await inputAction.action(page)
+
+        await new Promise(resolve => setTimeout(resolve, 5_000))
+        domUpdates = await page.evaluate(() => {
+          if (!window.dynamic_component_performance) return null
+
+          // Sort the components by their latest dom update time
+          const sortedEntries = Object.entries(window.dynamic_component_performance)
+            .map(([key, value]) => { return { id: key, ...value } })
+            .sort((a, b) => a.lastUpdated - b.lastUpdated)
+          return sortedEntries
+        })
+      });
+
+      test.afterAll(async () => {
+        await page.close();
+      });
+
+      test(`User input triggers first update within ${minReactionTime} ms`, { tag: ['@minimalReactionTime'] }, async ({ }, TestInfo) => {
+        expect(domUpdates).not.toBeNull()
+        expect(domUpdates).not.toEqual([])
+        const minReactionComp = domUpdates[0]
+
+        await TestInfo.attach(`domUpdates${TestInfo.retry > 0 ? `_retry_${TestInfo.retry}` : ''}.json`, { body: JSON.stringify(domUpdates, null, 2), contentType: "application/json" })
+        await test.info().annotations.push({ type: `Fastest Update ${TestInfo.retry > 0 ? `(retry #${TestInfo.retry})` : ''}`, description: `Component with id ${minReactionComp.id} loaded ${minReactionComp.lastUpdated}ms after user input (xPath: ${minReactionComp.xpath})` });
+        expect.soft(minReactionComp.lastUpdated, `Fastest updated component with identifier ${minReactionComp.id} should update within ${minReactionTime} ms`).toBeLessThanOrEqual(minReactionTime)
+
+        if (domUpdates.some(comp => comp.lastUpdated >= minReactionTime))
+          await test.info().annotations.push({ type: 'Hint', description: `Screenshots below show slow updating components` });
+
+        // take screenshots of all elements referenced in domUpdates
+        await Promise.all(
+          // ...
+        )
+      })
+
+      test(`DOM updates triggered by state change finish within ${maxUpdateTime} ms`, { tag: ['@maximalReactionTime'] }, async ({ }, TestInfo) => {
+        expect(domUpdates).not.toBeNull()
+        expect(domUpdates).not.toEqual([])
+        const maxUpdateComp = domUpdates.at(-1)
+        await TestInfo.attach("domUpdates.json", { body: JSON.stringify(domUpdates, null, 2), contentType: "application/json" })
+        await test.info().annotations.push({ type: 'Slowest Update', description: `Component with id ${maxUpdateComp.id} loaded ${maxUpdateComp.lastUpdated}ms after user input (xPath: ${maxUpdateComp.xpath})` });
+
+        domUpdates.forEach(comp => {
+          expect.soft(comp.lastUpdated, `Component with identifier ${comp.id} should finish updates within ${maxUpdateTime} ms`).toBeLessThanOrEqual(maxUpdateTime)
+        })
+
+        if (domUpdates.some(comp => comp.lastUpdated >= maxUpdateTime))
+          await test.info().annotations.push({ type: 'Hint', description: `Screenshots below show slow updating components` });
+
+        // take screenshots of all elements referenced in domUpdates
+        await Promise.all(
+          // ...
+        )
+      })
+    })
+  }
+}
+\end{lstlisting}
+  
 \section{Evaluation}\label{sec:evaluation}
 \subsection{Page Load Times}\label{subsec:pageloadtimes}
 % 1. Which pages load fast?
@@ -802,16 +1936,699 @@ Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt
 % 3. Which framework works best with component update times?
 
 \section{Summary}\label{sec:summary}
+% results are application-specific
+% 10 second limit for mutationobserver: slow components and fast updating components
 
 \pagebreak
 
 \appendix
+
+\lstlistoflistings
+
+\begin{lstlisting}[caption=MediaComponent in Angular (Template), label={lst:Angular:MediaComponent:Template}, language=HTML]
+<!-- media-component.component.html -->
+<img class="postMedia" *ngIf="mediaSource && mediaSource.endsWith('webp'); else videoMedia" [ngSrc]="mediaSource" [alt]="alt" [width]="width?.endsWith('%') ? 600 : width" [height]="height || (width?.endsWith('%') ? 600 : width)" [id]="id" [class]="class" [sizes]="width!" [priority]="priority" />
+<ng-template #videoMedia>
+  <video #video class="postMedia" *ngIf="mediaSource && mediaSource.endsWith('mp4'); else mediaError" [attr.width]="width" controls controlslist="nodownload,nofullscreen,noremoteplayback" disablepictureinpicture loop [muted]="true" preload="metadata" >
+    <source [src]="mediaSource" type="video/mp4" />
+  </video>
+</ng-template>
+<ng-template #mediaError>
+  <div class="mediaError">
+    <p>Nothing to see yet...<br />Choose an image to continue!</p>
+  </div>
+</ng-template>
+
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in Angular (Module), label={lst:Angular:MediaComponent:Module}, language=JavaScript]
+// media-component.component.ts
+import { NgIf, NgOptimizedImage } from '@angular/common';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { playPauseVideo } from "../../../utils/autoplay";
+
+@Component({
+  selector: 'app-media-component',
+  standalone: true,
+  imports: [NgIf, NgOptimizedImage],
+  templateUrl: './media-component.component.html',
+  styleUrl: './media-component.component.css',
+})
+export class MediaComponentComponent {
+  @Input() src!: string;
+  @Input() alt: string = "";
+  @Input() width?: string;
+  @Input() height?: string;
+  @Input() id: string = "";
+  @Input() class: string = "";
+  @Input() priority: Boolean = false;
+
+  @ViewChild('video') video?: ElementRef<HTMLVideoElement>;
+
+  mediaSource: string = "";
+
+  constructor() { }
+
+  ngAfterViewInit() {
+    if (this.video) playPauseVideo(this.video.nativeElement)
+  }
+
+  ngOnChanges(): void {
+    if (
+      this.src == null ||
+      this.src == undefined ||
+      this.src.startsWith("http")
+    )
+      this.mediaSource = this.src;
+
+    else this.mediaSource = `assets/stock-footage/${this.src}`
+  }
+
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in pure Astro (Frontmatter \& Script), label={lst:Astro:MediaComponent:Script}, language=JavaScript]
+// MediaComponent.astro
+---
+import { Image } from "astro:assets";
+import styles from "./MediaComponent.module.css";
+
+const { src, alt, width, height, className, id, priority = false, ...rest } = Astro.props;
+
+let mediaSource = "";
+
+const mediaFiles = await import.meta.glob(
+  "/src/assets/stock-footage/*.{webp,mp4}"
+);
+const media = Object.fromEntries(
+  Object.entries(mediaFiles).map(([key, value]) => [
+    key.split("/")[key.split("/").length - 1],
+    value,
+  ])
+);
+
+if (src?.startsWith("http")) mediaSource = src;
+else mediaSource = (await media[src]()).default;
+---
+
+<script>
+  import { playPauseVideo } from "../utils/autoplay";
+
+  playPauseVideo();
+</script>
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in pure Astro (Template), label={lst:Astro:MediaComponent:Template}, language=HTML, firstnumber=29]
+// MediaComponent.astro
+{
+  mediaSource && src?.endsWith("webp") && (
+    <Image src={mediaSource} alt="" width={width} height={height} class={[className, styles.postMedia].join(" ")} id={id} loading={priority ? "eager" : "lazy"} {...rest} />
+  )
+}
+{
+  mediaSource && src.endsWith("mp4") && (
+    <video class={[className, styles.postMedia].join(" ")} id={id} width={width} preload="metadata" controls controlslist="nodownload,nofullscreen,noremoteplayback" disable-picture-in-picture loop muted >
+      <source src={mediaSource} type="video/mp4" />
+    </video>
+  )
+}
+
+{
+  !(mediaSource && src?.endsWith("webp")) &&
+    !(mediaSource && src.endsWith("mp4")) && (
+      <div className={styles.mediaError}
+        style={{
+          minHeight: height ? height + "px" : "300px",
+          maxWidth: width ? width + "px" : null,
+          overflow: "hidden",
+        }}
+      >
+        <p>
+          Nothing to see yet...<br />
+          Choose an image to continue!
+        </p>
+      </div>
+    )
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent Astro Island with React, label={lst:AstroIsland:MediaComponent}, language=JavaScript]
+  // MediaComponent.jsx
+  import { createRef, useEffect, useState } from "react";
+  import styles from "./MediaComponent.module.css";
+  import { playPauseVideo } from "../utils/autoplay";
+  
+  const mediaFiles = import.meta.glob("/src/assets/stock-footage/*.{webp,mp4}");
+  const media = Object.fromEntries(
+    Object.entries(mediaFiles).map(([key, value]) => [
+      key.split("/")[key.split("/").length - 1],
+      value,
+    ])
+  );
+  
+  const MediaComponent = (props) => {
+    const { src, alt, width, height, className, id, priority = false, ...rest } = props;
+    const [mediaSource, setMediaSource] = useState("");
+    const videoRef = createRef();
+  
+    useEffect(() => {
+      if (videoRef.current) playPauseVideo(videoRef.current);
+  
+      if (src?.startsWith("http")) setMediaSource(src);
+      else if (src && media[src])
+        media[src]().then((mediaFile) => {
+          if (src.endsWith("webp")) setMediaSource(mediaFile.default.src);
+          else setMediaSource(mediaFile.default);
+        });
+    }, [src, mediaSource, videoRef]);
+  
+    if (mediaSource && src?.endsWith("webp"))
+      return (
+        <img key={src} src={mediaSource} alt={alt} width={width} height={height} className={[className, styles.postMedia].join(" ")} id={id} loading={priority ? "eager" : "lazy"} {...rest} />
+      );
+    else if (mediaSource && src.endsWith("mp4"))
+      return (
+        <video ref={videoRef} key={mediaSource} className={[className, styles.postMedia].join(" ")} id={id} width={width} preload="metadata" controls controlsList="nodownload,nofullscreen,noremoteplayback" disablePictureInPicture loop muted >
+          <source src={mediaSource} type="video/mp4" />
+        </video>
+      );
+    else
+      return (
+        <div className={styles.mediaError}
+          style={{
+            minHeight: height ? height + "px" : "300px",
+            maxWidth: width ? width + "px" : null,
+            overflow: "hidden",
+          }}
+        >
+          <p>
+            Nothing to see yet...<br />
+            Choose an image to continue!
+          </p>
+        </div>
+      );
+  };
+  
+  export default MediaComponent;
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in Next.js, label={lst:Next:MediaComponent}, language=JavaScript]
+// MediaComponent.js
+import { createRef, useEffect, useState } from "react";
+import styles from "./MediaComponent.module.css"
+import Image from "next/image";
+import { playPauseVideo } from "@/utils/autoplay";
+
+const MediaComponent = ({ src, alt, width, height, className, id, priority = false }) => {
+  let [mediaSource, setMediaSource] = useState("")
+  let videoRef = createRef()
+
+  useEffect(() => {
+    if (videoRef.current) playPauseVideo(videoRef.current)
+    try {
+      if (src.startsWith('http')) setMediaSource(src)
+      else setMediaSource(require(`@/assets/stock-footage/${src}`).default)
+    } catch (error) {
+      setMediaSource("")
+    }
+  }, [videoRef, src])
+
+
+  if (
+    mediaSource &&
+    (
+      (mediaSource.src && mediaSource.src.endsWith('jpg')) ||
+      (src.startsWith('http') && src.endsWith('jpg'))
+    )
+  ) return (
+    <div style={{ position: "relative", aspectRatio: 1, width: width == "100%" ? width : `${width}px`, overflow: "hidden" }} id={id} className={[className, styles.postMedia].join(" ")}>
+      <Image priority={priority} placeholder={src.startsWith('http') ? "empty" : "blur"} quality={50} src={mediaSource} alt={alt} width={width.endsWith("%") ? 600 : width} height={height || (width.endsWith("%") ? 600 : width)} />
+    </div>
+  )
+  else if (mediaSource && mediaSource.endsWith('mp4')) return (
+    <video ref={videoRef} key={mediaSource} className={[className, styles.postMedia].join(" ")} id={id} width={width} preload="metadata" controls controlsList="nodownload,nofullscreen,noremoteplayback" disablePictureInPicture loop muted >
+      <source src={mediaSource} type="video/mp4" />
+    </video>
+  )
+  else return (
+    <div className={styles.mediaError}>
+      <p>Nothing to see yet...<br />Choose an image to continue!</p>
+    </div>)
+}
+
+export default MediaComponent
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in Nuxt (Template), label={lst:Nuxt:MediaComponent:Template}, language=HTML]
+<!-- MediaComponent.vue -->
+<template>
+  <NuxtImg class="postMedia" v-if="mediaSource?.endsWith('jpg')" :src="mediaSource" :alt="alt" :preset="preset" :loading="priority ? 'eager' : 'lazy'" :preload="priority" :width="$config.public.image_presets[preset].modifiers.width" :height="$config.public.image_presets[preset].modifiers.height"/>
+  <video ref="video" class="postMedia" v-else-if="mediaSource?.endsWith('mp4')" :width="width" preload="metadata" controls controlslist="nodownload,nofullscreen,noremoteplayback" disablepictureinpicture loop muted >
+    <source :src="mediaSource" type="video/mp4" />
+  </video>
+  <div v-else class="mediaError">
+    <p>Nothing to see yet...<br />Choose an image to continue!</p>
+  </div>
+</template>
+
+<script>//see listing below</script>
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in Nuxt (Script), label={lst:Nuxt:MediaComponent:Script}, language=JavaScript, firstnumber=13]
+// MediaComponent.vue
+const glob = import.meta.glob("~/assets/stock-footage/*.mp4", { eager: true });
+const media = Object.fromEntries(
+  Object.entries(glob).map(([key, value]) => [
+    key.split("/")[key.split("/").length - 1],
+    value.default,
+  ])
+);
+
+export default {
+  name: "MediaComponent",
+  props: {
+    src: { type: String },
+    alt: { type: String, default: "" },
+    width: String,
+    height: String,
+    preset: String,
+    priority: { type: Boolean, default: false },
+  },
+  computed: {
+    mediaSource() {
+      if (this.src.endsWith(".mp4")) return media[this.src];
+      return this.src;
+    },
+  },
+  mounted() {
+    const video = this.$refs.video;
+    if (video) playPauseVideo(video);
+  },
+};
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in React, label={lst:React:MediaComponent}, language=JavaScript]
+// MediaComponent.js
+import { createRef, useEffect, useState } from "react";
+import styles from "./MediaComponent.module.css"
+import { playPauseVideo } from "src/utils/autoplay";
+
+const MediaComponent = ({ src, alt, width, height, className, id, priority = false }) => {
+  let [mediaSource, setMediaSource] = useState("")
+  const videoRef = createRef()
+
+  useEffect(() => {
+    if (videoRef.current) playPauseVideo(videoRef.current)
+    try {
+      setMediaSource(src.startsWith('http') ? src : require(`src/assets/stock-footage/${src}`))
+    } catch (error) {
+      setMediaSource("")
+    }
+  }, [src, mediaSource, videoRef])
+
+
+  if (mediaSource.endsWith('webp')) return (
+    <img loading={priority ? "eager" : "lazy"} src={mediaSource} alt={alt} width={width} height={height} className={[className, styles.postMedia].join(" ")} id={id} />
+  )
+  else if (mediaSource.endsWith('mp4')) return (
+    <video ref={videoRef} className={[className, styles.postMedia].join(" ")} id={id} width={width} preload="metadata" controls controlsList="nodownload,nofullscreen,noremoteplayback" disablePictureInPicture loop muted >
+      <source src={mediaSource} type="video/mp4" />
+    </video>
+  )
+  else return (
+    <div className={styles.mediaError} styles={{ height: (height ? height + 'px' : '300px'), width: width.endsWith("%") ? width : width + "px" }}>
+      <p>Nothing to see yet...<br />Choose an image to continue!</p>
+    </div>
+  )
+}
+
+export default MediaComponent
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in Svelte (Script), label={lst:Svelte:MediaComponent:Script}, language=JavaScript]
+// MediaComponent.svelte
+import { onMount } from 'svelte';
+import { playPauseVideo } from '$lib/utils/autoplay';
+
+const images = import.meta.glob('$lib/assets/stock-footage/*', {
+	eager: true,
+	query: { enhanced: true, quality: 50, w: 600 }
+});
+const media = Object.fromEntries(
+	Object.entries(images).map(([key, value]) => [key.split('/')[key.split('/').length - 1], value])
+);
+export let mediaSource: string = '';
+$: mediaSource =
+	$$props.src == null ||
+	$$props.src == undefined ||
+	$$props.src == '' ||
+	$$props.src.startsWith('http')
+		? $$props.src
+		: media[$$props.src].default;
+export let video: HTMLVideoElement | undefined = undefined;
+onMount(() => {
+	if (video) playPauseVideo(video);
+});
+\end{lstlisting}
+
+\begin{lstlisting}[caption=MediaComponent in Svelte (Template), label={lst:Svelte:MediaComponent:Template}, language=HTML, firstnumber=24]
+// MediaComponent.svelte
+{#if $$props?.src?.endsWith('jpg')}
+	{#if $$props?.src?.startsWith('http')}
+		<img id={$$props.id} class="postMedia {$$props.class || ''}" alt={$$props.alt} src={mediaSource} loading={$$props.eagerLoading ? 'eager' : 'lazy'}
+      style:width={$$props.width ? $$props.width.endsWith('%') ? $$props.width : $$props.width + 'px' : undefined}
+      style:height={$$props.height ? $$props.height.endsWith('%') ? $$props.height : $$props.height + 'px' : $$props.width ? $$props.width + 'px' : undefined}
+		/>
+	{:else}
+		<enhanced:img id={$$props.id} class="postMedia {$$props.class || ''}" alt={$$props.alt} src={mediaSource} loading={$$props.eagerLoading ? 'eager' : 'lazy'}
+			style:width={$$props.width ? $$props.width.endsWith('%') ? $$props.width : $$props.width + 'px' : undefined}
+			style:height={$$props.height ? $$props.height.endsWith('%') ? $$props.height : $$props.height + 'px' : $$props.width ? $$props.width + 'px' : undefined}
+		/>
+	{/if}
+{:else if $$props?.src?.endsWith('mp4')}
+	<video class="postMedia" width={$$props.width} controls controlslist="nodownload,nofullscreen,noremoteplayback" disablepictureinpicture loop muted preload={$$props.eagerLoading ? 'auto' : 'metadata'} bind:this={video}>
+		<source src={mediaSource} type="video/mp4" />
+	</video>
+{:else}
+	<div class="mediaError">
+		<p>Nothing to see yet...<br />Choose an image to continue!</p>
+	</div>
+{/if}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create page in Angular (Template), label={lst:Angular:Create:Template}, language=HTML]
+<!-- create.component.html -->
+<header>
+  <a [routerLink]="['/']" routerLinkActive="router-link-active">
+    <app-not-instagram-logo />
+  </a>
+  <a [routerLink]="['/']" routerLinkActive="router-link-active">
+    <app-xicon />
+  </a>
+</header>
+
+<form id="newPostForm" action="" method="post">
+  <input [(ngModel)]="mediaUrl" type="url" name="mediaUrl" id="mediaUrl" placeholder="Insert your media URL here..." />
+  <p>or</p>
+  <select name="preloaded-image" id="preloaded-image" [(ngModel)]="mediaChoice">
+    <option value="">Choose one of our media files here...</option>
+    <option *ngFor="let media of preloadedMedia" [value]="media">
+      <span> {{ media }} </span>
+    </option>
+  </select>
+  <textarea [(ngModel)]="caption" name="caption" id="caption" cols="30" rows="3" placeholder="Type your caption here" />
+  <button type="submit" [disabled]="!(caption && mediaSource())">
+    Post it!
+  </button>
+</form>
+
+<hr />
+
+<app-post [userhandle]="userhandle" [caption]="caption" [likeCount]="0" [mediaSource]="mediaUrl || mediaChoice" [hideActionIcons]="true" />
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create page in Angular (Module), label={lst:Angular:Create:Module}, language=JavaScript]
+// create.component.ts
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { NotInstagramLogoComponent } from '../components/not-instagram-logo/not-instagram-logo.component';
+import { XIconComponent } from '../components/icons/xicon/xicon.component';
+import { PostComponent } from '../components/post/post.component';
+import { NgFor } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+  
+@Component({
+  selector: 'app-create',
+  standalone: true,
+  imports: [RouterLink, NotInstagramLogoComponent, XIconComponent, PostComponent, NgFor, FormsModule],
+  templateUrl: './create.component.html',
+  styleUrl: './create.component.css'
+})
+
+export class CreateComponent {
+  preloadedMedia: string[] = [
+    "canyon.mp4", "abstract-circles.webp", ...
+  ]
+  userhandle: string = "@you"
+  caption: string = ""
+  mediaUrl: string = ""
+  mediaChoice: string = ""
+
+  mediaSource(): string {
+    if (this.mediaUrl) return this.mediaUrl;
+    return this.mediaChoice;
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create page in Next.js, label={lst:Next:Create}, language=JavaScript]
+// create/page.tsx
+"use client";
+
+import Link from "next/link";
+import styles from "./create.module.css";
+import NotInstagramLogo from "@/components/NotInstagramLogo";
+import Post from "@/components/Post";
+import XIcon from "@/components/icons/XIcon";
+import { useEffect, useState } from "react";
+  
+const preloadedMedia = [
+  "canyon.mp4", "abstract-circles.webp", ...
+];
+  
+const userhandle = "@you";
+
+const CreatePost = () => {
+  const [caption, setCaption] = useState("");
+  const [mediaUrl, setmediaUrl] = useState("");
+  const [mediaChoice, setmediaChoice] = useState("");
+  const [mediaSource, setMediaSource] = useState(mediaChoice);
+
+  useEffect(() => {
+    setMediaSource(mediaUrl || mediaChoice);
+  }, [mediaUrl, mediaChoice]);
+    
+  return (
+    <>
+      <header className={styles.createHeader}>
+        <Link href="/">
+          <NotInstagramLogo />
+        </Link>
+        <Link href="/">
+          <XIcon />
+        </Link>
+      </header>
+    
+      <form id={styles.newPostForm} action="" method="post">
+        <input type="url" name="mediaUrl" id={styles.mediaUrl} placeholder="Insert your media URL here..." value={mediaUrl} onChange={(event) => setmediaUrl(event.target.value)} />
+        <p>or</p>
+        <select name="preloaded-image" id="preloaded-image" value={mediaChoice} onChange={(event) => setmediaChoice(event.target.value)} >
+          <option value="">Choose one of our media files here...</option>
+          {preloadedMedia.map((media) => (
+            <option key={media} value={media}>{media}</option>
+          ))}
+        </select>
+        <textarea name="caption" id={styles.caption} cols={30} rows={3} placeholder="Type your caption here" value={caption} onChange={(event) => setCaption(event.target.value)} />
+        <button type="submit" disabled={!(caption && mediaSource)}>
+          Post it!
+        </button>
+      </form>
+    
+      <hr />
+    
+      <Post userhandle={userhandle} caption={caption} likeCount={0} mediaSource={mediaSource} hideActionIcons={true} />
+    </>
+  );
+};
+  
+  export default CreatePost;
+  
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create page in Nuxt (Template), label={lst:Nuxt:Create:Template}, language=HTML]
+<!-- create.vue -->
+<template>
+  <header>
+    <NuxtLink :to="{ name: 'index' }">
+      <NotInstagramLogo />
+    </NuxtLink>
+    <NuxtLink :to="{ name: 'index' }">
+      <XIcon />
+    </NuxtLink>
+  </header>
+  
+  <form id="newPostForm" action="" method="post">
+    <input type="url" name="mediaUrl" id="mediaUrl" placeholder="Insert your media URL here..." v-model="mediaUrl" />
+    <p>or</p>
+    <select name="preloaded-image" id="preloaded-image" v-model="mediaChoice">
+      <option value="">Choose one of our media files here...</option>
+      <option v-for="media in preloadedMedia" :key="media" :value="media">
+        {{ media }}
+      </option>
+    </select>
+    <textarea name="caption" id="caption" cols="30" rows="3" placeholder="Type your caption here" v-model="caption" />
+    <button type="submit" :disabled="!(caption && mediaSource)">
+      Post it!
+    </button>
+  </form>
+  
+  <hr />
+  
+  <Post :userhandle="userhandle" :caption="caption" :likeCount="0" :mediaSource="mediaSource" :hideActionIcons="true" />
+</template>
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create page in Nuxt (Script), label={lst:Nuxt:Create:Script}, language=JavaScript, firstnumber=31]
+// create.vue
+export default {
+  name: "CreateView",
+  data() {
+    return {
+      preloadedMedia: [
+        "canyon.mp4", "abstract-circles.webp", ...
+      ],
+      userhandle: "@you",
+      caption: "",
+      mediaUrl: "",
+      mediaChoice: "",
+    };
+  },
+  computed: {
+    mediaSource() {
+      if (this.mediaUrl) return this.mediaUrl;
+      return this.mediaChoice;
+    },
+  },
+};
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create in React, label={lst:React:Create}, language=JavaScript]
+// CreatePost.js
+import { useState } from "react"
+import { Link } from "react-router-dom"
+imort styles from "./CreatePost.module.css"
+import NotInstagramLogo from "src/components/NotInstagramLogo"
+import Post from "src/components/Post"
+import XIcon from "src/components/icons/XIcon"
+
+const preloadedMedia = [
+  "canyon.mp4", "abstract-circles.webp", ...
+]
+
+const userhandle = "@you"
+
+const CreatePost = () => {
+
+  const [caption, setCaption] = useState("")
+  const [mediaUrl, setmediaUrl] = useState("")
+  const [mediaChoice, setmediaChoice] = useState("")
+
+  function mediaSource() { return mediaUrl || mediaChoice }
+
+  return <>
+    <header>
+      <Link to="/">
+        <NotInstagramLogo />
+      </Link>
+      <Link to="/">
+        <XIcon />
+      </Link>
+    </header>
+
+    <form id={styles.newPostForm} action="" method="post">
+      <input type="url" name="mediaUrl" id={styles.mediaUrl} placeholder="Insert your media URL here..." value={mediaUrl} onChange={(event) => setmediaUrl(event.target.value)} />
+      <p>or</p>
+      <select name="preloaded-image" id={'preloaded-image'} value={mediaChoice} onChange={(event) => setmediaChoice(event.target.value)}>
+        <option value="">Choose one of our media files here...</option>
+        {preloadedMedia.map(media => <option key={media} value={media}>
+          {media}
+        </option>
+        )}
+      </select>
+      < name="caption" id={styles.caption} cols="30" rows="3" placeholder="Type your caption here" value={caption} onChange={(event) => setCaption(event.target.value)} />
+      <button type="submit" disabled={!(caption && mediaSource())}>
+        Post it!
+      </button>
+    </form>
+
+    <hr />
+
+    <Post userhandle={userhandle} caption={caption} likeCount={0} mediaSource={mediaSource()} hideActionIcons={true} />
+  </>
+}
+
+export default CreatePost
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create in Svelte (Script), label={lst:Svelte:Create:Script}, language=JavaScript]
+// create/+page.svelte
+import NotInstagramLogo from '$lib/components/NotInstagramLogo.svelte';
+import XIcon from '$lib/components/icons/XIcon.svelte';
+import Post from '$lib/components/Post.svelte';
+
+export const preloadedMedia = [
+  "canyon.mp4", "abstract-circles.webp", ...
+];
+
+export const userhandle = '@you';
+export let caption = '';
+export let mediaUrl = '';
+export let mediaChoice = '';
+let mediaSource: string;
+$: mediaSource = getMediaSource(mediaUrl, mediaChoice);
+
+function getMediaSource(url: string, choice: string) {
+  return url || choice;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Create in Svelte (Template), label={lst:Svelte:Create:Template}, language=HTML, firstnumber=20]
+<!-- create/+page.svelte -->
+<header>
+	<a href="/">
+		<NotInstagramLogo />
+	</a>
+	<a href="/">
+		<XIcon />
+	</a>
+</header>
+
+<form id="newPostForm" action="" method="post">
+	<input type="url" name="mediaUrl" id="mediaUrl" placeholder="Insert your media URL here..." bind:value={mediaUrl}/>
+	<p>or</p>
+	<select name="preloaded-image" id="preloaded-image" bind:value={mediaChoice}>
+		<option value="">Choose one of our media files here...</option>
+		{#each preloadedMedia as media}
+			<option value={media}><span>{media}</span></option>
+		{/each}
+	</select>
+	<textarea name="caption" id="caption" cols="30" rows="3" placeholder="Type your caption here" bind:value={caption} />
+	<button type="submit" disabled={!(caption && mediaSource)}> Post it! </button>
+</form>
+
+<hr />
+
+<Post {userhandle} {caption} likeCount={0} {mediaSource} hideActionIcons={true} />
+\end{lstlisting}
+
+% \begin{lstlisting}[caption=, language=HTML]
+% \end{lstlisting}
+
+\pagebreak
+
 \listoffigures
 
 \listoftables
 \glsaddall
-\printnoidxglossary[type=\acronymtype,nonumberlist,style=long]
+\printnoidxglossary[
+  type=\acronymtype,
+  % nonumberlist,
+  style=long
+]
 
 \nocite{*}
 \bibliography{sources}{}
+
+\vfill
+\textbf{Github repository}: All projects and additional meterial can be found under \url{https://github.com/andreasnicklaus/master}.
 \end{document}

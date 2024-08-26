@@ -17,6 +17,7 @@
 % \usepackage{pgfplots}
 \usepackage[acronym, toc, numberedsection]{glossaries}
 \usepackage{listings}
+\usepackage{amsmath}
 
 \lstdefinelanguage{JavaScript}{
   keywords={typeof, new, true, false, catch, function, return, null, catch, switch, var, if, in, while, do, else, case, break, const, let},
@@ -53,7 +54,9 @@
 \usepackage{hyphenat}
 % \hyphenation{Mathe-matik wieder-gewinnen}
 \usepackage[T1]{fontenc}
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
+\usepackage{adjustbox}
+\usepackage{multirow}
 
 \makenoidxglossaries
 \newacronym{dom}{DOM}{Document Object Model}
@@ -74,6 +77,7 @@
 \newacronym{lcp}{LCP}{Largest Contentful Paint}
 \newacronym{fvc}{FVC}{First Visual Change}
 \newacronym{ofvc}{OFVC}{Observed First Visual Change}
+\newacronym{ovcd}{OVCD}{Observed Visual Change Duration}
 \newacronym{seo}{SEO}{Search Engine Optimization}
 \newacronym{pwa}{PWA}{Progressive Web App}
 \newacronym{cli}{CLI}{Command Line Interface}
@@ -100,6 +104,8 @@
 }
 \let\Title\@title
 \let\Author\@author
+
+\rowcolors{1}{lightgray!40!}{white}
 
 \makeatother
 
@@ -141,10 +147,10 @@
   
   \vfill
   
-  \begin{tabular}[t]{ll}
+  {\rowcolors{1}{white}{white}\begin{tabular}[t]{ll}
     Erst-Prüfer: & Prof. Dr. Fridtjof Toenniessen \\
     Zweit-Prüfer: & Stephan Soller
-  \end{tabular}		
+  \end{tabular}}
 \end{titlepage}
 
 \selectlanguage{ngerman}
@@ -219,7 +225,7 @@ There is no apparant way to determine a \enquote{best framework} in terms of Dev
 The performance of a framework as assessed by the developer can be similar or greatly different, depending on the frameworks and the interviewees.
 
 When it comes to User Experience and especially the Perceived User Experience however, there are plentiful collections of metrics and criteria to choose from so as to determine the performance of websites, not frameworks.
-The optimization of websites has become a goal during development because it has a real effect on both the ranking of web pages in search engines and the user behavior.
+The optimization of websites has become a goal during development because it has a real effect on both the ranking of web pages in search engines and the user behaviour.
 Both effects create business interests and financial incentives to invest resources into performance optimization.
 However, the lack of research on the topic suggests either a consensus for a negligible effect of the development framework on the website's performance or a lack of knowledge of the effect.
 Measurements on the effect of the development framework are a major convoluted task simply because the performance of a specific website can be dependent on many other factors such as the user's device, browser, networking hardware or server-side hardware.
@@ -245,10 +251,11 @@ With this data, an informed choice might be made for other projects.
 The goals of this paper are to propose a set of metrics that allow comparing mainstream JavaScript frameworks for web applications, to provide a comparative study between selected frameworks and create a tool to compare the rendering performance of a page as a whole and of dynamic components within a page.
 
 \section{Related Work}\label{sec:relatedwork}
+
 \section{Design}\label{sec:design}
 
 Whereas the following chapters cover the implementation of testing and evaluation of results, this section introduces the concept of the comparative study.
-The goals of and requirements for the example application, the differences and choices for the hosting environments for testing and the tools for testing as well as selected metrics will are described here.
+The goals of and requirements for the example application, the differences and choices for the hosting environments for testing and the tools for testing as well as selected metrics are described here.
 
 \subsection{Example Application}\label{subsec:exampleapplication}
 % What goals does should the example app fulfil?
@@ -288,7 +295,7 @@ The following goals were considered during the design process:
   This list is created with the knowledge that frameworks or other technology such as caching may move a webpage from one type to another.
 
   \item \textbf{Modern Development Practices}: The example application should contain modern development practices that do project onto the \acrshort{dom}.
-  Practices that have no effect on either the projection of data or user interaction, such as coding styles or project management, are considered to have no effect the performance of the page.
+  Practices that have no effect on either the projection of data or user interaction, such as coding styles or project management, are considered to have no effect on the performance of the page.
   
   \begin{enumerate}
     \item Components: All pages of the app have to consist of components that encapsulate reproducable \acrshort{html} snippets and may project data onto the \acrshort{dom}.
@@ -337,7 +344,7 @@ A form with three \verb|<input>| elements and a \verb|<button>| element allows t
 The multimedia source can either be an URL or a selection from a list of preuploaded files.
 The post caption is a pure text input.
 The lower part of the page is the post preview, in which some predefined information such as user profile and the user inputs are combined.
-As such, the profile page is a static page until the user uses the creation form, at which point is has to be considered a dynamic page.
+As such, the profile page is a static page until the user uses the creation form, at which point it has to be considered a dynamic page.
 The About page (see figure \ref{subfig:about}) is designed to statically display information about the application.
 It is a static page because no content is loaded after a delay and no user inputs are possible.
 
@@ -489,7 +496,7 @@ Plus, it will influence the assessment of ease of use and developer experience.
 %    1. Reason (Network delay)
 %    2. Problems
 
-After designing the application, the next step in the study process was to decide on where the application is to be hosted for testing.
+After designing the application, the next step in the study process was to decide where the application is to be hosted for testing.
 Network delay is a great part of render delay and performance issues % TODO: source
 because loading files in sequence will block rendering if parsing documents and executing code is dependent on network requests.
 The request delay is based on the speed of the web server, the size of the generated file, request and response and the network speed.
@@ -601,7 +608,7 @@ In order to focus on this time frame, these metrics describe the application's p
   The metric directly represent the time before the browser can fulfil the user's goal on initial load.
   \item \textbf{\acrfull{lvc}}: Time from \verb|navigationStart| until the last visual change above the fold, meaning within the viewport of the user. %TODO: describe Observed lvc
   \item \textbf{\acrfull{lcp}}: The time between navigation to the page and the time of rendering for the visually largest text or image element in the user's viewport \citep{lcpDocumentation}.
-  Optimization of this metric requires and understanding of the page's content and element size within the viewport.
+  Optimization of this metric requires an understanding of the page's content and element size within the viewport.
 \end{itemize}
 
 From this list of relevant metrics, some expectations can be formulated before testing for them.
@@ -612,7 +619,7 @@ In contrast, if a framework does create a faster result for its \acrshort{lcp}, 
 Third, \acrshort{csr} frameworks differ from \acrshort{ssr} and Prerendering frameworks by \acrlong{tbw} similar to \acrlong{lcp}.
 Although the \acrshort{html} document is much slimmer with \acrshort{csr}, the \acrshort{js} files are expected to be equally larger than server-side rendered and prerendered pages.
 It is probably nearly equal in sum because the byte size of the page is likely mostly made up from multimedia files such as images and videos, \acrshort{css} and \acrlong{js} files. 
-Fourth, the selected frameworks should be inversely seperable into groups by the \acrlong{ttfb}.
+Fourth, the selected frameworks should be inversely separable into groups by the \acrlong{ttfb}.
 Most likely \acrshort{csr} and Prerendering frameworks will be faster for this metric because the web server can serve as a static fileserver and does not have to execute any additional code.
 Fifth, because \acrshort{csr} pages consist of only nearly empty \acrshort{html} skeletons and links to \acrshort{js} and \acrshort{css} files, the \acrshort{tti} is expected to be much faster for \acrshort{csr} pages.
 Lastly, the timing of the \verb|loadEventEnd| is not clearly predictable before testing.
@@ -660,7 +667,7 @@ Third, as described above, the \acrshort{tbt} is expected to be slightly later f
 
 With these metrics, identifying bloated applications and components is the goal.
 \acrlong{js} that is loaded, parsed and executed that increases the initial load time of a page should be indicated through these tests.
-Such unnecessary or render-blocking scripts are pointed out through \acrshort{tbt} and littele difference between \acrshort{fvc} and \acrshort{lvc}.
+Such unnecessary or render-blocking scripts are pointed out through \acrshort{tbt} and little difference between \acrshort{fvc} and \acrshort{lvc}.
 For example, a script can be considered unnecessary for initial load if it is executed before rendering that only defines functions, initializes objects that are not yet needed or creates a blocking dependency chain, e.g. through importing another script.
 
 \subsubsection{Component Update Times}\label{subsub:componentUpdateTimes}
@@ -675,7 +682,7 @@ For example, a script can be considered unnecessary for initial load if it is ex
 
 For the third category of relevant metrics, \acrshort{dom} mutation stemming from events triggered by the user are grouped together.
 These event influence the user experience on the condition that they lead to \acrshort{dom} mutations.
-Only two kinds of measurements can be made to gain insight into update speed although three measurements are perceivable.
+Only two kinds of measurements can be made to gain insight into the update speed although three measurements are perceivable.
 
 \begin{itemize}
   \item \textbf{User Input Times}: The time of a user input.
@@ -706,7 +713,7 @@ To summarize some comparisons between frameworks or groups of frameworks, the mo
   \item \textbf{Nuxt - Vue.js}:As a next generation of the Vue.js framework, the actual performance increase of Nuxt is interesting for developers.
   \item \textbf{Next.js - React}: Same as above
   \item \textbf{Vue-based - React-based}: Because a direct comparison of frameworks based on React and based on Vue.js is possible with multiple candidates, a difference in performance is an actual relevant factor for the choice between the ecosystems.
-  \item \textbf{Svelte - Astro}: As the most modernly popular frameworks in the selection of frameworks, Astro and Svelte have the potential to both outdo their contenders and outdo each other.
+  \item \textbf{Svelte - Astro}: As the most recent popular frameworks in the selection of frameworks, Astro and Svelte have the potential to both outdo their contenders and outdo each other.
   This comparison is most interesting for fans of new tools and the development teams of the frameworks themselves.
 \end{enumerate}
 
@@ -736,9 +743,9 @@ To this end, two different tools for automating tests were chosen:
   Reports are by default generated as \acrshort{html} files, but the tool was configured to generate both \acrshort{html} and \acrshort{json} reports for this study.
   Since Lighthouse is designed to test live websites in production, the tool does not support starting a local development server.
   Testing with Lighthouse therefore needs to include building and hosting the application locally while tests are running.
-  \item \textbf{Playwright}: Playwright is a front-end testing tools for web applications in development.
+  \item \textbf{Playwright}: Playwright features a couple of front-end testing tools for web applications in development.
   It mainly supports checking page content, but also supports the execution of injected \acrlong{js} and full control over the browser.
-  This also means that the control over the user inputs enables measurement of timings connected to user behavior such as clicking links and buttons, hover the mouse over elements or using \verb|<input>| elements.
+  This also means that the control over the user inputs enables measurement of timings connected to user behaviour such as clicking links and buttons, hover the mouse over elements or using \verb|<input>| elements.
   Such options are needed to evaluate the timings of interactive elements.
   The development-focused design also bears the advantage of its initialization being included in some framework's initialization options.
   Both Svelte and Vue.js support installing and initializing configuration for Playwright in their own initialization (see chapter \ref{sec:implementation} for more on this).
@@ -754,7 +761,7 @@ Client hardware variability is mitigated through the usage of the same client de
 The client device in question is a HP Envy x360 Convertible 15-eu0xxx with an AMD Ryzen 5 5500U processor and 16GB RAM.
 The operating system on the device is Windows 11 Home (Version 10.0.22631) during testing.
 Client resource contention could not be fully mitigated.
-Attempts to keep a lid on client resources was killing the most hardware intensive background tasks and services on the test machine before starting tests.
+Attempts to keep a lid on client resources were killing the most hardware intensive background tasks and services on the test machine before starting tests.
 Browser nondeterminism was taken into account and adopted as a test dimension because the target group of an application should be factor for the choice of framework, especially for purely desktop or mobile applications.
 To this end, tests were executed with the most commonly used browsers wherever possible.
 For Lighthouse tests, such an option was not found.
@@ -781,7 +788,6 @@ The solution to this problem was to attach all necessary information as a file t
 
 With all tools and workarounds in place, the data needed for the study could be collected.
 Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt}, \acrshort{lcp}, \acrshort{fvc}, \acrshort{ofvc} and \acrshort{olvc} whereas Playwright cover all navigation and \acrshort{html} event times, namely DomContentLoaded, LoadEventEnd, user input times, state change times and mutation times.
-
 
 \section{Implementation}\label{sec:implementation} 
 % Project creation strategy
@@ -980,7 +986,7 @@ export default {
 \end{lstlisting}
  
 Listings \ref{lst:Vue:Post:Template} and \ref{lst:Vue:Post:Script} show the implementation of the Post component in Vue.js.
-It requires seven props for the five data points of a post (see figure \ref{fig:classes}) and two additional props for the control over the design and loading behavior of the post's image or video.
+It requires seven props for the five data points of a post (see figure \ref{fig:classes}) and two additional props for the control over the design and loading behaviour of the post's image or video.
 Additionally, the \verb|mounted| method loads the user data through the \verb|ProfileService| (see listing \ref{lst:Vue:Post:Script}, line \ref{line:postMounted}).
 The template of the component uses MediaComponent twice, once for the profile picture and once for the post image or video.
 The attributes for the profile picture are mainly static because the user data is not edited through the create form.
@@ -1223,10 +1229,10 @@ The first Post of a PostList is always eager-loaded, whereas all other images ar
 The size of the bounding box of the image is also defined in order to prevent layout shifts during or after the loading of the image.
 Enhanced image components are configured to ideally optimize the size and quality of the requested image, as well as to insert placeholder images if possible.
 
-The \verb|<video>| elements are designed to optimize the load behavior of the browser and to change the default presentation and styling.
-Each video has a defined width and height, controls and playback behavior.
+The \verb|<video>| elements are designed to optimize the load behaviour of the browser and to change the default presentation and styling.
+Each video has a defined width and height, controls and playback behaviour.
 In order to come as close to the application's model, Instagram, videos should autoplay, but stay muted.
-Each single behavior is a single attribute to set, but autoplaying every video requires every video to be loaded on page load.
+Each single behaviour is a single attribute to set, but autoplaying every video requires every video to be loaded on page load.
 This network load bears a performance decrease.
 For this reason, only the metadata is preloaded unless it is the first post in the PostList.
 To ensure the wanted autoplay feature, each \verb|<video>| element is referenced using the framework and custom code ensures videos play when they are in the viewport and pause when they are outside of it.
@@ -1260,7 +1266,7 @@ While the application is hosted, a headless Google Chrome browser window is laun
 The report is generated using the \acrshort{url} as it is specified in the configuration and with static options.
 These options define among other things that an \acrshort{html} report is to be generated, only performance metrics are to be collected and the \acrshort{http} status code is to be ignored.
 The last option is necessary because web servers started using \verb|serve| return a 404 status code for files that do not exist in the hosted directory.
-For applications that rely on \verb|index.html| to be returned if a requested resource is not available, this behavior is not desired.
+For applications that rely on \verb|index.html| to be returned if a requested resource is not available, this behaviour is not desired.
 For example, requesting the defined path \verb|/about| results in a 404 code with the \verb|index.html| file as the response body.
 Withouth the option \verb|ignoreStatusCode: true|, the Lighthouse test would fail as the page is considered to be unavailable.
 
@@ -1477,12 +1483,8 @@ export default defineConfig({
     { name: 'Chromium', use: {...devices['Desktop Chrome']} },
     { name: 'Firefox', use: {...devices['Desktop Firefox']} },
     { name: 'Webkit', use: {...devices['Desktop Safari']} },
-
-    /* Test against mobile viewports. */
     { name: 'Mobile Chrome', use: {...devices['Pixel 5']} },
     { name: 'Mobile Safari', use: {...devices['iPhone 12']} },
-
-    /* Test against branded browsers. */
     { name: 'Microsoft Edge', use: {channel: 'msedge'} },
     { name: 'Google Chrome', use: {channel: 'chrome'} },
   ],
@@ -1579,7 +1581,7 @@ In order to trace the failing components more easily, screenshots are token of e
 Additionally, a screenshot of the whole page is taken in which slow elements are colored. Every screenshot is then attached to the test.
 This method ensures that slow components can be identified visually even if xpath and id of the element change between component lifecycles or application builds.
 
-\begin{lstlisting}[caption={Test file for component load times}, label={lst:dynamic-performance-spec}, language=JavaScript]
+\begin{lstlisting}[caption={Test file for component load times}, label={lst:dynamic-performance-spec}, language=JavaScript, escapechar=°]
 // dynamic-performance.spec.js
 import { test, expect } from '@playwright/test';
 import routes from "./pages"
@@ -1597,7 +1599,7 @@ test.describe("Dynamic load time", () => {
       await page.waitForLoadState('domcontentloaded')
 
       // Start evaluation
-      const latestUpdateComponents = await new Promise(resolve => setTimeout(resolve, 10_000)).then(() => {
+      const latestUpdateComponents = await new Promise(resolve => setTimeout(resolve, 10_000)).then(() => {°\label{line:dynamic-performance-spec:maxTime}°
 
         // Return the sorted load times
         return page.evaluate(() => {
@@ -1657,7 +1659,7 @@ test.describe("Dynamic load time", () => {
 })
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Injected mutation recorder script}, label={lst:performance-recorder}, language=JavaScript]
+\begin{lstlisting}[caption={Injected mutation recorder script}, label={lst:performance-recorder}, language=JavaScript, escapechar=°]
 // performance.js
 let loadTimes = {}
 let startTime = Date.now()
@@ -1772,7 +1774,7 @@ function initObservation() {
   }
 }
 
-interval = setInterval(initObservation, 100)
+interval = setInterval(initObservation, 100) °\label{line:mutationInterval}°
 
 // initialize window.dynamic_component_performance
 window.dynamic_component_performance = loadTimes
@@ -1914,21 +1916,772 @@ for (const actionGroup of actions) {
 \end{lstlisting}
   
 \section{Evaluation}\label{sec:evaluation}
+
+The results of the tests are presented in this chapter.
+Each section describes the test results as they correlate to the metric categories and load times.
+These results are presented as summaries of results of the described test implementations.
+
 \subsection{Page Load Times}\label{subsec:pageloadtimes}
 % 1. Which pages load fast?
 % 2. How much does much post-rendering-data add to load time?
 % 3. Which frameworks creates fast-loading pages?
 % 4. Does it match my expectations?
 
+For page load times, the \acrshort{tbw} \acrshort{ttfb}, observed domContentLoaded, \acrshort{tbt}, observed \acrshort{lvc} and \acrshort{lcp} are presented from the Lighthouse reports and the loadEventEnd is deduced from the Playwright tests concerning page load times.
+The results of Lighthouse tests are visualized per path.
+On every path, each framework's application is tested once on Vercel and once hosted locally with two exceptions.
+Nuxt is tested with its \verb|nuxt build| and \verb|nuxt generate| build scripts (see table \ref{tab:hostCommands}).
+Astro is tested locally with both duplicate components (simlar Astro and React components) and its mixed version, in which the React components do not have Astro duplicates even if the component is not dynamic.
+The version of Astro hosted on Vercel is the version with duplicate components.
+
+% Lighthouse result graphs
+\begin{figure}[ht!]
+  \centering
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/performanceScore.png}
+  %   \end{center}
+  %   \caption{Performance score}\label{subfig:LH:performanceScore}
+  % \end{subfigure}
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/CLS.png}
+  %   \end{center}
+  %   \caption{Cumulative Layout Shift}\label{subfig:LH:cumulativeLayoutShift}
+  % \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TBW.png}
+    \end{center}
+    \caption{Total byte weight}\label{subfig:LH:totalbyteweight}
+  \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TTFB.png}
+    \end{center}
+    \caption{Time to first byte}\label{subfig:LH:timeToFirstByte}
+  \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TTI.png}
+    \end{center}
+    \caption{Time to interactive}\label{subfig:LH:interactive}
+  \end{subfigure}
+\end{figure}
+\begin{figure}[ht!]\ContinuedFloat
+  \centering  
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/observedDomContentLoaded.png}
+    \end{center}
+    \caption{Observed DomContentLoaded}\label{subfig:LH:observedDomContentLoaded}
+  \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TBT.png}
+    \end{center}
+    \caption{Total Blocking Time}\label{subfig:LH:totalBlockingTime}
+  \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OFVC.png}
+    \end{center}
+    \caption{Observed First Visual Change}\label{subfig:LH:observedFirstVisualChange}
+  \end{subfigure}
+  
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/FCP.png}
+  %   \end{center}
+  %   \caption{First Contentful Paint}\label{subfig:LH:firstContentfulPaint}
+  % \end{subfigure}
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OFCP.png}
+  %   \end{center}
+  %   \caption{Observed First Contentful Paint}\label{subfig:LH:observedFirstContentfulPaint}
+  % \end{subfigure}
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OFMP.png}
+  %   \end{center}
+  %   \caption{Observed First Meaningful Paint}\label{subfig:LH:observedFirstMeaningfulPaint}
+  % \end{subfigure}
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/FMP.png}
+  %   \end{center}
+  %   \caption{First Meaningful Paint}\label{subfig:LH:firstMeaningfulPaint}
+  % \end{subfigure}
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OLCP.png}
+  %   \end{center}
+  %   \caption{Observed Largest Contentful Paint}\label{subfig:LH:observedLargestContentfulPaint}
+  % \end{subfigure}
+  
+\end{figure}
+\begin{figure}[ht!]\ContinuedFloat
+  \centering
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/SI.png}
+  %   \end{center}
+  %   \caption{Speed Index}\label{subfig:LH:speedIndex}
+  % \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/LCP.png}
+    \end{center}
+    \caption{Largest Contentful Paint}\label{subfig:LH:largestContentfulPaint}
+  \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OLVC.png}
+    \end{center}
+    \caption{Observed Last Visual Change}\label{subfig:LH:observedLastVisualChange}
+  \end{subfigure}
+  % \begin{subfigure}{0.95\linewidth}
+  %   \begin{center}
+  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OSI.png}
+  %   \end{center}
+  %   \caption{Observed Speed Index}\label{subfig:LH:observedSpeedIndex}
+  % \end{subfigure}
+  \caption{Lighthouse test results}\label{fig:lighthouseResults}
+\end{figure}
+
+The \acrlong{tbw} is presented in figure \ref{subfig:LH:totalbyteweight}.
+Primarily, the great size of the pages build with Nuxt stand out.
+Out of all four pages, this is mainly surpring for the Create page because on initial load only one image has to be loaded.
+Yet the Create page and the Profile page appear to be equal in byte size although one has decidedly more images on it.
+Moreover, the byte size of the Profile page decreases for Nuxt-generate, a characteristic of the two build structures that cannot be found on the Feed page.
+The property of Nuxt, that the Create page is as heavy as the Profile page, can be explained through the implementation of the MediaComponent (see listing \ref{lst:Nuxt:MediaComponent:Script}).
+All preconfigured image files are imported using \lstinline{import.meta.glob()} (see listing \ref{lst:Nuxt:MediaComponent:Script}, line \ref{line:Nuxt:MediaComponent:imageImport}).
+For this reason, the byte size of the page is at least the size of all images on pages that use MediaComponent.
+Although this import method is used with Astro, Svelte and Nuxt, Nuxt is the framework with which this behaviour seems to have this impact.
+Secondly, the About page has a small byte size, which is not surprising because it has only one \acrshort{svg} as an image.
+
+In general, pages from Next, Astro and Svelte have a small byte weight on the Feed page as well as the Profile page, most likeyl due to successful image compression.
+The byte weight of the Create page and the Profile page is a representation of how well the framework handles selecting which parts of the application have to be loaded.
+For the Create page, eight out of the 15 components of the app have to be loaded (nine out of 16 for Astro-duplicate) and five of 15 for the Profile page.
+Interestingly, the Create page weighs less than the Profile page for most frameworks except Nuxt.
+
+The measurements of the \acrlong{ttfb} indicate clearly the response time difference from locally hosted applications to applications hosted on Vercel (see figure \ref{subfig:LH:timeToFirstByte}).
+To this end, the timings of the About page should be examined.
+The difference in \acrshort{ttfb} between local and Vercel lies around 185 ms with local applications responding within 452-457 ms and Vercel reponding within 632-651 ms.
+Taking this difference as the normal reference for the time difference, additional measurements stand out.
+Although the lcoal webserver returns the first byte almost equally fast on all paths, Nuxt-generate takes 80 ms longer than its sibling Nuxt-build on the Feed page.
+The first response byte is registered 19 ms later on the Feed page with Svelte than the other paths.
+
+On Vercel, the \acrshort{ttfb} fluctuates more between the frameworks.
+On the Feed page the frameworks can be separated into three groups.
+Astro, Nuxt-generate and Svelte are the fastest with response times between 635 and 657 ms.
+Between 712 and 756 ms lie the times for Next.js, React, Nuxt-build and Vue.js.
+Angular has the slowest response time on Vercel and on the Feed page with 882 ms.
+The resposne times on Vercel on the Create page are increased for Astro to 10730 ms by about 430 ms compared to its competitors.
+A similar increase is measured on the Profile page with a \acrshort{ttfb} for Astro on Vercel of 872 ms, about 230 ms later than other frameworks.
+
+The \acrlong{tti} of the applications is shown in figure \ref{subfig:LH:interactive}. In contrast to the \acrshort{ttfb}, the \acrshort{tti} is faster on Vercel with the exception of React on the Feed page and both React and Astro on the Profile page.
+Possible reasons for this phenomenon include the content encoding, which is missing from local hosting, or simply better traditional webserver performance such as parallelization of request handling on Vercel.
+With these faster applications on Vercl, Astro, Svelte, Next.js and Vue.js turn out to be the fastest frameworks for the \acrlong{tti} of the application.
+In general, Astro appears to be the framework from which the application has the fastest \acrshort{tti} across pages and hosting environments.
+Interestingly, Vue.js, Nuxt, Svelte, Angular and Astro show small fluctuations inbetwenn pages of 500 ms or less which is relatively little compared to Next.js and React.
+
+Figure \ref{subfig:LH:observedDomContentLoaded} shows the average of observed times of the domContentLoaded event.
+Two general characteristics stand out of the data.
+First, the timing of the applications that are hosted locally are at least 45 ms earlier than the applications hosted on Vercel.
+Second, the observedDomContentLoaded is measured to be much earlier than the \acrshort{ttfb}.
+The first can be explained by the slower network speed.
+The order of \acrshort{ttfb} and observed timing of the domContentLoaded event goes back to throttling not being applied for Lighthouse metrics starting with \enquote{observed} \citep{observedMetrics}.
+
+Astro on Vercel shows the latest domContentLoaded times on Vercel except on the About page.
+On the other hand, Astro locally shows some of the fastest times on the About page and the Create page.
+Angular, Nuxt-build, Next.js and Svelte are the other frameworks with late times for the event.
+In contrast, React, Vue and Nuxt-generate build applications with earlier event times.
+Both measurement characterstics can be explained by the rendering behaviour of the applications.
+Astro returns the fully complete \acrshort{dom} in its initial \acrshort{html} document, whereas the frameworks of the second fastest group return half-complete \acrshort{html} documents.
+These frameworks demonstrate their rendering capabilities here.
+The fastest frameworks for this metric respond to the request with \acrshort{html} skeletons, which naturally results in early domContentLoaded events.
+Interestingly, Angular and Nuxt-generate break this pattern.
+Angular generates an \acrshort{html} skeleton for all page, which references \acrshort{css} and \acrshort{js} files.
+The main difference to Vue.js, for example, is that the \acrshort{js} modules are included in the \acrshort{html} \verb|<body>| for Angular and in the \acrshort{html} \verb|<head>| for Vue.js.
+Additionally, all imports are lazy-loading with Vue.js and the scripts for the Angular application are packed into fewer and bigger \acrshort{js} files.
+Nuxt-generate on the other hand does not return an empty \acrshort{html} skeleton and is still in the group of fastest frameworks for this metric.
+The main difference to other frameworks is that \acrshort{js} files are included in the \acrshort{html} document with \verb|rel="modulepreload"|.
+Both of these strategies appaer to have a noticable impact on the timing of the domContentLoaded event.
+
+The results of measurements for the \acrlong{tbt} show drastic differences between the frameworks (see figure \ref{subfig:LH:totalBlockingTime}).
+On the one hand, the blocking time is practically negligible for most frameworks on the About, Create and Profile page indicating no unnecessary code execution before rendering.
+On the other hand, some frameworks show relatively large \acrshort{tbt}, especially on the Feed page.
+Firstly, Astro and Svelte are among the fastest frameworks in the \acrshort{tbt}, although Astro with duplicate components demonstrates a blocking time of 31 ms on the Feed page.
+Secondly, the application built with React and Vue also have a short blocking time.
+Thirdly, Angular produces an application with veryl low blocking time when hosted locally using the \verb|serve| command, but high blocking time when hosted on Vercel.
+The later two can be explained through an analysis of the scripts and modules loaded and executed on page load.
+While Vue and React include their scripts in smaller files and only import scripts when needed, Angular bundles \acrlong{js} in fewer and bigger files.
+This increases the blocking time, especially for code that is not needed for the page.
+
+The main outlier, however, is Next.js on the Feed and the Profile page.
+The \acrshort{tbt} of the application surpasses its next competitor's \acrshort{tbt} by 254 ms on the Feed page on Vercel, 164 ms on the Feed page locally and 56 ms on the Profile page on Vercel.
+This is not definitively explainable, but the fact that this effect only greatly affects pages in which images are included using the MediaComponent is and indicator.
+Images and videos are loaded using \lstinline|require(`@/assets/stock-footage/${src}`).default|, which is similar to React's \lstinline|require(`src/assets/stock-footage/${src}`)| (see listing \ref{lst:Next:MediaComponent}, line \ref{line:Next:MediaComponent:imageImport} and listing \ref{lst:React:MediaComponent}, line \ref{line:React:MediaComponent:imageImport}).
+The interpreted behaviour then is that both applications load the multimedia files synchronously, but Next.js also loads the components synchronously, which results in such a high \acrlong{tbt}.
+This would also explain why the effect is less on the local webserver.
+
+Unsurprisingly, the measurements for the \acrfull{olvc} are also in general faster when the application is hosted locally (see figure \ref{subfig:LH:observedLastVisualChange}).
+Next.js is the only exception to that on the Create page.
+Amongst the frameworks, no clear separation can be identified across the pages or hosting environment, although Vue.js and React are always amonog the fastest in this metric compared to other frameworks with the same hosting method.
+Additionally, Nuxt has the slowest \acrshort{olvc} across pages, expecially on the Feed page.
+However, the average of Nuxt-build on Vercel is deceiving.
+
+% OLVC distribution Nuxt-build
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\linewidth, keepaspectratio]{img/box-plot-image.png}
+  \caption{Distribution of OLVC measurements for Nuxt-build on Vercel on the Feed page}
+  \label{fig:olvc-distribution}
+\end{figure}
+
+Figure \ref{fig:olvc-distribution} shows the distribution of the \acrshort{olvc} measurements throughout the 20 test repetitions.
+It is clear that most measurements lie around 4500 ms rather than the average of all values which 6012 ms.
+Nonetheless, the \acrshort{olvc} of Nuxt is still far above the average of other frameworks.
+
+The average measurements for \acrfull{lcp} are shown in figure \ref{subfig:LH:largestContentfulPaint}.
+In contrast to other presented metrics, the time of the \acrshort{lcp} is in general earlier for applications hosted on Vercel.
+However, both Astro implementations regularly have a faster \acrshort{lcp} locally than other frameworks on Vercel.
+Other than that, no clear outlier framework can be identified except Angular.
+The \acrshort{lcp} measurements are extraordinarily high on the Feed page when hosted locally and on the Profile page independently from the hosting environment.
+There is no apparent explanation for either characteristic at this time.
+
+% Page load Playwright tests passes
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|l|l|l|}
+    \hline
+    Angular         & 28/28 \\ \hline
+    Astro           & 24/28 \\ \hline
+    Next.js         & 28/28 \\ \hline
+    Nuxt (build)    & 28/28 \\ \hline
+    Nuxt (generate) & 28/28 \\ \hline
+    React           & 28/28 \\ \hline
+    Svelte          & 24/28 \\ \hline
+    Vue.js          & 28/28 \\ \hline
+  \end{tabular}
+  \caption{Passed Playwright page load tests per framework}
+  \label{tab:playwright:pageLoad}
+\end{table}
+
+The numbers of passed page load tests with Playwright are listed in table \ref{tab:playwright:pageLoad}.
+The only frameworks with which the application does pass the tests are Astro and Svelte.
+For both frameworks the page load budget is exceeded on all four pages of the application when opened in Firefox.
+The repetitions of failed tests also exceed the time budget, which causes the tests to be marked as failed.
+Figure \ref{subfig:Playwright:loadEventEnd:unbalanced} shows the timinigs of loadEventEnd across browsers, frameworks and pages, including test repetitions.
+It is clear that these test results are outliers compared to other frameworks and browsers.
+The load speed in Firefox is slower than the budget only for Astro and Svelte.
+Upon inspection of other navigation event times, the reason for this results becomes clear.
+The time of requestStart for the failing frameworks in Firefox is already above 2000 ms for all pages.
+Interestingly, the timing of this navigation event is not late for all other frameworks.
+This differentating behvaiour could not be explained in the time frame of this study.
+However, the next step in the analytic process was to inspect a balanced metric instead of inspecting the raw measurement of the loadEventEnd.
+The balanced loadEventEnd time can be described as
+
+\begin{equation}
+\mathit{loadEventEnd}_\mathit{balanced} = \mathit{loadEventEnd}_\mathit{raw} - \mathit{requestStart}
+\end{equation}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/loadEventEnd/total.png}
+    \caption{unbalanced}\label{subfig:Playwright:loadEventEnd:unbalanced}
+  \end{subfigure}
+  \begin{subfigure}{\linewidth}
+    \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/loadEventEnd_balanced/total.png}
+    \caption{balanced}\label{subfig:Playwright:loadEventEnd:balanced}
+  \end{subfigure}
+  \caption{Measured loadEventEnd timings}
+  \label{fig:Playwright:loadEventEnd}
+\end{figure}
+
+Figure \ref{subfig:Playwright:loadEventEnd:unbalanced} shows the new balanced values.
+Using the balanced metric, all pages from all frameworks are loaded within the page load time budgets.
+Still, differences can be found between frameworks and between browsers.
+The overview over all results shows four different patterns within a browser.
+Unsurprisingly, Chromium and Mobile Chrome as well Webkit and Mobile Safari have similar results.
+They differ mainly in the load times of Astro, Svelte and Angular pages.
+The third pattern can be found in Microsoft Edge and Google Chrome.
+Pages load relatively fast in these two browsers especially with Astro.
+The measurements made in Firefox do not resemble the ones made in other browsers.
+First, the results are slower on average and it is the only browser in which the load times of React pages fluctuate more than 30 ms inbetween pages.
+Second, the fastest times with React are slowser than the fastest times with Astro, Nuxt and Vue.js.
+
+As for the frameworks, React is clearly the fastest concerning its loadEventEnd in Chromium, Mobile Chrome, Webkit and Mobile Safari and second fastest in Microsoft Edge and Google Chrome.
+Vue.js is second fastest in most browsers and also fluctuates very little. Nuxt, Next.js and Svelte are the next-fastest frameworks across all browsers.
+Angular is one of the slowest frameworks for most pages and browsers except some measurements of Astro.
+The fastest or the slowest measured times are measured with Astro depending on the browsers, but always fluctuate relatively much compared to other frameworks.
+
+
 \subsection{Component Load Times}\label{subsec:componentloadtimes}
 % 1. Which components load with delay?
 % 2. Which frameworks have fast-loading delayed components?
 % 3. Do pre-rendered pages even have delayed components?
 
+% TODO: redo playwright dyanmic-load tests with fixed interval in performance.js & remove section about 100 ms limit
+
+The load time of components is an indicator for how well frameworks split resources for the load of their applications between part of the pages.
+The relevant metrics for the component load are \acrfull{olvc}, \acrfull{tbt}, \acrfull{tti}, the timing of loadEventEnd, \acrfull{ofvc} and the measured \acrshort{dom} mutation times immediately after the initial page load.
+To measure these metrics, the tests are executed as described previously and documented as described in section \ref{subsec:pageloadtimes}.
+The same rules for the presentations of the results apply in this section.
+
+Because the same time frame is inspected as in the previous section, the relevant metrics \acrshort{tbt}, \acrshort{olvc}, \acrshort{tti} and balanced loadEventEnd can be used to analyze the behaviour of component load (see figures \ref{subfig:LH:totalBlockingTime}, \ref{subfig:LH:interactive}, \ref{subfig:LH:observedLastVisualChange} and \ref{subfig:Playwright:loadEventEnd:balanced}).
+However, no new interpretations can be taken for component load times because every measurement that includes the complete page load might or might not be caused by slowly loading components.
+Therefore, failed tests due to the time budget being exceeded cannot be unequivocally attributed to either slow network speeds, browser behaviour, client behaviour, the used framework or single components.
+Additional metrics are needed to identify component load times.
+
+The \acrshort{ofvc} is the time after which the first visual change is made within the viewport (see figure \ref{subfig:LH:observedFirstVisualChange}).
+It can be either the time after which prerendered \acrshort{html} elements appear or the time after which an empty \acrshort{dom} gets filled through \acrshort{js} and visual changes are made.
+The measurements of the \acrshort{ofvc} show that, in general, the first visual change is earlier for locally hosted applications, which is unsurprising because the resources load faster.
+Frameworks with an early \acrshort{ofvc} are Astro, React and Next.js with the only exception being Astro on Vercel on the Create page.
+The Angular application on the other hand displays late \acrshort{ofvc} values compared to its competitors locally.
+On Vercel, Nuxt-build has relatively late values across all pages.
+
+% TODO: write more interpretation about the results
+
+% OVCD
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/olvc-ofvc.png}
+  \caption{Observed Visual Change Duration}
+  \label{fig:LH:OVCD}
+\end{figure}
+
+More intersting than the raw \acrshort{olvc} and \acrshort{ofvc} values is the difference between the measurements.
+This paper defines a new metric \enquote{Observed Visual Change Duration}.
+It shows the time after the first visual mutation to the page has been bade until the last visual change.
+It is simply deferred from the \acrshort{olvc} and \acrshort{ofvc} and is defined as
+
+\begin{multline}
+  \mathit{observedVisualChangeDuration} =\\ \mathit{observedLastVisualChange} - \mathit{observedFirstVisualChange}
+\end{multline}
+
+Figure \ref{fig:LH:OVCD} shows the resulting values for \acrfull{ovcd} from this study.
+The great difference between locally tested applications and applications on Vercel means that visual changes, especially the last, are dependent on network delay or \acrlong{js} execution speed.
+Vue.js, React and Angular produce low \acrshort{ovcd} measurements except on the Profile page.
+This is even the case if the \acrshort{ofvc} is late.
+The reason for this is that no visual changes are made to the page until the \acrshort{html} and \acrshort{js} is parsed and executed.
+This stands in contrast to prerendered, server-side rendered or semi-rendered pages.
+With these pages, the first visual update can already be made after only the \acrshort{html} is parsed.
+Therefore \acrshort{csr} frameworks can achieve faster \acrshort{ovcd} values on the pages without components that have differenctly fast loading components.
+Notably, the Profile page is an outlier among the pages.
+This is because the static header of the page can be displayed as soon as possible, but the rest of the page needs two additional service functions to finish before images and videos can be loaded.
+The effect of those chained \acrlong{js} executions can clearly be identified using the \acrshort{ovcd}.
+
+% Playwright Page load mutations
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/pageLoadMutations/total.png}
+  \caption{Page load mutation times}
+  \label{fig:Playwright:pageLoadMutations:total}
+\end{figure}
+
+Figure \ref{fig:Playwright:pageLoadMutations:total} shows the \acrshort{dom} mutation times of elements that were registered through Playwright right after the initial page load.
+Primarily, the most noticable result of these measurements is that some results appear to be missing.
+For example, there are no measurements from the Angular application at all.
+The reason for missing measurements could be that all \acrshort{dom} mutations have taken place before the MutationObserver could be initialized because the injection of the recording script through Playwright takes longer than the page load or all changes take place before the first interval of 100 ms (see listing \ref{lst:performance-recorder}, line \ref{line:mutationInterval}).
+The other possible reason for this phenomenon could be that mutations are slower than the manually defined recording time of ten seconds (see listing \ref{lst:dynamic-performance-spec}, line \ref{line:dynamic-performance-spec:maxTime}), but it is less likely because no mutation is recorded to be over 1900 ms with any browser, page or framework.
+Therefore, missing recordings indicate the framework is either loading too fast or too slow to record \acrshort{dom} mutations.
+Because the applications have differences in the \acrshort{dom} structure and render time, the number of mutations fluctuates naturally.
+Adjusting for possible variations here, four frameworks seem to have missing measurements.
+The applications built with Angular (no mutations), Astro (11 mutations), Vue.js (174 mutations) and React (527 mutations) have surprisingly few mutations.
+The applications built with Nuxt (1011 mutations), Next.js (1654 mutations) and Svelte (1857 mutations) have over 1000 mutations.
+Although the latter numbers could indicate full recording coverage of the mutations, the distribution of recordings between browsers and pages prove that not all mutations were recorded, even with these latter three frameworks.
+For example, no mutations were recorded on the About page with Nuxt and Next.js.
+In fact, Svelte is the only framework with which mutations were recorded on the About page, but only in Mobile Chrome, Chromium, Mobile Safari and Webkit.
+Then again, there are apparently no mutations with Svelte on the Profile page in any browser.
+
+Although the missing data prevents some unambiguous comparisons between frameworks, the presence of some recordings indicates load speed differences between frameworks and browsers.
+First, many relatively late recordings could be made in Webkit and Mobile Safari.
+This indicates that the method of measurement results in slow \acrshort{dom} mutation times in these browsers, especially with Svelte and Next.js.
+The possibility of missing \acrshort{dom} mutations due to the limited recording time being non-zero can be ignored here because other measurements match the interpretation (see section \ref{subsec:componentupdatetimes}). % TODO: move this sentence somewhere else
+Additionally, in Microsoft Edge and Google Chrome only very few measurements could be made, so the two browsers can be considered especially fast for this measurement method.
+Second, Next.js appears to be the slowest of the frameworks in this metric.
+Svelte also demonstrates slow mutations, but only in Webkit and Mobile Safari.
+The other frameworks that appear in the summary of mutations, Nuxt, React and Vue.js, also have some relatively high recorded mutation times, but all recorded times are below 760 ms.
+With these frameworks, the most interesting observation is that not only are the mutation times faster with Microsoft Edge and Google Chrome, but they are also more bundled together than with other browsers.
+
+The last possible observation from the data is that no mutation time is below 100 ms.
+The implementation of the MutationObserver is the reason for this.
+Because the start time is defined immediately and the interval callback is executed first after a 100 ms delay, no mutation times below 100 ms can be recorded.
+Changing the implementation to an interval of 20 ms and executing the initialization function ones immediately does allow for earlier recording times for few frameworks.
+The tested applications built with Astro, Next.js, React, Svelte and Vue.js then have recorded mutation times below 100 ms.
+The earliest recorded time with the 20 ms interval is 41 ms with Vue.js on the About page in Microsoft Edge.
+Naturally, the number of recordings also increases drastically for all frameworks except Angular.
+42 mutations with Astro, 640 mutations with Vue.js, 1309 mutations with Nuxt, 1704 mutations with React, 2260 mutations with Next.js and 6412 mutations with Svelte were recorded.
+The increase in early recordings and the minimum times per framework indicate two interpretations concerning the interval time.
+First, quick initialization intervals do make the recording more complete because fewer fast mutations are not recorded.
+If these fast mutations are required to be present in the test or its report, then decreasing the interval speed is a requirement.
+Second, the minimal time becomes dependent on the initialization behaviour and speed.
+The presence of fast data points for some frameworks cannot be definitively be traced back to the framework being faster than others because fast data points might still be missing for other frameworks due to unreliable injection behaviour.
+In addition, rapid initialization attempts require more resources and therefore might actually decrease the performance of any code execution or rendering.
+For these reasons, the configuration of a initialization interval is a balance between complete list of \acrshort{dom} mutations and comparability of fast mutations.
+
 \subsection{Component Update Times}\label{subsec:componentupdatetimes}
 % 1. Which differences can be made out towards [Component update times](#component-update-times)?
 % 2. Which HTML-Elements even update?
 % 3. Which frameworks update HTML-Elements faster than others?
+
+% total Playwright tests passes
+\begin{table}[!ht]
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    ~         & \textbf{Passed} & \textbf{Flaky}  & \textbf{Failed} \\ \hline
+    Angular   & 112             & 0               & 0               \\ \hline
+    Astro     & 103             & 3               & 6               \\ \hline
+    Next.js   & 111             & 0               & 1               \\ \hline
+    Nuxt      & 112             & 0               & 0               \\ \hline
+    React     & 110             & 2               & 0               \\ \hline
+    Svelte    & 108             & 0               & 4               \\ \hline
+    Vue.js    & 110             & 2               & 0               \\ \hline
+  \end{tabular}
+  \caption{Total passed, flaky and failed Playwright tests per framework}
+  \label{tab:playwright:total}
+\end{table}
+
+% Total user action mutations
+\begin{table}[!ht]
+  \centering
+  \begin{adjustbox}{angle=90}
+    \begin{tabular}{|l|r|r|r|r|r|r|r|}
+      \hline
+      ~                       & \textbf{Angular}  & \textbf{Astro}  & \textbf{Next.js}  & \textbf{Nuxt} & \textbf{React}  & \textbf{Vue.js} & \textbf{Svelte} \\ \hline
+      Caption change          & 3                 & 2               & 3                 & 1             & 2               & 1               & 1               \\ \hline
+      Media selection         & 3                 & 1               & 3                 & 1             & 1               & 1               & 1               \\ \hline
+      Media source insertion  & 3                 & 2               & 3                 & 1             & 2               & 1               & 1               \\ \hline
+      Post creation           & 5                 & 4               & 6                 & 3             & 4               & 3               & 3               \\ \hline\hline
+      \textbf{Total}          & 14                & 9               & 15                & 6             & 9               & 6               & 6               \\ \hline
+    \end{tabular}
+  \end{adjustbox}
+  \caption{Total mutations per framework and user action}
+  \label{tab:mutations:total}
+\end{table}
+
+% caption change mutations
+\begin{table}[!ht]
+  \centering
+  \begin{adjustbox}{angle=90}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|}
+      \hline
+      \textbf{HTML element}           & \textbf{Angular}  & \textbf{Astro}  & \textbf{Next.js}  & \textbf{Nuxt} & \textbf{React}  & \textbf{Vue.js} & \textbf{Svelte} \\ \hline
+      \verb|<main>|                   & -                 & -               & -                 & -             & -               & -               & -               \\ \hline
+      Create-Component                & -                 & -               & ~                 & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<form>|                   & attribute         & -               & -                 & -             & -               & -               & -               \\ \hline
+      \verb|<input>|                  & -                 & -               & attribute         & -             & -               & -               & -               \\ \hline
+      \verb|<select>|                 & -                 & -               & -                 & -             & -               & -               & -               \\ \hline
+      \verb|<textarea>|               & attribute         & text-content    & text-content      & -             & text-content    & -               & -               \\ \hline
+      \verb|<button>|                 & -                 & -               & -                 & -             & -               & -               & -               \\ \hline
+      Post-\verb|<div>|               & -                 & ~               & ~                 & ~             & ~               & -               & -               \\ \hline
+      MediaComponent-\verb|<div>|     & -                 & ~               & -                 & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<img>| / \verb|<picture>| & -                 & -               & -                 & -             & -               & -               & -               \\ \hline
+      Caption-\verb|<p>|              & child             & child           & child             & child         & child           & child           & child           \\ \hline
+      Caption-\verb|<span>|           & added             & added           & added             & added         & added           & added           & added           \\ \hline
+      \hline
+      - (not updated)                 & 8                 & 7               & 6                 & 7             & 6               & 8               & 8               \\ \hline
+      \hline
+      attribute                       & 2                 & 0               & 1                 & 0             & 0               & 0               & 0               \\ \hline
+      text-content                    & 0                 & 1               & 1                 & 0             & 1               & 0               & 0               \\ \hline
+      added                           & 1                 & 1               & 1                 & 1             & 1               & 1               & 1               \\ \hline
+      \hline
+      \textbf{Total Changes}          & \textbf{3}        & \textbf{2}      & \textbf{3}        & \textbf{1}    & \textbf{2}      & \textbf{1}      & \textbf{1}      \\ \hline
+    \end{tabular}
+  \end{adjustbox}
+  \caption{List of recorded mutations during caption change}
+  \label{tab:mutations:captionChange}
+\end{table}
+
+% media selection mutations
+\begin{table}[!ht]
+  \centering
+  \begin{adjustbox}{angle=90}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|}
+      \hline
+      \textbf{HTML element}           & \textbf{Angular}  & \textbf{Astro}  & \textbf{Next.js}    & \textbf{Nuxt} & \textbf{React}  & \textbf{Vue.js} & \textbf{Svelte} \\ \hline
+      \verb|<main>|                   & -                 & -               & -                   & child         & child           & -               & -               \\ \hline
+      Create-Component                & -                 & child           & ~                   & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<form>|                   & attribute         & -               & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<input>|                  & -                 & -               & attribute           & -             & -               & -               & -               \\ \hline
+      \verb|<select>|                 & attribute         & -               & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<textarea>|               & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<button>|                 & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      Post-\verb|<div>|               & -                 & ~               & ~                   & ~             & ~               & child           & child           \\ \hline
+      MediaComponent-\verb|<div>|     & child             & ~               & child \& attribute  & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<img>| / \verb|<picture>| & added             & added           & added               & added         & added           & added           & added           \\ \hline
+      Caption-\verb|<p>|              & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      Caption-\verb|<span>|           & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      \hline
+      - (not updated)                 & 8                 & 7               & 7                   & 7             & 7               & 8               & 8               \\ \hline
+      \hline
+      attribute                       & 2                 & 0               & 2                   & 0             & 0               & 0               & 0               \\ \hline
+      text-content                    & 0                 & 0               & 0                   & 0             & 0               & 0               & 0               \\ \hline
+      added                           & 1                 & 1               & 1                   & 1             & 1               & 1               & 1               \\ \hline\hline
+      \textbf{Total Changes}          & \textbf{3}        & \textbf{1}      & \textbf{3}          & \textbf{1}    & \textbf{1}      & \textbf{1}      & \textbf{1}      \\ \hline
+    \end{tabular}
+  \end{adjustbox}
+  \caption{List of recorded mutations during media selection}
+  \label{tab:mutations:mediaSelection}
+\end{table}
+
+% media insert mutations
+\begin{table}[!ht]
+  \centering
+  \begin{adjustbox}{angle=90}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|}
+      \hline
+      \textbf{HTML element}           & \textbf{Angular}  & \textbf{Astro}  & \textbf{Next.js}    & \textbf{Nuxt} & \textbf{React}  & \textbf{Vue.js} & \textbf{Svelte} \\ \hline
+      \verb|<main>|                   & -                 & -               & -                   & child         & child           & -               & -               \\ \hline
+      Create-Component                & -                 & child           & ~                   & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<form>|                   & attribute         & -               & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<input>|                  & attribute         & attribute       & attribute           & -             & attribute       & -               & -               \\ \hline
+      \verb|<select>|                 & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<textarea>|               & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<button>|                 & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      Post-\verb|<div>|               & -                 & ~               & ~                   & ~             & ~               & child           & child           \\ \hline
+      MediaComponent-\verb|<div>|     & child             & ~               & child \& attribute  & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<img>| / \verb|<picture>| & added             & added           & added               & added         & added           & added           & added           \\ \hline
+      Caption-\verb|<p>|              & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      Caption-\verb|<span>|           & -                 & -               & -                   & -             & -               & -               & -               \\ \hline
+      \hline
+      - (not updated)                 & 8                 & 7               & 7                   & 7             & 6               & 8               & 8               \\ \hline
+      \hline
+      attribute                       & 2                 & 1               & 2                   & 0             & 1               & 0               & 0               \\ \hline
+      text-content                    & 0                 & 0               & 0                   & 0             & 0               & 0               & 0               \\ \hline
+      added                           & 1                 & 1               & 1                   & 1             & 1               & 1               & 1               \\ \hline
+      \hline
+      \textbf{Total Changes}          & \textbf{3}        & \textbf{2}      & \textbf{3}          & \textbf{1}    & \textbf{2}      & \textbf{1}      & \textbf{1}      \\ \hline
+      \end{tabular}
+  \end{adjustbox}
+  \caption{List of recorded mutations during media source insertion}
+  \label{tab:mutations:mediaSourceInsertion}
+\end{table}
+
+% post creation mutations
+\begin{table}[!ht]
+  \centering
+  \begin{adjustbox}{angle=90}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|}
+      \hline
+      \textbf{HTML element}           & \textbf{Angular}  & \textbf{Astro}  & \textbf{Next.js}    & \textbf{Nuxt} & \textbf{React}  & \textbf{Vue.js} & \textbf{Svelte} \\ \hline
+      \verb|<main>|                   & -                   & -             & -                   & child         & child           & -               & -               \\ \hline
+      Create-Component                & -                   & child         & ~                   & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<form>|                   & attribute           & -             & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<input>|                  & -                   & -             & attribute           & -             & -               & -               & -               \\ \hline
+      \verb|<select>|                 & attribute           & -             & -                   & -             & -               & -               & -               \\ \hline
+      \verb|<textarea>|               & -                   & text-content  & text-content        & -             & text-content    & -               & -               \\ \hline
+      \verb|<button>|                 & attribute           & attribute     & attribute           & attribute     & attribute       & attribute       & attribute       \\ \hline
+      Post-\verb|<div>|               & -                   & ~             & ~                   & ~             & ~               & child           & child           \\ \hline
+      MediaComponent-\verb|<div>|     & child               & ~             & child \& attribute  & ~             & ~               & ~               & ~               \\ \hline
+      \verb|<img>| / \verb|<picture>| & added               & added         & added               & added         & added           & added           & added           \\ \hline
+      Caption-\verb|<p>|              & child               & child         & child               & child         & child           & child           & child           \\ \hline
+      Caption-\verb|<span>|           & added               & added         & added               & added         & added           & added           & added           \\ \hline
+      \hline
+      - (not updated)                 & 5                   & 4             & 3                   & 4             & 3               & 5               & 6               \\ \hline
+      \hline
+      attribute                       & 3                   & 1             & 3                   & 1             & 1               & 1               & 1               \\ \hline
+      text-content                    & 0                   & 1             & 1                   & 0             & 1               & 0               & 0               \\ \hline
+      added                           & 2                   & 2             & 2                   & 2             & 2               & 2               & 2               \\ \hline
+      \hline
+      \textbf{Total Changes}          & \textbf{5}        & \textbf{4}      & \textbf{6}          & \textbf{3}    & \textbf{4}      & \textbf{3}      & \textbf{3}      \\ \hline
+    \end{tabular}
+  \end{adjustbox}
+  \caption{List of recorded mutations during post creation}
+  \label{tab:mutations:postCreation}
+\end{table}
+
+% browser usage
+\begin{table}[!ht]
+  \centering
+    \begin{tabular}{|l|r|}
+      \hline
+      \textbf{Browser}  & \textbf{Usage quota} \\ \hline
+      Chromium          & NA \\ \hline
+      Firefox           & 2,75 \% \\ \hline
+      Webkit            & 17.96 \% \\ \hline
+      Mobile Chrome     & NA \\ \hline
+      Mobile Safari     & NA \\ \hline
+      Microsoft Edge    & 5.26 \% \\ \hline
+      Google Chrome     & 65.68 \% \\ \hline
+    \end{tabular}
+  \caption{Browser usage}
+  \label{tab:browserUsage}
+\end{table}
+
+% DOM Mutation times state change
+\begin{table}[!ht]
+  \centering
+  \begin{adjustbox}{angle=90}
+    {
+      \rowcolors{1}{lightgray!40!}{lightgray!40!}
+      \begin{tabular}{|l|c|c|c|c|c|c|c|r|}
+        \hline
+        ~                                   & \textbf{Angular} & \textbf{Astro}   & \textbf{Next.js}          & \textbf{Nuxt}           & \textbf{React} & \textbf{Svelte} & \textbf{Vue.js} & \textbf{Average} \\ \hline
+\rowcolor{white}                                     & 44      & 51                        & 47                        & 39                      & 44      & 38      & 51      & 44,857  \\
+\rowcolor{white}                                     & 68,9    & 71,75                     & 75,41                     & 66,4                    & 57,87   & 73,65   & 77,18   & 70,166  \\
+\rowcolor{white} \multirow{-3}{*}{Chromium}          & 95      & 89                        & 108                       & 94                      & 85      & 95      & 104     & 95,714  \\ \hline
+                                                     & 54      & 63                        & 59                        & 59                      & 54      & 60      & 52      & 57,286  \\
+                                                     & 88,7    & 99,34                     & 142,18                    & 82,78                   & 83,72   & 93,67   & 82,24   & 96,090  \\
+                 \multirow{-3}{*}{Firefox}           & 123     & 142                       & 235                       & 108                     & 181     & 129     & 103     & 145,857 \\ \hline
+\rowcolor{white}                                     & 77      & \cellcolor{red!50}87      & 79                        & 51                      & 84      & 70      & 47      & 70,714  \\
+\rowcolor{white}                                     & 122,7   & 170,1                     & \cellcolor{red!50}303,54  & 86,02                   & 169     & 164,23  & 135,72  & 164,473 \\
+\rowcolor{white} \multirow{-3}{*}{Webkit}            & 172     & 270                       & \cellcolor{red!50}493     & 124                     & 280     & 283     & 200     & 260,286 \\ \hline
+                                                     & 44      & 49                        & 47                        & 42                      & 44      & 45      & 46      & 45,286  \\
+                                                     & 66,84   & 68,96                     & 93,7                      & 61,14                   & 67,41   & 80,81   & 69,04   & 72,557  \\
+                 \multirow{-3}{*}{Mobile Chrome}     & 90      & 85                        & 143                       & 82                      & 82      & 116     & 89      & 98,143  \\ \hline
+\rowcolor{white}                                     & 52      & 78                        & 73                        & 47                      & 67      & 56      & 52      & 60,714  \\
+\rowcolor{white}                                     & 105,61  & 154,28                    & 196,39                    & 110,32                  & 125,67  & 126,19  & 133,03  & 135,927 \\
+\rowcolor{white} \multirow{-3}{*}{Mobile Safari}     & 152     & 254                       & 372                       & 167                     & 183     & 208     & 206     & 220,286 \\ \hline
+                                                     & 43      & 44                        & 46                        & 37                      & 41      & 40      & 40      & 41,571  \\
+                                                     & 70,38   & 64,25                     & 72,77                     & 60,88                   & 62,13   & 74,46   & 60,9    & 66,539  \\
+                 \multirow{-3}{*}{Microsoft Edge}    & 90      & 80                        & 134                       & 85                      & 75      & 102     & 79      & 93,143  \\ \hline
+\rowcolor{white}                                     & 41      & 43                        & 41                        & \cellcolor{green!50}34  & 40      & 39      & 37      & 39,286  \\
+\rowcolor{white}                                     & 62      & \cellcolor{green!50}57,49 & 68,75                     & 59,92                   & 59,48   & 64,24   & 61,1    & 61,854  \\
+\rowcolor{white} \multirow{-3}{*}{Google Chrome}     & 84      & \cellcolor{green!50}72    & 99                        & 77                      & 77      & 89      & 77      & 82,143  \\ \hline
+                 \hline
+                                                     & 50,714  & 59,286                    & 56                        & 44,143                  & 53,429  & 49,714  & 46,429  & ~       \\
+                                                     & 83,59   & 98,024                    & 136,106                   & 75,351                  & 89,326  & 96,75   & 88,459  & ~       \\
+                 \multirow{-3}{*}{Average}           & 115,143 & 141,714                   & 226,286                   & 105,286                 & 137,571 & 146     & 122,571 & ~       \\ \hline
+\rowcolor{white}                                     & 44,505  & 47,915                    & 45,159                    & 35,06                   & 45      & 41,941  & 36,277  & ~       \\
+\rowcolor{white}                                     & 68,9    & 74,421                    & 107,408                   & 60,283                  & 74,989  & 78,181  & 69,971  & ~       \\
+\rowcolor{white} \multirow{-3}{*}{Weighted average}  & 94,179  & 103,895                   & 167,077                   & 80,285                  & 109,784 & 118,195 & 93,482  & ~       \\ \hline
+      \end{tabular}
+    }
+  \end{adjustbox}
+  \caption{Minimum, average and maximum of recorded mutation times after user input in milliseconds (fastest times are highlighted green, slowest red)}
+  \label{tab:mutations:times}
+\end{table}
+
+% Playwright results
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/total.png}
+    \end{center}
+    \caption{All mutations}\label{subfig:PW:total}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/totalAvg.png}
+    \end{center}
+    \caption{Average and range of all mutations}\label{subfig:PW:totalAvg}
+  \end{subfigure}
+  \caption{Recorded \acrshort{dom} mutation timings}
+  \label{fig:playwrightResults:total}
+\end{figure}
+
+% Playwright results per framework (user actions)
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/Angular.png}
+    \end{center}
+    \caption{Mutations with Angular}\label{subfig:PW:Angular}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/Astro.png}
+    \end{center}
+    \caption{Mutations with Astro}\label{subfig:PW:Astro}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/Next.png}
+    \end{center}
+    \caption{Mutations with Next.js}\label{subfig:PW:Next}
+  \end{subfigure}
+\end{figure}
+\begin{figure}[ht!]\ContinuedFloat
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/Nuxt.png}
+    \end{center}
+    \caption{Mutations with Nuxt}\label{subfig:PW:Nuxt}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/React.png}
+    \end{center}
+    \caption{Mutations with React}\label{subfig:PW:React}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/Svelte.png}
+    \end{center}
+    \caption{Mutations with Svelte}\label{subfig:PW:Svelte}
+  \end{subfigure}
+\end{figure}
+\begin{figure}[ht!]\ContinuedFloat
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/Vue.png}
+    \end{center}
+    \caption{Mutations with Vue.js}\label{subfig:PW:Vue}
+  \end{subfigure}
+  \caption{Recorded \acrshort{dom} mutation timings per framework}
+  \label{fig:playwrightResults:frameworks}
+\end{figure}
+
+% Average Playwright results per framework (user actions)
+\begin{figure}[ht!]
+  \centering
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/AngularAvg.png}
+    \end{center}
+    \caption{Mutations with Angular}\label{subfig:PW:AngularAvg}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/AstroAvg.png}
+    \end{center}
+    \caption{Mutations with Astro}\label{subfig:PW:AstroAvg}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/NextAvg.png}
+    \end{center}
+    \caption{Mutations with Next.js}\label{subfig:PW:NextAvg}
+  \end{subfigure}
+\end{figure}
+\begin{figure}[ht!]\ContinuedFloat
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/NuxtAvg.png}
+    \end{center}
+    \caption{Mutations with Nuxt}\label{subfig:PW:NuxtAvg}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/ReactAvg.png}
+    \end{center}
+    \caption{Mutations with React}\label{subfig:PW:ReactAvg}
+  \end{subfigure}
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/SvelteAvg.png}
+    \end{center}
+    \caption{Mutations with Svelte}\label{subfig:PW:SvelteAvg}
+  \end{subfigure}
+\end{figure}
+\begin{figure}[ht!]\ContinuedFloat
+  \begin{subfigure}{0.9\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/framework/VueAvg.png}
+    \end{center}
+    \caption{Mutations with Vue.js}\label{subfig:PW:VueAvg}
+  \end{subfigure}
+  \caption{Average and range of recorded \acrshort{dom} mutation timings per framework}
+  \label{fig:playwrightResults:frameworks:Avg}
+\end{figure}
 
 \section{Conclusion}\label{sec:conclusion}
 % 1. Which framework works best with page load times?
@@ -1937,6 +2690,9 @@ for (const actionGroup of actions) {
 
 \section{Summary}\label{sec:summary}
 % results are application-specific
+% Browser choice should dependent on the intention and framework
+% Browser choice makes a big difference
+% Navigation performance is missing, especially detremental for Angular
 % 10 second limit for mutationobserver: slow components and fast updating components
 
 \pagebreak
@@ -1958,7 +2714,6 @@ for (const actionGroup of actions) {
     <p>Nothing to see yet...<br />Choose an image to continue!</p>
   </div>
 </ng-template>
-
 \end{lstlisting}
 
 \begin{lstlisting}[caption=MediaComponent in Angular (Module), label={lst:Angular:MediaComponent:Module}, language=JavaScript]
@@ -2132,7 +2887,7 @@ else mediaSource = (await media[src]()).default;
   export default MediaComponent;
 \end{lstlisting}
 
-\begin{lstlisting}[caption=MediaComponent in Next.js, label={lst:Next:MediaComponent}, language=JavaScript]
+\begin{lstlisting}[caption=MediaComponent in Next.js, label={lst:Next:MediaComponent}, language=JavaScript, escapechar=°]
 // MediaComponent.js
 import { createRef, useEffect, useState } from "react";
 import styles from "./MediaComponent.module.css"
@@ -2147,7 +2902,7 @@ const MediaComponent = ({ src, alt, width, height, className, id, priority = fal
     if (videoRef.current) playPauseVideo(videoRef.current)
     try {
       if (src.startsWith('http')) setMediaSource(src)
-      else setMediaSource(require(`@/assets/stock-footage/${src}`).default)
+      else setMediaSource(require(`@/assets/stock-footage/${src}`).default)°\label{line:Next:MediaComponent:imageImport}°
     } catch (error) {
       setMediaSource("")
     }
@@ -2194,9 +2949,9 @@ export default MediaComponent
 <script>//see listing below</script>
 \end{lstlisting}
 
-\begin{lstlisting}[caption=MediaComponent in Nuxt (Script), label={lst:Nuxt:MediaComponent:Script}, language=JavaScript, firstnumber=13]
+\begin{lstlisting}[caption=MediaComponent in Nuxt (Script), label={lst:Nuxt:MediaComponent:Script}, language=JavaScript, firstnumber=13, escapechar=°]
 // MediaComponent.vue
-const glob = import.meta.glob("~/assets/stock-footage/*.mp4", { eager: true });
+const glob = import.meta.glob("~/assets/stock-footage/*.mp4", { eager: true });°\label{line:Nuxt:MediaComponent:imageImport}°
 const media = Object.fromEntries(
   Object.entries(glob).map(([key, value]) => [
     key.split("/")[key.split("/").length - 1],
@@ -2227,7 +2982,7 @@ export default {
 };
 \end{lstlisting}
 
-\begin{lstlisting}[caption=MediaComponent in React, label={lst:React:MediaComponent}, language=JavaScript]
+\begin{lstlisting}[caption=MediaComponent in React, label={lst:React:MediaComponent}, language=JavaScript, escapechar=°]
 // MediaComponent.js
 import { createRef, useEffect, useState } from "react";
 import styles from "./MediaComponent.module.css"
@@ -2240,7 +2995,7 @@ const MediaComponent = ({ src, alt, width, height, className, id, priority = fal
   useEffect(() => {
     if (videoRef.current) playPauseVideo(videoRef.current)
     try {
-      setMediaSource(src.startsWith('http') ? src : require(`src/assets/stock-footage/${src}`))
+      setMediaSource(src.startsWith('http') ? src : require(`src/assets/stock-footage/${src}`))°\label{line:React:MediaComponent:imageImport}°
     } catch (error) {
       setMediaSource("")
     }
@@ -2619,6 +3374,8 @@ function getMediaSource(url: string, choice: string) {
 \listoffigures
 
 \listoftables
+
+\rowcolors{1}{white}{white}
 \glsaddall
 \printnoidxglossary[
   type=\acronymtype,

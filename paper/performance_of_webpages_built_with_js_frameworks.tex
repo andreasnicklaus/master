@@ -1,4 +1,5 @@
-\documentclass[a4paper, 10pt]{article}
+\documentclass[a4paper, 12pt]{article}
+\usepackage[margin=1.2in]{geometry}
 \usepackage[english, ngerman]{babel}
 \usepackage[autostyle]{csquotes}
 \usepackage{natbib}
@@ -47,7 +48,7 @@
     showspaces=false,                
     showstringspaces=false,
     % showtabs=false,                  
-    tabsize=2
+    tabsize=2,
 }
 \lstset{style=mystyle}
 
@@ -55,8 +56,11 @@
 % \hyphenation{Mathe-matik wieder-gewinnen}
 \usepackage[T1]{fontenc}
 \usepackage[table]{xcolor}
-\usepackage{adjustbox}
+\usepackage[export]{adjustbox}
 \usepackage{multirow}
+
+\usepackage{newfloat}
+\DeclareFloatingEnvironment[placement={!ht},name=List]{mylist}
 
 \makenoidxglossaries
 \newacronym{dom}{DOM}{Document Object Model}
@@ -252,12 +256,12 @@ The goals of this paper are to propose a set of metrics that allow comparing mai
 
 \section{Related Work}\label{sec:relatedwork}
 
-\section{Design}\label{sec:design}
+\section{Setup of the application and test environment}\label{sec:design}
 
 Whereas the following chapters cover the implementation of testing and evaluation of results, this section introduces the concept of the comparative study.
 The goals of and requirements for the example application, the differences and choices for the hosting environments for testing and the tools for testing as well as selected metrics are described here.
 
-\subsection{Example Application}\label{subsec:exampleapplication}
+\subsection{Example Web Application}\label{subsec:exampleapplication}
 % What goals does should the example app fulfil?
 % What parts does the example app consist of?
 % What requirements does the app cover?
@@ -355,25 +359,25 @@ The Create page is the only page with dynamic content.
 \begin{figure}[ht!]
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
-      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Feed.png}
+      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Feed.png}
     \end{center}
     \caption{Feed / Index Page (/)}\label{subfig:index}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
-      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Profil.png}
+      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Profil.png}
     \end{center}
     \caption{Profile Page (/user/@PeterPoster)}\label{subfig:user}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
-      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Beitrag erstellen.png}
+      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Beitrag erstellen.png}
     \end{center}
     \caption{Create Page (/create)}\label{subfig:create}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
-      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio]{img/ig-clone/Informationsseite.png}
+      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Informationsseite.png}
     \end{center}
     \caption{About Page (/about)}\label{subfig:about}
   \end{subfigure}
@@ -428,7 +432,7 @@ The reason for this is the assumption for this project that optimizing multimedi
 Rather, the better alternative for serving the use case of the application would be a dedicated server for encoding, decoding and generally optimizing multimedia files.
 Since this solution would be independent from the front-end framework's performance and it would outgrow the scope of this work, a distinction is only made between static images, called local images here, and external images with full URLs.
 
-\subsection{Choice of frameworks}
+\subsection{Choice of web frameworks}
 % Which frameworks were chosen to test?
 % Why were these frameworks chosen?
 % Which frameworks/tools were considered
@@ -453,6 +457,23 @@ Next.js and Nuxt require the usage of React or Vue.js tools and dynamic componen
 Astro intends the usage of other frameworks to implement so-called \enquote{islands}.
 For those components, React was chosen for its top usage rate.
 
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}[h]{l c c c }
+      ~       & \textbf{\acrshort{csr}} & \textbf{\acrshort{ssr}} & \textbf{Previous Experience} \\ \hline
+      \textbf{Angular}  & yes & no & yes \\ \hline
+      \textbf{Astro}    & yes & yes & yes \\ \hline
+      \textbf{Next.js}  & no & yes & no \\ \hline
+      \textbf{Nuxt}     & yes (generate) & yes (build) & no \\ \hline
+      \textbf{React}    & yes & no & yes \\ \hline
+      \textbf{Svelte}   & yes & no & no \\ \hline
+      \textbf{Vue.js}   & yes & no & yes \\ 
+    \end{tabular}
+  \end{center}
+  \caption{List of selected frameworks. Items with both \acrfull{csr} and \acrfull{ssr} render some pages or components upon request, but also require \acrfull{csr}}
+  \label{tab:frameworks}
+\end{table}
+
 Other frameworks were also considered for selection.
 Solid and Qwik seemed fitting candidates  in this study because of high interest among developers and apparent potential for fast performance of their end product.
 Additionally, from the ranking of most-used front-end frameworks Preact was considered with a usage percentage of 13\%.
@@ -462,23 +483,6 @@ Table \ref{tab:frameworks} list the selection and categorizes them into groups w
 It also states whether the developer for the application had any previous experience working with the framework.
 This information is important for the unintended performance optimizations and can later be used for interpretation of the frameworks performance measurements.
 Plus, it will influence the assessment of ease of use and developer experience.
-
-\begin{table}
-  \begin{center}
-    \begin{tabular}[h]{l c c c }
-      \textbf{Framework} & \textbf{\acrshort{csr}} & \textbf{\acrshort{ssr}} & \textbf{Previous Experience} \\ \hline
-      Angular & yes & no & yes \\ \hline
-      Astro   & yes & yes & yes \\ \hline
-      Next.js & no & yes & no \\ \hline
-      Nuxt    & yes (generate) & no (build) & no \\ \hline
-      React   & yes & no & yes \\ \hline
-      Svelte  & yes & no & no \\ \hline
-      Vue.js  & yes & no & yes \\ 
-    \end{tabular}
-  \end{center}
-  \caption{List of selected frameworks. Items with both CSR and SSR render some pages or components upon request, but also require CSR}\label{tab:frameworks}
-\end{table}
-
 
 \subsection{Hosting Environments}\label{subsec:hostingenvironments}
 % Based on former work, networking plays a vital role in performance and load times
@@ -501,13 +505,13 @@ Network delay is a great part of render delay and performance issues % TODO: sou
 because loading files in sequence will block rendering if parsing documents and executing code is dependent on network requests.
 The request delay is based on the speed of the web server, the size of the generated file, request and response and the network speed.
 Therefore the time needed for fulfilling network requests should be considered in the choice of hosting environment or service.
-
-\begin{figure}
+\begin{figure}[h]
   \begin{center}
     \includegraphics[width=\linewidth]{img/request-timing.png}
   \end{center}
   \caption{Timing attributes defined by the PerformanceTiming interface and the PerformanceNavigation interface \citep{navigationTimings}}\label{fig:timing}
 \end{figure}
+
 
 Figure \ref{fig:timing} illustrates how a slow network may delay the rendering process of a webpage.
 The tests for this study shall cover real-world hosting using publicly available services and local hosting to both test the network delay and test the application without interference of network speeds.
@@ -522,6 +526,15 @@ Rather, the study shall focus on the "out of the box" performance of the framewo
 Continuing with that sentiment, the optimization and therefore configuration of the hosting environment is not part of this work.
 This is the methodology for answering the question: With which framework do developers get the best performance for their web applications without spending much or any time with optimization and configuration?
 
+% \begin{mylist}
+%   \begin{itemize}
+%     \item Vercel
+%     \item Localhost
+%   \end{itemize}
+%   \caption{Chosen hosting environments}
+% \end{mylist}
+
+\subsubsection{Vercel}
 Based on these considerations and personal experience with the service, Vercel was chosen for hosting the application for this study.
 Vercel supports predefined configurations and automatic recognition of all frameworks chosen for this study.
 Also, Vercel projects integrate seamlessly into a \acrshort{cicd} process based on its integration with Github.
@@ -531,30 +544,31 @@ The bandwidth limitation of 100GB per month and account was reached after two we
 Because no information was found on the effect of a reached limit, the account was deemed dead for the month.
 The solution to this problem was the creation a second free Vercel account and the plan to create another account every time the limit would be reached in the future, which it did not.
 
+\subsubsection{Localhost}
+\begin{table}[h]
+  \begin{center}
+    \begin{tabular}[h]{| l | l | l |}
+      \hline
+      \textbf{Framework} & \textbf{Build Command} & \textbf{Host Command} \\ \hline
+      Angular & \verb|ng build| & \verb|serve| \\ \hline
+      Astro & \verb|astro build| & \verb|astro preview| \\ \hline
+      Next.js & \verb|next build| & \verb|next start| \\ \hline
+      Nuxt & \verb|nuxt build| & \verb|nuxt preview| \\
+      & \verb|nuxt generate| & \verb|nuxt preview| \\ \hline
+      React & \verb|react-scripts build| & \verb|serve| \\ \hline
+      Svelte & \verb|vite build| & \verb|vite preview| \\ \hline
+      Vue.js & \verb|vite build| & \verb|serve| \\ \hline
+    \end{tabular}
+  \end{center}
+  \caption{Build and host command for each used framework as used for testing the applications hosted locally}\label{tab:hostCommands}
+\end{table}
+
 The second hosting environment for this study is hosting the application locally on the testing machine.
 This environment ensures minimal network load times and eliminates every other connected delays such as resolving domain names.
 If the framework supports a \enquote{preview} mode, it was used for hosting the application.
 Otherwise, the application would be build and hosted using the \verb|serve| command or the active server would be started with \verb|node <filename>|.
 If neither of the two options would be available, the \enquote{dev} mode of the application would be used and tested.
 Table \ref{tab:hostCommands} lists the used commands for building and starting the webserver per framework.
-
-\begin{table}
-\begin{center}
-  \begin{tabular}[h]{| l | l | l |}
-    \hline
-    \textbf{Framework} & \textbf{Build Command} & \textbf{Host Command} \\ \hline
-    Angular & \verb|ng build| & \verb|serve| \\ \hline
-    Astro & \verb|astro build| & \verb|astro preview| \\ \hline
-    Next.js & \verb|next build| & \verb|next start| \\ \hline
-    Nuxt & \verb|nuxt build| & \verb|nuxt preview| \\
-     & \verb|nuxt generate| & \verb|nuxt preview| \\ \hline
-    React & \verb|react-scripts build| & \verb|serve| \\ \hline
-    Svelte & \verb|vite build| & \verb|vite preview| \\ \hline
-    Vue.js & \verb|vite build| & \verb|serve| \\ \hline
-  \end{tabular}
-\end{center}
-\caption{Build and host command for each used framework as used for testing the applications hosted locally}\label{tab:hostCommands}
-\end{table}
 
 \subsection{Performance Metrics}\label{subsec:performancemetrics}
 % What metrics can be measured?
@@ -566,7 +580,7 @@ Table \ref{tab:hostCommands} lists the used commands for building and starting t
 % 3. Largest/First Contentful/Meaningful Paint
 % 4. TTFB/TTI/SpeedIndex
 
-The load time and reactivity of a web page and its user interface decreases user retention and continuing user actions over time independently from the content. %TODO: source
+Slow load time and reactivity of a web page and its user interface decreases user retention and continuing user actions over time independently from the content. %TODO: source
 The \enquote{reaction time} is interpreted in three separate ways for this study: The page load time, meaning the time from navigation start to \acrshort{dom} mutation, the time from a state change, e.g. data query end, to \acrshort{dom} mutation, here called component load time, and the time between a user input to finished \acrshort{dom} mutation, called component update time for this study.
 Nearly most of these times can be combined from or described using navigation events (see figure \ref{fig:timing}).
 These timing categories are not exclusive, but measurements for these time categories do overlap.
@@ -579,7 +593,26 @@ Therefore, yet additional measurements have to be considered to describe the per
 To this end, some self-written code is injected through Playwright (see chapter \ref{subsec:testingtools}) to measure the time of updates to the \acrshort{dom}.
 The following sections describe which measurements are needed for each render section in detail.
 
-\subsubsection{Page Load Times}
+\begin{table}[h]
+  \begin{center}
+    \begin{tabular}[h]{|l|l|l|}
+      \hline
+      \multicolumn{1}{|c|}{\textbf{Page}}       & \multicolumn{2}{c|}{\textbf{Component}}     \\ \hline
+      \multicolumn{1}{|c|}{\textbf{Load Time}}  & \textbf{Load Time}  & \textbf{Update Time}  \\ \hline
+      TBW                                       & OLVC                &                       \\ \hline
+      TTFB                                      & OFVC                &                       \\ \hline
+      \multicolumn{2}{|c|}{TTI}                                       &                       \\ \hline
+      \multicolumn{2}{|c|}{TBT}                                       &                       \\ \hline
+      \multicolumn{2}{|c|}{LoadEventEnd}                              &                       \\ \hline
+      DomContentLoaded                          & \multicolumn{2}{c|}{DOM Mutation Times}     \\ \hline
+      LVC                                       &                               &             \\ \hline
+      LCP                                       &                               &             \\ \hline
+    \end{tabular}
+  \end{center}
+  \caption{testse}
+\end{table}
+
+\subsubsection{Page Load Times}\label{subsubsec:pageloadtimes}
 
 In the context of this study, the first contact point for a user to a web page is considered to be the first page load or initial page load.
 Within the initial load, the user's main expectations and goals are assumed to be finding a page with the wanted information or input rather than finding the information itself.
@@ -599,10 +632,11 @@ In order to focus on this time frame, these metrics describe the application's p
   \item \textbf{DomContentLoaded}: Similar to \acrshort{tti}, DomContentLoaded measures the time between \verb|navigationStart| and \verb|domContentLoaded|.
   At this point in time, \enquote{all subresources apart from async script elements have loaded} \citep{htmlLivingStandard}.
   A large difference between \acrshort{ttfb} and DomContentLoaded indicates a great size or at least long load time of subresources.
-  \item \textbf{LoadEventEnd}: Total time spent imidiately after initial load of a page until the \acrshort{dom}'s onload event is finished.
+  \item \textbf{LoadEventEnd}: Total time spent immediately after initial load of a page until the \acrshort{dom}'s onload event is finished.
   This is the time from \\
   \verb|navigationStart| to \verb|loadEventEnd|.
   The time represents both the capability of the used framework to optimize the usage of a client's and network's resources on initial load and the priorization of JavaScript execution by splitting not immediately needed code into async scripts.
+  Therefore, it is a combined indicator for the code performance and general optimization.
   \item \textbf{\acrfull{tbt}}: The total time spent by a browser with parsing and optionally resources that block the rendering process from finishing.
   This includes stylesheets and scripts without the \verb|async| or \verb|defer| tag.
   The metric directly represent the time before the browser can fulfil the user's goal on initial load.
@@ -629,7 +663,7 @@ With these expectations it would be most interesting to see the differences betw
 From the list of selected frameworks for this study, those frameworks with direct competitors are Nuxt compared with Vue.js as well as Next.js in comparison to React.
 Additionally, Angular and Svelte in the group of CSR frameworks shall be compared with the SSR framework group with Astro.
 
-\subsubsection{Component Load Times}
+\subsubsection{Component Load Times}\label{subsubsec:componentloadtimes}
 % Measuring JS-dependent parts of the webpage
 % 
 % 1. Dom Updates with MutationObserver
@@ -643,9 +677,9 @@ Each mutation from the initial \acrshort{dom} has to be interpreted as a update 
 The following metrics are part of this category.
 
 \begin{itemize}
-  \item \textbf{LoadEventEnd}: The time between \verb|responseEnd| and \verb|loadEventEnd|.
-  It combines all render-blocking parsing and synchronized code execution.
-  Therefore, it is a combined indicator from the code performance and general optimization.
+  \item \textbf{LoadEventEnd}: as explained in section \ref{subsubsec:pageloadtimes}
+  \item \textbf{\acrfull{tbt}}: as explained in section \ref{subsubsec:pageloadtimes}
+  \item \textbf{\acrfull{tti}}: as explained in section \ref{subsubsec:pageloadtimes}
   \item \textbf{\acrfull{ofvc}}: The time of the first visual update from a blank canvas.
   It is an indicator for the start of visual rendering and a signal to a user that the page is working or loading.
   For pages with itneractive elements, this metric is less important that the \acrshort{tti}.
@@ -653,8 +687,6 @@ The following metrics are part of this category.
   The metric is the most promisiing for this study as it indicates the end of the perceptable rendering process and therefore perceived load speed.
   \item \textbf{Mutation Times}: Time from initialization of the app with a predetermined \acrshort{html} element such as \verb|<main>| to a \acrshort{dom} mutation.
   See section \ref{subsub:componentUpdateTimes} for more info on this.
-  \item \textbf{\acrshort{tbt}}
-  \item \textbf{\acrshort{tti}}
 \end{itemize}
 
 Based on the intention for testing these metrics, comparing or optimizing \acrlong{js} frameworks, the following expectations were presented before tests.
@@ -682,14 +714,12 @@ For example, a script can be considered unnecessary for initial load if it is ex
 
 For the third category of relevant metrics, \acrshort{dom} mutation stemming from events triggered by the user are grouped together.
 These event influence the user experience on the condition that they lead to \acrshort{dom} mutations.
-Only two kinds of measurements can be made to gain insight into the update speed although three measurements are perceivable.
+Only two kinds of measurements can be made to gain insight into the update speed.
 
 \begin{itemize}
   \item \textbf{User Input Times}: The time of a user input.
   The kind of user input is not restricted to \verb|onInput| or \verb|onChange| events, but rather any event triggered by the user.
-  \item \textbf{State Change Times}:The time a state changes after user input.
-  This is usually not automatically directly testable because the internal functionality of the framework is not always observable.
-  \item \textbf{Mutation Times}:Time of a mutation from user input within a predetermined \acrshort{html} element such as \verb|<main>| to another \acrshort{dom} mutation.
+  \item \textbf{Mutation Times}: Time of a mutation from user input within a predetermined \acrshort{html} element such as \verb|<main>| to another \acrshort{dom} mutation.
   A \verb|MutationObserver| is initialized and all mutations are recorded. Designated mutations to the \acrshort{dom} are added child elements, removed child elements and attribute updates (added, edited and removed).
 \end{itemize}
 
@@ -786,8 +816,27 @@ Also, reading data from the window context after the fact proved to be difficult
 Objects such as the needed navigation timings are no longer available after the fact.
 The solution to this problem was to attach all necessary information as a file to the report so it is readable after the context closed.
 
+\begin{table}[h]
+  \begin{center}
+    \begin{tabular}{|l|l|}
+      \hline
+      \textbf{Lighthouse} & \textbf{Playwright} \\ \hline
+      \acrfull{tbw}       & domContentLoaded    \\ \hline
+      \acrfull{ttfb}      & loadEventEnd        \\ \hline
+      \acrfull{tti}       & User Input Times    \\ \hline
+      \acrfull{tbt}       & Mutation Times      \\ \hline
+      \acrfull{lcp}       &                     \\ \hline
+      \acrfull{fvc}       &                     \\ \hline
+      \acrfull{ofvc}      &                     \\ \hline
+      \acrfull{olvc}      &                     \\ \hline
+    \end{tabular}
+  \end{center}
+  \caption{Assignment of metrics to the test tools}
+  \label{tab:metricassignment}
+\end{table}
+
 With all tools and workarounds in place, the data needed for the study could be collected.
-Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt}, \acrshort{lcp}, \acrshort{fvc}, \acrshort{ofvc} and \acrshort{olvc} whereas Playwright cover all navigation and \acrshort{html} event times, namely DomContentLoaded, LoadEventEnd, user input times, state change times and mutation times.
+Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt}, \acrshort{lcp}, \acrshort{fvc}, \acrshort{ofvc} and \acrshort{olvc} whereas Playwright cover all navigation and \acrshort{html} event times, namely DomContentLoaded, LoadEventEnd, user input times and mutation times (see table \ref{tab:metricassignment}).
 
 \section{Implementation}\label{sec:implementation} 
 % Project creation strategy
@@ -821,7 +870,7 @@ This study exceeds this limit.
 This limiting condition entails that all testing configuration could not be centralized, but had to be duplicated across repositories.
 The setup of the testing environment has been the last step of the project creation (see section \ref{subsec:tests}).
 
-\subsection{Components}\label{subsec:components}
+\subsection{Component implementation}\label{subsec:components}
 % Notable components and HTML elements
 % How are they constructed?
 % How are they projected onto the DOM?
@@ -868,7 +917,8 @@ Listing \ref{lst:Vue:About} demonstrates the static nature of the page view and 
   \caption{Graphical subdivision of the About page into components \textcolor{red}{(Welches Diagramm ist besser?)}}\label{fig:graphicalAboutPage}
 \end{figure}
 
-\begin{lstlisting}[caption=About page in Vue.js, label={lst:Vue:About}, language=HTML]
+\vspace{1cm}
+\begin{lstlisting}[caption=About page in Vue.js (as displayed in figure \ref{fig:uml}), label={lst:Vue:About}, language=HTML]
 <!-- AboutView.vue -->
 <template>
   <div id="AboutView">
@@ -923,6 +973,7 @@ Listing \ref{lst:Vue:About} demonstrates the static nature of the page view and 
   </div>
 </template>
 \end{lstlisting}
+\vspace{1cm}
 
 The Create page poses an opposite to the About page.
 In contrast to a static page with non-changing content, the purpose of the Create page is to preview a new post.
@@ -934,6 +985,7 @@ The computed property mediaSource (see listing \ref{lst:Vue:Create:Script}, line
 This template contains a static \verb|<header>|, the \verb|<form>| with dynamic attributes and a Post component.
 This subcomponent hast to be dynamic and reactive to its props as they are changing throughout the process of post creation.
 
+\vspace{1cm}
 \begin{lstlisting}[caption=Create Page in Vue.js (Template), label={lst:Vue:Create:Template}, language=HTML]
 <!-- CreateView.vue -->
 <template>
@@ -960,7 +1012,7 @@ This subcomponent hast to be dynamic and reactive to its props as they are chang
   <Post :userhandle="userhandle" :caption="caption" :likeCount="0" :mediaSource="mediaSource" :hideActionIcons="true" />
 </template>
 \end{lstlisting}
-
+\hrule
 \begin{lstlisting}[caption=Create Page in Vue.js (Script), label={lst:Vue:Create:Script}, language=JavaScript, firstnumber=25, escapechar=°]
 // CreateView.vue
 export default {
@@ -984,7 +1036,8 @@ export default {
   },
 };
 \end{lstlisting}
- 
+\vspace{1cm}
+
 Listings \ref{lst:Vue:Post:Template} and \ref{lst:Vue:Post:Script} show the implementation of the Post component in Vue.js.
 It requires seven props for the five data points of a post (see figure \ref{fig:classes}) and two additional props for the control over the design and loading behaviour of the post's image or video.
 Additionally, the \verb|mounted| method loads the user data through the \verb|ProfileService| (see listing \ref{lst:Vue:Post:Script}, line \ref{line:postMounted}).
@@ -996,6 +1049,7 @@ Every time the caption changes, the string is split by whitespaces and each word
 Afterwards, the list of \verb|<span>| elements is joined using whitespaces.
 The purpose of this method for the projection of the caption is only for the styling of hashtags.
 
+\vspace{1cm}
 \begin{lstlisting}[caption=Post in Vue.js (Template), label={lst:Vue:Post:Template}, language=HTML]
 <!-- Post.vue -->
 <template>
@@ -1023,7 +1077,7 @@ The purpose of this method for the projection of the caption is only for the sty
   </div>
 </template>
 \end{lstlisting}
-  
+\hrule
 \begin{lstlisting}[caption=Post in Vue.js (Script), label={lst:Vue:Post:Script}, language=JavaScript, firstnumber=26, escapechar=°]
 // Post.vue
 import ProfileService from "@/services/ProfileService";
@@ -1054,6 +1108,7 @@ export default {
   },
 };
 \end{lstlisting}
+\vspace{1cm}
 
 Because the creation of such a dynamic component is an intended use case for Angular, Next.js, Nuxt, React, Svelte and Vue.js, their implementation is not unusual (see listings \ref{lst:Vue:Create:Template}, \ref{lst:Vue:Create:Script}, \ref{lst:Angular:Create:Template}, \ref{lst:Angular:Create:Module}, \ref{lst:Next:Create}, \ref{lst:Nuxt:Create:Template}, \ref{lst:Nuxt:Create:Script}, \ref{lst:React:Create}, \ref{lst:Svelte:Create:Script} and \ref{lst:Svelte:Create:Template}).
 Astro poses as an opposite to this.
@@ -1070,6 +1125,7 @@ The CreateForm itself contains the form and Post subcomponent.
 Because of this structure, the components Post, MediaComponent, BookmarkIcon, CommentIcon, HeartIcon and SendIcon had to be implemented as Astro components and as React components.
 Figure \ref{fig:astroUml} shows this updated component structure with Astro Islands.
 
+\vspace{1cm}
 \begin{lstlisting}[caption=Create page in Astro (Frontmatter), label={lst:Astro:Create:Script}, language=JavaScript]
 // create.astro 
 export const prerender = false;
@@ -1082,7 +1138,7 @@ import React from "react";
 
 const userhandle = "@you";
 \end{lstlisting}
-
+\hrule
 \begin{lstlisting}[caption=Create page in Astro (HTML), label={lst:Astro:Create:HTML}, language=HTML, firstnumber=11, escapechar=°]
 <!-- create.astro -->
 <HtmlLayout>
@@ -1095,7 +1151,7 @@ const userhandle = "@you";
   </React.StrictMode>
 </HtmlLayout>
 \end{lstlisting}
-    
+\hrule
 \begin{lstlisting}[caption=Create form in Astro, label={lst:Astro:Createform}, language=JavaScript]
 // CreateForm.jsx
 import { useState } from "react";
@@ -1138,6 +1194,7 @@ const CreateForm = ({ userhandle }) => {
 
 export default CreateForm;
 \end{lstlisting}
+\vspace{1cm}
 
 \begin{figure}
   \begin{center}
@@ -1151,6 +1208,7 @@ It is used within the ProfileList, Profile and Post components (see figure \ref{
 As described in section \ref{subsec:exampleapplication}, the main use of this component for a developer is to centralize the optimization of multimedia files and to ensure its correct size and style.
 As such, it is a catchall component for many kinds of multimedia sources. Listings \ref{lst:Vue:MediaComponent:Template} and \ref{lst:Vue:MediaComponent:Script} show parts of its implementation in Vue.js.
 
+\vspace{1cm}
 \begin{lstlisting}[caption=MediaComponent in Vue.js (Template), label={lst:Vue:MediaComponent:Template}, language=HTML]
 <!-- MediaComponent.vue -->
 <template>
@@ -1165,7 +1223,7 @@ As such, it is a catchall component for many kinds of multimedia sources. Listin
   
 <script>//see listing below</script>
 \end{lstlisting}
-
+\hrule
 \begin{lstlisting}[caption=MediaComponent in Vue.js (Script), label={lst:Vue:MediaComponent:Script}, language=JavaScript, firstnumber=13, escapechar=°]
 // MediaComponent.vue
 import { playPauseVideo } from "@/utils/autoplay.js";
@@ -1197,6 +1255,7 @@ export default {
   },
 };
 \end{lstlisting}
+\vspace{1cm}
 
 First, the component takes five props that can be passed to it as \acrshort{html} attributes (see listing \ref{lst:Vue:MediaComponent:Script}, line \ref{line:mediaComponentProps} ff.).
 The \verb|src| string contains either the file name or \acrshort{url} to the file.
@@ -1238,7 +1297,7 @@ For this reason, only the metadata is preloaded unless it is the first post in t
 To ensure the wanted autoplay feature, each \verb|<video>| element is referenced using the framework and custom code ensures videos play when they are in the viewport and pause when they are outside of it.
 This is achieved using an \verb|IntersectionObserver| \citep{IntersectionObserver}.
 
-\subsection{Tests}\label{subsec:tests}
+\subsection{Configuration of testing tools}\label{subsec:tests}
 % How are tests configured and implemented?
 % What is measured, stored and evaluated?
 % 
@@ -1270,6 +1329,7 @@ For applications that rely on \verb|index.html| to be returned if a requested re
 For example, requesting the defined path \verb|/about| results in a 404 code with the \verb|index.html| file as the response body.
 Withouth the option \verb|ignoreStatusCode: true|, the Lighthouse test would fail as the page is considered to be unavailable.
 
+\vspace{1cm}
 \begin{lstlisting}[caption={Automation script for Lighthouse tests}, language=JavaScript, label={lst:lighthouse-script}]
 // testing-script/index.js
 import fs from 'fs';
@@ -1364,7 +1424,7 @@ for (let projectConfig of config.projects) {
 
 logger.info("ALL DONE")
 \end{lstlisting}
-
+\hrule
 \begin{lstlisting}[caption={Test configuration for Lighthouse tests}, language=JavaScript, label={lst:lighthouse-config}]
 // testing-script/config.js
 export default {
@@ -1392,6 +1452,7 @@ export default {
   ]
 }
 \end{lstlisting}
+\vspace{1cm}
 
 Once the test results are available, the relevant metrics are collected, stored in a \acrshort{json} file and the \acrshort{html} report is stored as a means to debugging.
 After the tests are finished and results are stored, the Google Chrome window is killed and the webserver is stopped.
@@ -1405,6 +1466,7 @@ Listing \ref{lst:playwright-trigger} shows the implementation of this trigger sc
 Project directories are defined and the test command is executed in the directory with the configured environment variables.
 \verb|PW_TEST_HTML_REPORT_OPEN| tells Playwright to not open a report even if a test fails, \verb|PLAYWRIGHT_HTML_REPORT| defines the report directory as a directory with a timestamp, so that no test results are overwritten, and \verb|PLAYWRIGHT_JSON_OUTPUT_FILE| specifies the location where a \acrshort{json} reports shall be stored.
 
+\vspace{1cm}
 \begin{lstlisting}[caption={Trigger script for Playwright tests}, label={lst:playwright-trigger}, language=JavaScript]
 // playwright-trigger.mjs
 import { spawn } from 'child_process'
@@ -1458,7 +1520,7 @@ for (const project of projects) {
 
 console.log("DONE")
 \end{lstlisting}
-
+\hrule
 \begin{lstlisting}[caption={Playwright configuration for Vue.js}, label={lst:playwright-config}, language=JavaScript]
 // ig-clone-vue/playwright.config.js
 import process from 'node:process'
@@ -1497,6 +1559,7 @@ export default defineConfig({
 })
 
 \end{lstlisting}
+\vspace{1cm}
 
 The tests and test configuration are similar for all frameworks.
 Listing \ref{lst:playwright-config} shows how the test suite is configured.
@@ -1520,6 +1583,7 @@ The paths and time budget per page configed in \verb|pages.js| (see listing \ref
 To ensure a fast performance, the time budgets are defined to be under two seconds for all pages.
 Because no network requests are made in the design of the application on the About page, the time budget was lowered to 1.5 seconds here.
 
+\vspace{1cm}
 \begin{lstlisting}[caption={Test file for page load times}, label={lst:page-load-spec}, language=JavaScript]
 // page-load.spec.js
 import { test, expect } from '@playwright/test';
@@ -1551,7 +1615,7 @@ async function measurePerformance(page) {
 }
 
 \end{lstlisting}
-
+\hrule
 \begin{lstlisting}[caption={Test pages configuration}, label={lst:pages-config}, language=JavaScript]
 // pages.js
 const routes = [
@@ -1563,6 +1627,7 @@ const routes = [
 
 export default routes;
 \end{lstlisting}
+\vspace{1cm}
 
 Second, component load times are measured with the help of \verb|dynamic-performance.spec.js|.
 The same routes are opened after in initialization script is injected into the browser window.
@@ -1581,6 +1646,7 @@ In order to trace the failing components more easily, screenshots are token of e
 Additionally, a screenshot of the whole page is taken in which slow elements are colored. Every screenshot is then attached to the test.
 This method ensures that slow components can be identified visually even if xpath and id of the element change between component lifecycles or application builds.
 
+\vspace{1cm}
 \begin{lstlisting}[caption={Test file for component load times}, label={lst:dynamic-performance-spec}, language=JavaScript, escapechar=°]
 // dynamic-performance.spec.js
 import { test, expect } from '@playwright/test';
@@ -1658,7 +1724,7 @@ test.describe("Dynamic load time", () => {
   }
 })
 \end{lstlisting}
-
+\hrule
 \begin{lstlisting}[caption={Injected mutation recorder script}, label={lst:performance-recorder}, language=JavaScript, escapechar=°]
 // performance.js
 let loadTimes = {}
@@ -1779,6 +1845,7 @@ interval = setInterval(initObservation, 100) °\label{line:mutationInterval}°
 // initialize window.dynamic_component_performance
 window.dynamic_component_performance = loadTimes
 \end{lstlisting}
+\vspace{1cm}
 
 Third, tests for the component update times are specified in \verb|state-change.spec.js| (see listing \ref{lst:state-change-spec}).
 In this test specification two other time budgets are defined.
@@ -1793,6 +1860,7 @@ The tests to pass are then that the earliest mutation timing is within 100 ms of
 Again, screenshots are taken of all \acrshort{html} elements that were recorded as mutated and do not pass the tests.
 These screenshots are also attached to the test in order to debug applications that do no pass the tests.
 
+\vspace{1cm}
 \begin{lstlisting}[caption={Test file for component update times}, label={lst:state-change-spec}, language=JavaScript, escapechar=°]
 // state-change.spec.js
 import { test, expect } from '@playwright/test';
@@ -1914,6 +1982,7 @@ for (const actionGroup of actions) {
   }
 }
 \end{lstlisting}
+\vspace{1cm}
   
 \section{Evaluation}\label{sec:evaluation}
 
@@ -1937,117 +2006,55 @@ The version of Astro hosted on Vercel is the version with duplicate components.
 % Lighthouse result graphs
 \begin{figure}[ht!]
   \centering
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/performanceScore.png}
-  %   \end{center}
-  %   \caption{Performance score}\label{subfig:LH:performanceScore}
-  % \end{subfigure}
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/CLS.png}
-  %   \end{center}
-  %   \caption{Cumulative Layout Shift}\label{subfig:LH:cumulativeLayoutShift}
-  % \end{subfigure}
-  \begin{subfigure}{0.95\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TBW.png}
     \end{center}
-    \caption{Total byte weight}\label{subfig:LH:totalbyteweight}
+    \caption{\acrfull{tbw}}\label{subfig:LH:totalbyteweight}
   \end{subfigure}
-  \begin{subfigure}{0.95\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TTFB.png}
     \end{center}
-    \caption{Time to first byte}\label{subfig:LH:timeToFirstByte}
+    \caption{\acrfull{ttfb}}\label{subfig:LH:timeToFirstByte}
   \end{subfigure}
-  \begin{subfigure}{0.95\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TTI.png}
     \end{center}
-    \caption{Time to interactive}\label{subfig:LH:interactive}
+    \caption{\acrfull{tti}}\label{subfig:LH:interactive}
   \end{subfigure}
 \end{figure}
 \begin{figure}[ht!]\ContinuedFloat
   \centering  
-  \begin{subfigure}{0.95\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/observedDomContentLoaded.png}
     \end{center}
     \caption{Observed DomContentLoaded}\label{subfig:LH:observedDomContentLoaded}
   \end{subfigure}
-  \begin{subfigure}{0.95\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/TBT.png}
     \end{center}
-    \caption{Total Blocking Time}\label{subfig:LH:totalBlockingTime}
+    \caption{\acrfull{tbt}}\label{subfig:LH:totalBlockingTime}
   \end{subfigure}
-  \begin{subfigure}{0.95\linewidth}
-    \begin{center}
-      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OFVC.png}
-    \end{center}
-    \caption{Observed First Visual Change}\label{subfig:LH:observedFirstVisualChange}
-  \end{subfigure}
-  
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/FCP.png}
-  %   \end{center}
-  %   \caption{First Contentful Paint}\label{subfig:LH:firstContentfulPaint}
-  % \end{subfigure}
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OFCP.png}
-  %   \end{center}
-  %   \caption{Observed First Contentful Paint}\label{subfig:LH:observedFirstContentfulPaint}
-  % \end{subfigure}
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OFMP.png}
-  %   \end{center}
-  %   \caption{Observed First Meaningful Paint}\label{subfig:LH:observedFirstMeaningfulPaint}
-  % \end{subfigure}
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/FMP.png}
-  %   \end{center}
-  %   \caption{First Meaningful Paint}\label{subfig:LH:firstMeaningfulPaint}
-  % \end{subfigure}
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OLCP.png}
-  %   \end{center}
-  %   \caption{Observed Largest Contentful Paint}\label{subfig:LH:observedLargestContentfulPaint}
-  % \end{subfigure}
-  
 \end{figure}
 \begin{figure}[ht!]\ContinuedFloat
   \centering
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/SI.png}
-  %   \end{center}
-  %   \caption{Speed Index}\label{subfig:LH:speedIndex}
-  % \end{subfigure}
-  \begin{subfigure}{0.95\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/LCP.png}
     \end{center}
-    \caption{Largest Contentful Paint}\label{subfig:LH:largestContentfulPaint}
+    \caption{\acrfull{lcp}}\label{subfig:LH:largestContentfulPaint}
   \end{subfigure}
-  \begin{subfigure}{0.95\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OLVC.png}
     \end{center}
-    \caption{Observed Last Visual Change}\label{subfig:LH:observedLastVisualChange}
+    \caption{\acrfull{olvc}}\label{subfig:LH:observedLastVisualChange}
   \end{subfigure}
-  % \begin{subfigure}{0.95\linewidth}
-  %   \begin{center}
-  %     \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OSI.png}
-  %   \end{center}
-  %   \caption{Observed Speed Index}\label{subfig:LH:observedSpeedIndex}
-  % \end{subfigure}
-  \caption{Lighthouse test results}\label{fig:lighthouseResults}
+  \caption{Lighthouse test results in Google Chrome}\label{fig:lighthouseResults}
 \end{figure}
 
 The \acrlong{tbw} is presented in figure \ref{subfig:LH:totalbyteweight}.
@@ -2132,17 +2139,7 @@ Next.js is the only exception to that on the Create page.
 Amongst the frameworks, no clear separation can be identified across the pages or hosting environment, although Vue.js and React are always among the fastest in this metric compared to other frameworks with the same hosting method.
 Additionally, Nuxt has the slowest \acrshort{olvc} across pages, expecially on the Feed page.
 However, the average of Nuxt-build on Vercel is deceiving.
-
-% OLVC distribution Nuxt-build
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\linewidth, keepaspectratio]{img/box-plot-image.png}
-  \caption{Distribution of OLVC measurements for Nuxt-build on Vercel on the Feed page}
-  \label{fig:olvc-distribution}
-\end{figure}
-
-Figure \ref{fig:olvc-distribution} shows the distribution of the \acrshort{olvc} measurements throughout the 20 test repetitions.
-It is clear that most measurements lie around 4500 ms rather than the average of all values which 6012 ms.
+The distribution of the \acrshort{olvc} measurements of Nuxt-build throughout the 20 test repetitions clearly shows that most measurements lie around 4500 ms rather than the average of all values which 6012 ms.
 Nonetheless, the \acrshort{olvc} of Nuxt is still far above the average of other frameworks.
 
 The average measurements for \acrfull{lcp} are shown in figure \ref{subfig:LH:largestContentfulPaint}.
@@ -2247,9 +2244,21 @@ On Vercel, Nuxt-build has relatively late values across all pages.
 % OVCD
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/olvc-ofvc.png}
-  \caption{Observed Visual Change Duration}
-  \label{fig:LH:OVCD}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/OFVC.png}
+    \end{center}
+    \caption{\acrfull{ofvc}}
+    \label{subfig:LH:observedFirstVisualChange}
+  \end{subfigure}
+  \begin{subfigure}{0.95\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, keepaspectratio]{img/lighthouse-results/olvc-ofvc.png}
+    \end{center}
+    \caption{\acrfull{ovcd}}\label{subfig:LH:observedVisualChangeDuration}
+    \label{fig:LH:OVCD}
+  \end{subfigure}
+  \caption{}
 \end{figure}
 
 More intersting than the raw \acrshort{olvc} and \acrshort{ofvc} values is the difference between the measurements.
@@ -2327,8 +2336,7 @@ For these reasons, the configuration of a initialization interval is a balance b
 % 2. Which HTML-Elements even update?
 % 3. Which frameworks update HTML-Elements faster than others?
 
-Section \ref{subsec:tests} defines the update time of a component using the user input time, the state change time and the time of the \acrshort{dom} mutation.
-However, the state change time is not observable without a white-box understanding of the application and the framework.
+Section \ref{subsec:tests} defines the update time of a component using the user input timethe time of the \acrshort{dom} mutation.
 Only the mutation times were used in this study to keep the method of measurement valid for as many applications frameworks as possible.
 Because the user input action is delayed and the zero-time is reset beforehand (see listing \ref{lst:state-change-spec}, lines \ref{line:actionDelay} - \ref{line:userAction}), the punctual initialization of the MutationObserver is not an issue when testing \acrshort{dom} mutations triggered by user inputs (as described in section \ref{subsec:componentloadtimes}).
 
@@ -2378,22 +2386,21 @@ Mobile Chrome also shows the same characteristics with the exception of some mut
 \end{figure}
 
 % Playwright results per framework (user actions)
-% TODO: update images
 \begin{figure}[ht!]
   \centering
-  \begin{subfigure}{0.9\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/userActions_byUserAction/captionChange.png}
     \end{center}
     \caption{Mutations after Caption Change}\label{subfig:PW:captionChange}
   \end{subfigure}
-  \begin{subfigure}{0.9\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/userActions_byUserAction/mediaSelection.png}
     \end{center}
     \caption{Mutations after Media Selection}\label{subfig:PW:mediaSelection}
   \end{subfigure}
-  \begin{subfigure}{0.9\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/userActions_byUserAction/mediaSourceInsert.png}
     \end{center}
@@ -2401,7 +2408,7 @@ Mobile Chrome also shows the same characteristics with the exception of some mut
   \end{subfigure}
 \end{figure}
 \begin{figure}[ht!]\ContinuedFloat
-  \begin{subfigure}{0.9\linewidth}
+  \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/userActions_byUserAction/postCreation.png}
     \end{center}
@@ -2496,8 +2503,8 @@ The other browsers Chromium, Mobile Chrome, Google Chrome and Microsoft Edge lie
   \label{tab:mutations:times}
 \end{table}
 
-Table \ref{tab:mutations:times} lists the minimal and maximal mutation times of the frameworks in each browser, as well as the median average for each combination.
-In addition, the median average and weighted averages of all minima, maxima and averages of mutation times in each framework are calculated.
+Table \ref{tab:mutations:times} lists the minimal and maximal mutation times of the frameworks in each browser, as well as the mean average for each combination.
+In addition, the mean average and weighted averages of all minima, maxima and averages of mutation times in each framework are calculated.
 The weighted averages are based on the usage percentages of browsers (see table \ref{tab:browserUsage}).
 These results indicate clearly that Next.js produces the slowest mutations both on average and weighted average.
 In contrast, Nuxt makes the fastest updates across browsers.
@@ -2505,7 +2512,7 @@ Then, Angular comes in seconds, Vue.js is third and React is the fourth-fastest 
 The second-slowest framework on average is Astro, but it comes in faster than Svelte in the ranking of frameworks when the weights are calculated in.
 
 As indicated earlier, Google Chrome and Microsoft Edge are the fastest and Webkit and Mobile Safari are the slowest browsers across frameworks on average.
-The highlighted fastest and slowest values for minimum, median and maximum recorded mutation times verify these assessments.
+The highlighted fastest and slowest values for minimum, mean average and maximum recorded mutation times verify these assessments.
 The fastest times are all recorded in Google Chrome and slowest in Webkit.
 Notably, both the slowest first mutation and the fastest average and last mutation are recorded in Astro.
 Based on the average per browser, the ranking of fastest browsers in component update time is as follows:
@@ -2592,11 +2599,47 @@ For this kind of web application, Nuxt, Angular, Vue.js and React present themse
 % 10 second limit for mutationobserver: slow components and fast updating components
 % initialization interval does change the completeness and comparability of the results of component load times
 
+This paper has presentatd a study comparing mainstream JavaScript frameworks based on an example application.
+To this end, a web application was designed based on the Android mobile app of Instagram and three rendering phases were identified to categorize measurement: the page load as representative for pur \acrshort{html} websites, the load time of \acrlong{js} components and the update time of \acrlong{js} components.
+In this study, Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js were contrasted with each other.
+The measurement results show that the results are not clear-cut towards any framework, but rather indicate tendencies of load and update speeds of frameworks, browsers, page types, hosting environments and implementation.
+All frameworks display strenghts in at least one metric relating to page and component load.
+Component update time is the only metric category outlining fast and slow frameworks, as well as browsers.
+Google Chrome and Microsoft Edge turn out to be the fastest of the compared browsers and Nuxt appears to be the fastest framework.
+On the other end of the spectrum, Mobile Safari and Webkit as well as Next.js produce slow component update times.
+
+Because the framework choice appears to be dependent on more than just the framework itself, some considerations can be recommended for it.
+Before choosing a framework for new projects, the browser usage of users should be taken into consideration, especially with Mobile Safari and Webkit.
+If the used browsers are known, budgets for any tested metrics should be adapted to match expectations based on the results presented in this study.
+Additionally, results have shown that performance measurements fluctuate to up to 30\% in either direction.
+Therefore, all performance tests should be executed multiple times before a test should be considered passing.
+This recommendation should especially be considered when comparing frameworks, as shown in this work.
+
+Future works might find solutions for uncovered difficulties with testing strategems and missing data in this study.
+First, the measurements do not cover navigation between the pages, but only the load behaviour of single pages,
+The current expectation is that navigation measurements would favor Angular applicatinos because no additional \acrlong{js} files have to be loaded on navigation to another page.
+Especially, the byte weight of pages might be compensated in favor of Angular for this reason.
+Second, the actual time between updates to the application's state and visual changes in the user's viewport are skipped in this study with the goal of keeping measurement methods as open as possible.
+Solutions to this end include white-box tetsing and might involve triggering custom events on state update that are registerable in a testing suite.
+Third, the interpretations of test results uncovered trade-offs relating to the recording initialization and end.
+A slow interval for initialization of the MutationObserver for \acrshort{dom} mutations makes results comparable to other test execution, but also leads to missing data for early mutations between injection of the recording script and initialization of the MutationObserver.
+This might be solved through a different initialization process, e.g. including the recording script into the application's code.
+Additionally, the end of the recording time frame has to possible conflicts.
+Components that load slower than ten seconds are not recorded at all and components that update constantly, such as a digital clock component, are also not properly recorded.
+For the former, no solution is currently apparent except a longer recording, which does not fully solve the problem.
+A solutino for the later conflict is implemented by setting a custom \acrshort{html} attribute \verb|skipPerformance="true"| to elements that should be ignored for the recording.
+A different approach might open opportunitiesto improve the registration of a fully loaded application in test suites appart from the events of the \acrshort{html} standard.
+Lastly, this study only covers four pages of a single application, two hosting environments and up to 20 repetitions per Lighthouse test and three repetitions of Playwright tests if the test fails.
+Future work should verify the results by repeating the measurements of the example application of this study with more test repetitions to eliminate fluctuations.
+Also, insights into differences in performance and considerations for tests might be gained through the addition of pages for all page types and the usage of other hosting environments. 
+
 \pagebreak
 
 \appendix
 
 \lstlistoflistings
+
+\pagebreak
 
 \begin{lstlisting}[caption=MediaComponent in Angular (Template), label={lst:Angular:MediaComponent:Template}, language=HTML]
 <!-- media-component.component.html -->
@@ -2612,6 +2655,8 @@ For this kind of web application, Nuxt, Angular, Vue.js and React present themse
   </div>
 </ng-template>
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=MediaComponent in Angular (Module), label={lst:Angular:MediaComponent:Module}, language=JavaScript]
 // media-component.component.ts
@@ -2659,6 +2704,8 @@ export class MediaComponentComponent {
 }
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=MediaComponent in pure Astro (Frontmatter \& Script), label={lst:Astro:MediaComponent:Script}, language=JavaScript]
 // MediaComponent.astro
 ---
@@ -2689,6 +2736,8 @@ else mediaSource = (await media[src]()).default;
   playPauseVideo();
 </script>
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=MediaComponent in pure Astro (Template), label={lst:Astro:MediaComponent:Template}, language=HTML, firstnumber=29]
 // MediaComponent.astro
@@ -2723,6 +2772,8 @@ else mediaSource = (await media[src]()).default;
     )
 }
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=MediaComponent Astro Island with React, label={lst:AstroIsland:MediaComponent}, language=JavaScript]
   // MediaComponent.jsx
@@ -2784,6 +2835,8 @@ else mediaSource = (await media[src]()).default;
   export default MediaComponent;
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=MediaComponent in Next.js, label={lst:Next:MediaComponent}, language=JavaScript, escapechar=°]
 // MediaComponent.js
 import { createRef, useEffect, useState } from "react";
@@ -2831,6 +2884,8 @@ const MediaComponent = ({ src, alt, width, height, className, id, priority = fal
 export default MediaComponent
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=MediaComponent in Nuxt (Template), label={lst:Nuxt:MediaComponent:Template}, language=HTML]
 <!-- MediaComponent.vue -->
 <template>
@@ -2845,6 +2900,8 @@ export default MediaComponent
 
 <script>//see listing below</script>
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=MediaComponent in Nuxt (Script), label={lst:Nuxt:MediaComponent:Script}, language=JavaScript, firstnumber=13, escapechar=°]
 // MediaComponent.vue
@@ -2878,6 +2935,8 @@ export default {
   },
 };
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=MediaComponent in React, label={lst:React:MediaComponent}, language=JavaScript, escapechar=°]
 // MediaComponent.js
@@ -2917,6 +2976,8 @@ const MediaComponent = ({ src, alt, width, height, className, id, priority = fal
 export default MediaComponent
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=MediaComponent in Svelte (Script), label={lst:Svelte:MediaComponent:Script}, language=JavaScript]
 // MediaComponent.svelte
 import { onMount } from 'svelte';
@@ -2943,6 +3004,8 @@ onMount(() => {
 });
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=MediaComponent in Svelte (Template), label={lst:Svelte:MediaComponent:Template}, language=HTML, firstnumber=24]
 // MediaComponent.svelte
 {#if $$props?.src?.endsWith('jpg')}
@@ -2967,6 +3030,8 @@ onMount(() => {
 	</div>
 {/if}
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=Create page in Angular (Template), label={lst:Angular:Create:Template}, language=HTML]
 <!-- create.component.html -->
@@ -2998,6 +3063,8 @@ onMount(() => {
 
 <app-post [userhandle]="userhandle" [caption]="caption" [likeCount]="0" [mediaSource]="mediaUrl || mediaChoice" [hideActionIcons]="true" />
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=Create page in Angular (Module), label={lst:Angular:Create:Module}, language=JavaScript]
 // create.component.ts
@@ -3032,6 +3099,8 @@ export class CreateComponent {
   }
 }
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=Create page in Next.js, label={lst:Next:Create}, language=JavaScript]
 // create/page.tsx
@@ -3097,6 +3166,8 @@ const CreatePost = () => {
   
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=Create page in Nuxt (Template), label={lst:Nuxt:Create:Template}, language=HTML]
 <!-- create.vue -->
 <template>
@@ -3130,6 +3201,8 @@ const CreatePost = () => {
 </template>
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=Create page in Nuxt (Script), label={lst:Nuxt:Create:Script}, language=JavaScript, firstnumber=31]
 // create.vue
 export default {
@@ -3153,6 +3226,8 @@ export default {
   },
 };
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=Create in React, label={lst:React:Create}, language=JavaScript]
 // CreatePost.js
@@ -3212,6 +3287,8 @@ const CreatePost = () => {
 export default CreatePost
 \end{lstlisting}
 
+\vspace{0.5cm} \hrule \vspace{0.5cm}
+
 \begin{lstlisting}[caption=Create in Svelte (Script), label={lst:Svelte:Create:Script}, language=JavaScript]
 // create/+page.svelte
 import NotInstagramLogo from '$lib/components/NotInstagramLogo.svelte';
@@ -3233,6 +3310,8 @@ function getMediaSource(url: string, choice: string) {
   return url || choice;
 }
 \end{lstlisting}
+
+\vspace{0.5cm} \hrule \vspace{0.5cm}
 
 \begin{lstlisting}[caption=Create in Svelte (Template), label={lst:Svelte:Create:Template}, language=HTML, firstnumber=20]
 <!-- create/+page.svelte -->
@@ -3263,12 +3342,30 @@ function getMediaSource(url: string, choice: string) {
 <Post {userhandle} {caption} likeCount={0} {mediaSource} hideActionIcons={true} />
 \end{lstlisting}
 
-% \begin{lstlisting}[caption=, language=HTML]
-% \end{lstlisting}
-
 \pagebreak
 
 \listoffigures
+
+\pagebreak
+
+\rowcolors{1}{white}{white}
+\glsaddall
+\printnoidxglossary[
+  type=\acronymtype,
+  nonumberlist,
+  style=long
+]
+
+\pagebreak
+
+\nocite{*}
+\bibliography{sources}{}
+
+\vfill
+% \vspace{5cm}
+\textbf{Github repository}: All code and additional meterial can be found under \url{https://github.com/andreasnicklaus/master}.
+
+\pagebreak
 
 \listoftables
 
@@ -3403,19 +3500,4 @@ function getMediaSource(url: string, choice: string) {
   \label{tab:mutations:postCreation}
 \end{table}
 
-\pagebreak
-
-\rowcolors{1}{white}{white}
-\glsaddall
-\printnoidxglossary[
-  type=\acronymtype,
-  % nonumberlist,
-  style=long
-]
-
-\nocite{*}
-\bibliography{sources}{}
-
-\vfill
-\textbf{Github repository}: All projects and additional meterial can be found under \url{https://github.com/andreasnicklaus/master}.
 \end{document}

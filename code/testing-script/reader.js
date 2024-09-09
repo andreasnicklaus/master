@@ -1,13 +1,13 @@
 import path from "path"
 import fs from 'fs';
 
-const directory = path.join(".", "lighthouse-reports", "ig-clone-angular", "vercel", "index")
+const directory = path.join(".", "lighthouse-reports", "ig-clone-nuxt-generate", "vercel", "index")
 const files = fs.readdirSync(directory).filter(fileName => fileName.endsWith(".json") && fileName.startsWith("lighthouse-report"))
 
 const data = files.map(filename => {
   const filestring = fs.readFileSync(path.join(directory, filename), 'utf8');
   const json = JSON.parse(filestring)
-  return json.lhr.audits.metrics.details.items[0].totalBlockingTime
+  return json.lhr.audits.metrics.details.items[0].observedLastVisualChange
 })
 
 console.log(data.join(", "))

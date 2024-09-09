@@ -11,7 +11,7 @@
   - every measurement above the page load time budget might be a results of slow-loading components
 - OFVC
   - local is better across pages and frameworks
-  - Astro, React and Next are good except Astro on Vercel on the Create page <!-- REVIEW: why? -->
+  - Astro, React and Next are good except Astro on Vercel on the Create page
   - Angular very bad compared to other frameworks
   - On Vercel, Nuxt-generate is better
   - Interesting: Difference between OFVC and OLVC

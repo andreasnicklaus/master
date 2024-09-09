@@ -34,7 +34,6 @@
 
 ## Content
 
-<!-- TODO: insert source -->
 `Insert source` states that the reaction time of user interface decreases user retention and continued actions. The "reaction time" is interpreted in three different ways: Time from navigation start to finished DOM updates, time from user input to finished DOM updates and time from state change, a.k.a. data query finish, to finished DOM updates. These update time can be combined or described using the navigation events (see figure `X`). Naturally, other metrics measurements than the navigation timings were also considered.
 
 From the list of measurements in Lighthouse reports (see chapter `X`) sublists with relevant metrics were created to properly represent the load times of the described render sections. Because none of these measurements cover the reaction time after a user input, additional measurements have to be done. Self-written code is injected through Playwright to measure DOM update times (see chapter `X`).
@@ -50,12 +49,11 @@ For this study, the first contact point to a web page is considered to be the fi
 - Time to First Byte: navigationStart --> responseStart: Some of the navigation timings can be summarized by the time to first byte. Everything from `navigationStart` to `responseEnd` is considered to be part of the time to first byte.
 - Time to Interactive: The time until the page can be interactive is the time between `navigationStart` and `domInteractive`. Notably, the timing of `domInteractive` is not necessarily reliable because a DOM may become interactive, but the browser may not be yet, and resources may be still loaded. For example, a HTML skeleton may be interactive very quickly, but no content may be rendered for the user to see. ([source]( https://html.spec.whatwg.org/multipage/dom.html#current-document-readiness))
 - DomContentLoaded: navigationStart --> domContentLoaded: Similar to TTI, domContentLoaded measures the time from `navigationStart` to domContentLoaded. At this point, "all subresources apart from async script elements have loaded" ([direktes Zitat](https://html.spec.whatwg.org/multipage/dom.html#current-document-readiness)) Notably, a high difference between TTFB and DomContentLoaded indicates a great size or at least long load time of subresources.
-- navigationStart --> loadEventEnd: Also very interesting for this study is the total time spent imidiately after initial load of a page until all resources are loaded and the DOM's `onload` event also finished. This is the time from `navigationStart` to `loadEvent` and represents both the capability of the framework to optimize the usage of client and network resources on initial load and the prioritization of JavaScript execution by splitting unimportant code into async scripts. <!-- REVIEW: Is loadevent part of the 2nd kind of metrics -->
+- navigationStart --> loadEventEnd: Also very interesting for this study is the total time spent imidiately after initial load of a page until all resources are loaded and the DOM's `onload` event also finished. This is the time from `navigationStart` to `loadEvent` and represents both the capability of the framework to optimize the usage of client and network resources on initial load and the prioritization of JavaScript execution by splitting unimportant code into async scripts.
 - Total Blocking Time: TBT is the total time spent in a browser with parsing and optionally resources that block the rendering process from finishing. This includes stylesheets and scripts without the async or defer tag. This metric directly represents the time before the user can fulfil its goal on initial load.
-- Last Visual Change: The time from `navigationStart` until the last visual change above the fold (explanation?). <!-- TODO: animations?!?!?!-->
+- Last Visual Change: The time from `navigationStart` until the last visual change above the fold (explanation?).
 - Largest Contentful Paint: LCP is the time between navigation to the page and the time of rendering for the visually largest text or image element in the user's viewport. Optimization of this metrics requires an understanding of the page's content and element size within the viewport.
 
-<!-- REVIEW: make this a list? -->
 First, TBT is most likely slower with CSR frameworks because the code execution filling the HTML skeleton takes some time that is not necessary with SSR and Prerendering applications. On delayed pages this difference is expected to be nonexistent.
 
 Second, the LCP probably won't differ across frameworks, but naturally across page. If a framework creates a faster result in LCP, it is expected to be a SSR or Prerendering framework because of it's expected faster TBT.
@@ -114,7 +112,7 @@ Also, the implementation of the app shows differences here as additional element
 To summarize some comparisons between frameworks or groups of frameworks are most appealing for the evaluation through these metrics:
 
 1. CSR vs SSR/Prerendered: Before testing, differencees between CSR and Prerendered pages are expected, but the metrics and amount of difference are a probably subject of interest. Because there is no perceivable difference between prerendered pages and server-side rendered pages from a client perspective, they are grouped together in this context.
-2. Angular vs React vs Vue: Because these CSR have been competing for `X` years at this point and they are still the most famous front-end frameworks<!-- TODO: source -->,
+2. Angular vs React vs Vue: Because these CSR have been competing for `X` years at this point and they are still the most famous front-end frameworks
 the comparison of these frameworks is relevant for this study.
 3. Nuxt vs Vue.js: As a next generation of the Vue.js framework, the actual performance increases are interesting for developers.
 4. Next.js vs React: Same reason

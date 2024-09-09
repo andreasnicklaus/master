@@ -19,8 +19,6 @@ Tables `u`, `v`, `w` and `x` list the HTML elements that were mutated after user
 
 Figure `x` presents the mutation times of each framework per browser with all recorded times across user actions. The first result for this study is that all frameworks do finish mutating the DOM within the predefined time budget of 500 ms. In addition, the maximum time for mutations is decidedly dependent on the browser. While Webkit is apparently the slowest browser for DOM mutations triggered by the user, especially with Next.js, almost all mutations in Chromium, Microsoft Edge and Google Chrome finish within the time limit for fastest mutations of 100 ms. Mobile Chrome also shows the same characteristic with the exception of some mutations Svelte and Next.js after the Post creation user action.
 
-TODO: udpate the images
-
 Figures `a`, `b`, `c` and `d` contain the update times of the four user actions per browser and framework. A few generalizations are possible to extract from these results.
 For the captionchange (see figure `a`), Nuxt appears to be the fastest Framework on all browser except on Google Chrome where Next.js makes faster DOM mutations. Astro is also a relatively fast framework in Microsoft Edge and Google Chrome, but is one of the slowest frameworks in Webkit and Mobile Safari. In general, Nuxt, Next.js, Vue.js, React and Angular make DOM mutations in under 70 ms in Chromium, Mobile Chrome, Microsoft Edge and Google Chrome. Svelte on the other hand is apparently the slowest framework for this user action on average.
 

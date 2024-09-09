@@ -2,9 +2,9 @@
 
 - [Introduction](#introduction)
 - [Related work](#related-work)
-  - [Client Optimization](#client-optimization)
   - [Measurements / Metrics](#measurements--metrics)
   - [Networking / Protocols](#networking--protocols)
+  - [Client Optimization](#client-optimization)
 - [Design](#design)
   - [Example application](#example-application)
   - [Hosting environments](#hosting-environments)
@@ -37,9 +37,95 @@
 
 # Related work
 
-## Client Optimization
 ## Measurements / Metrics
+
+- list of metrics
+- selections of metrics
+- usage of metrics
+- problems with metrics
+- interpretation of metrics
+
+---
+
+- WebProphet: Automating Performance Prediction for Web Services
+  - 100ms delay -> 1% sales loss
+  - 500ms dealy -> up to 20% sales loss
+  - Outline page load time
+  - Object dependencies
+  - Outline network delays
+- Web prefetching performance metrics: A survey
+  - problems with possible comparisons:
+    - underlying baseline system
+    - workload
+    - key metrics
+  - proposes key metrics for prefetching (considerations used in this thesis)
+  - latency per page is better for user's POV
+- A survey of Web metrics
+  - quality vs usefulness of a web page
+  - content-based quality (relations between pages)
+- Web analytics tools and web metrics tools: An overview and comparative analysis
+  - metrics should be chosen based on objective goals
+- Using WebPageTest
+  - Interpretation of Lighthouse reports
+- Web Performance Pitfalls
+  - Page Load Time is used for user-perceived quality of experience
+  - Object count and byte size is relevant
+  - Pitfalls: Redirects, Object sizes, Object count, Data source availability
+  - Guidelines (used in this study)
+- Seven pitfalls to avoid when running controlled experiments on the web
+  - long-term metrics (customer lifetime value) are recommended
+  - list variants and ambiguities for both robots and humans
+- What-If Analysis of Page Load Time in Web Browsers Using Causal Profiling
+  - PLT: Network activities + Computation activities
+  - Browser performance is critical (esp. mobile browsers [0.5%])
+  - separate Styling, JS and Layout rendering
+  - Caching is important, esp. for slow connections
+
 ## Networking / Protocols
+
+- Analyzing factors that influence end-to-end Web performance
+  - List of factor
+  - Methods:
+    - Multiple clients
+    - Multiple hosting services / server sites
+- High Performance Browser Networking
+  - Delays: Propagation, Transmission, Processing, Queueing
+  - Factors: Number of request, Network speed, Ping
+  - Performance best practices
+- Measuring and mitigating web performance bottlenecks in broadband access networks
+  - last-mile latency is important
+  - lists components of retrieval time for each object
+  - Caching is important
+
+## Client Optimization
+
+- On Landing and Internal Web Pages: The Strange Case of Jekyll and Hyde in Web Performance Measurement
+  - Selecting pages for testing is not easy because no usage data is available
+  - Sitemaps are only hints.
+- Integrated Approach to Web Performance Testing: A Practitioner’s Guide
+  - Tests should be based on stakeholders' expectations of load time
+  - Classification of web pages based on complexity and interactivity
+  - bail out percentage in ralation to load time
+  - attributes of a good benchmark
+- Performance comparison of dynamic web platforms
+  - WWW changed from static content-distribution to interactive, dynamic medium
+- View-Centric Performance Optimization for Database-Backed Web Applications
+  - performance based on data-processing
+  - is data loaded and not used
+  - is rendering delayed by data-processing
+- Dynamic thread assignment in web server performance optimization
+  - dynamically created (non-cacheable) data needs computational ressources
+  - parallelization helps with dynamic pages
+- Measuring Web Latency and Rendering Performance: Method, Tools, and Longitudinal Dataset
+  - Web Quality of Service vs Web Quality of Experience
+  - Rendering measurements
+- Effects of Web Page Contents on Load Time over the Internet
+  - 1 second -> 16% decrease in customer satisfaction
+  - Images are about 76% of the total web page size
+  - PLT is mostly based on content rather than client and network conditions
+- Load testing of Web sites
+  - customer expectation: availability and response time
+  - many factors on the customers perceiption of response time
 
 # Design
 ## Example application

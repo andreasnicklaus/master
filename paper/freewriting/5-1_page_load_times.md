@@ -14,7 +14,7 @@ Legend info:
 
 **Metrics**:
 - TBW
-  - Nuxt(build, local) produces bigger index, create and profile page for the initial pages <!-- REVIEW: why -->
+  - Nuxt(build, local) produces bigger index, create and profile page for the initial pages
   - Create page is the only really surprising one
   - About page has no large multimedia files and is therefore very small
 - TTFB
@@ -120,5 +120,3 @@ The numbers of passed page load tests with Playwright are listed in table `x`. T
 Figure `x` shows the new balanced values. Using the balanced metric, all pages from all frameworks are loaded within the page load time budgets. Still, differences can be found between frameworks and between browsers. The overview over all results show 4 different patterns within a browser. Unsurprisingly, Chromium and Mobile Chrome as well as Webkit and Mobile Safari have similar results. They differ mainly in the load times of Astro, Svelte and Angular pages. The third pattern can be found in Microsoft Edge and Google. Pages load relatively fast in these two browsers, especially with Astro. The measurements made in Firefox do not resemble the ones made in other browsers. First, the results are slower on average and it is the only browser in which the load times of React pages fluctuate more than 30 ms. Second, the fastest times with React are slower than the fastest times with Astro, Nuxt and Vue.js.
 
 As for the frameworks, React is clearly the fastest here in Chromium, Mobile Chrome, Webkit and Mobile Safari and second fastest in Microsoft Edge and Google Chrome. Vue.js is second fastest in most browsers and also fluctuates very little. Nuxt, Next.js and Svelte are the next-fastest across browsers. Angular is one of the slowest frameworks for most pages and browsers with a few exceptions using Astro. The fastest or the slowest measured times are measured with Astro depending on the browser, but always fluctuate relatively much compared to other frameworks.
-
-<!-- TODO: summarize for the end-summary -->

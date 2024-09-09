@@ -85,7 +85,7 @@
         <summary>Averages</summary>
         <canvas id="astroBrowsers-average"></canvas>
       </details>
-      <h2>Next</h2>
+      <h2>Next.js</h2>
       <canvas id="nextBrowsers"></canvas>
       <details>
         <summary>Averages</summary>
@@ -109,7 +109,7 @@
         <summary>Averages</summary>
         <canvas id="svelteBrowsers-average"></canvas>
       </details>
-      <h2>Vue</h2>
+      <h2>Vue.js</h2>
       <canvas id="vueBrowsers"></canvas>
       <details>
         <summary>Averages</summary>
@@ -120,7 +120,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+      Object.defineProperty(String.prototype, "capitalize", {
+        value: function () {
+          return this.charAt(0).toUpperCase() + this.slice(1);
+        },
+        enumerable: false,
+      });
+
       const opacity = "22";
+      const fontSize = 14;
 
       const tooltip = {
         callbacks: {
@@ -245,7 +253,10 @@
                       ...update,
                       status,
                       tag: tags[0],
-                      projectName: test.projectName,
+                      projectName:
+                        test.projectName == "webkit"
+                          ? "Desktop Safari"
+                          : test.projectName.capitalize(),
                     }));
                   });
                 });
@@ -257,13 +268,13 @@
         const tags = Array.from(new Set(chartData.map((u) => u.tag)));
 
         const browserColors = [
-          { name: "chromium", color: "#4483ec" },
+          { name: "Chromium", color: "#4483ec" },
           { name: "Mobile Chrome", color: "#df3c32" },
           { name: "Google Chrome", color: "#fbc31e" },
           { name: "Microsoft Edge", color: "#4fd572" },
-          { name: "firefox", color: "#d86f1a" },
+          { name: "Firefox", color: "#d86f1a" },
           { name: "Mobile Safari", color: "#15b8ee" },
-          { name: "webkit", color: "#f7c501" },
+          { name: "Desktop Safari", color: "#478500" },
         ];
 
         const labels = browserColors.map((i) => i.name);
@@ -307,25 +318,29 @@
               legend: {
                 labels: {
                   filter: function (item, chart) {
-                    return item.text;
+                    return item.text?.capitalize();
                   },
+                  font: { size: fontSize },
                 },
               },
               title: {
                 display: Boolean(title),
                 text: title,
+                font: { size: fontSize },
               },
             },
             scales: {
               y: {
                 title: {
                   display: true,
-                  text: "ms until DOM update",
+                  text: "ms until DOM mutation",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return value + "ms";
+                    return value + " ms";
                   },
+                  font: { size: fontSize },
                 },
               },
               x: {
@@ -333,11 +348,13 @@
                 title: {
                   display: true,
                   text: "User Action",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return tags[value] || "";
+                    return tags[value]?.capitalize() || "";
                   },
+                  font: { size: fontSize },
                 },
                 grid: {
                   color: function (context) {
@@ -394,32 +411,42 @@
           options: {
             plugins: {
               tooltip: tooltipAverageForBrowsers,
+              legend: {
+                labels: {
+                  font: { size: fontSize },
+                },
+              },
               title: {
                 display: Boolean(title),
                 text: title,
+                font: { size: fontSize },
               },
             },
             scales: {
               y: {
                 title: {
                   display: true,
-                  text: "ms until DOM update",
+                  text: "ms until DOM mutation",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return value + "ms";
+                    return value + " ms";
                   },
+                  font: { size: fontSize },
                 },
               },
               x: {
                 title: {
                   display: true,
                   text: "User Action",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return tags[value] || "";
+                    return tags[value]?.capitalize() || "";
                   },
+                  font: { size: fontSize },
                 },
                 grid: {
                   color: function (context) {
@@ -448,13 +475,13 @@
         const browsers = Array.from(new Set(data.map((i) => i.projectName)));
 
         const frameWorkColors = [
-          { name: "Nuxt", color: "#01d491" },
+          { name: "Nuxt", color: "#04df9f" },
           { name: "Astro", color: "#f75505" },
-          { name: "Vue", color: "#42b883" },
+          { name: "Vue.js", color: "#40b080" },
           { name: "React", color: "#61dbfb" },
           { name: "Angular", color: "#c3002f" },
           { name: "Svelte", color: "#f73c00" },
-          { name: "Next", color: "#1c64fb" },
+          { name: "Next.js", color: "#1c64fb" },
         ];
 
         const frameworks = frameWorkColors.map((f) => f.name);
@@ -500,25 +527,29 @@
               legend: {
                 labels: {
                   filter: function (item, chart) {
-                    return item.text;
+                    return item.text?.capitalize();
                   },
+                  font: { size: fontSize },
                 },
               },
               title: {
                 display: Boolean(title),
                 text: title,
+                font: { size: fontSize },
               },
             },
             scales: {
               y: {
                 title: {
                   display: true,
-                  text: "ms until DOM update",
+                  text: "ms until DOM mutation",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return value + "ms";
+                    return value + " ms";
                   },
+                  font: { size: fontSize },
                 },
               },
               x: {
@@ -526,12 +557,14 @@
                 title: {
                   display: true,
                   text: "Browser",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return browsers[value] || "";
+                    return browsers[value]?.capitalize() || "";
                   },
                   stepSize: 0.5,
+                  font: { size: fontSize },
                 },
                 grid: {
                   color: function (context) {
@@ -633,33 +666,43 @@
           options: {
             plugins: {
               tooltip: tooltipAverageForFrameworks,
+              legend: {
+                labels: {
+                  font: { size: fontSize },
+                },
+              },
               title: {
                 display: Boolean(title),
                 text: title,
+                font: { size: fontSize },
               },
             },
             scales: {
               y: {
                 title: {
                   display: true,
-                  text: "ms until DOM update",
+                  text: "ms until DOM mutation",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return value + "ms";
+                    return value + " ms";
                   },
+                  font: { size: fontSize },
                 },
               },
               x: {
                 title: {
                   display: true,
                   text: "Browser",
+                  font: { size: fontSize },
                 },
                 ticks: {
                   callback: function (value, index, ticks) {
-                    return browsers[value] || "";
+                    return browsers[value]?.capitalize() || "";
                   },
                   stepSize: 0.5,
+                  font: { size: fontSize },
                 },
                 grid: {
                   color: function (context) {
@@ -705,8 +748,8 @@
             createBrowserComparison(
               "nextBrowsers",
               data,
-              "Browser reaction times - Next"
-            ).map((i) => ({ ...i, framework: "Next" }))
+              "Browser reaction times - Next.js"
+            ).map((i) => ({ ...i, framework: "Next.js" }))
           ),
 
         fetch("./ig-clone/ig-clone-nuxt/playwright-report/test-results.json")
@@ -745,8 +788,8 @@
             createBrowserComparison(
               "vueBrowsers",
               data,
-              "Browser reaction times - Vue"
-            ).map((i) => ({ ...i, framework: "Vue" }))
+              "Browser reaction times - Vue.js"
+            ).map((i) => ({ ...i, framework: "Vue.js" }))
           ),
       ]).then((chartDataList) => {
         chartDataList = chartDataList.flat();
@@ -776,7 +819,7 @@
 
       Array.from(document.getElementsByTagName("details")).forEach(
         (element) => {
-          // element.setAttribute("open", true)
+          element.setAttribute("open", true);
           // element.removeAttribute("open")
         }
       );

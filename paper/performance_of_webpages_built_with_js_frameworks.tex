@@ -88,10 +88,31 @@
 \newacronym{url}{URL}{Uniform Resource Locator}
 \newacronym{http}{HTTP}{Hypertext Transfer Protocol}
 
-\title{WIP: Mega-fast or just super-fast? Performance differences of mainstream JavaScript frameworks for web application}
+\title{Mega-fast or just super-fast? Performance differences of mainstream JavaScript frameworks for web applications}
 \author{Andreas Nicklaus}
 
 \makeatletter
+
+\renewenvironment{thebibliography}[1]
+     {\section{References}
+      \@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+
 \renewcommand\listoffigures{%
   \section{\listfigurename}%
   \@mkboth{\MakeUppercase\listfigurename}{\MakeUppercase\listfigurename}%
@@ -110,6 +131,15 @@
 \let\Author\@author
 
 \rowcolors{1}{lightgray!40!}{white}
+
+% Keywords command
+\providecommand{\keywords}[1]
+{
+  {
+    \footnotesize
+    \textit{\textbf{Keywords ---} #1}
+  } 
+}
 
 \makeatother
 
@@ -188,19 +218,33 @@
 
 \selectlanguage{ngerman}
 \begin{abstract}
-  Diese Arbeit kurz und knackig.
-  % TODO
+  Teil eines jeden Webanwendungsprojekts ist die Wahl der Werkzeuge, insbesondere die Wahl des Frameworks für das Entwicklungsteam.
+  Leider hat sich diese Diskussion eher zu einer Gefühlsangelegenheit als zu einer sachlichen Angelegenheit entwickelt.
+  Diese Arbeit stellt eine Studie über eine beispielhafte Webanwendung vor, die identisch mit sieben gängigen \acrlong{js}-Webentwicklungs-Frameworks erstellt wurde: Angular, Astro, Next.js, Nuxt, React, Svelte und Vue.js.
+  Es wird eine Testreihe mit Lighthouse und Playwright vorgeschlagen, um das klassische Laden der Seite, das Laden von \acrlong{js}-Komponenten und die Aktualisierung von \acrlong{js}-Komponenten abzudecken.
+  Die Auswertung der Messungen umfasst die Verwendung von zwei neuen abgeleiteten Metriken: die \acrfull{ovcd} und eine loadEventEnd-Metrik, die auf das requestStart-Ereignis der NavigationTiming-Messungen abgestimmt ist.
+  Die Ergebnisse zeigen keinen eindeutigen Gesamtvorteil eines einzelnen Entwicklungs-Frameworks, sondern zeigen die Stärken und Schwächen aller getesteten Frameworks auf.
+  Die Aktualisierungszeiten von Komponenten weisen Nuxt als das schnellste und Next.js als das langsamste Framework aus, was die Aktualisierungszeiten angeht.
+  Ebenso scheinen Google Chrome der schnellste und Desktop Safari der langsamste Browser für die Aktualisierung des \acrshort{dom} nach Benutzereingaben zu sein.
 \end{abstract}
 
 \selectlanguage{english}
 \begin{abstract}
-  This work in a nutshell.
-  % TODO
+  Part of every web application project is the choice of tooling, especially the choice of framework for the development team.
+  Unfortunately, this discussion has evolved into a sentiment matter rather than a factual one.
+  This thesis presents a study of a single examplary web application created identically with seven mainstream \acrlong{js} web development frameworks: Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js.
+  A testing suite is proposed using Lighthouse and Playwright to cover the classic page load, the load of \acrlong{js} components and the update of \acrlong{js} components.
+  The evaluation of the measurements include the usage of two new derivative metrics: the \acrfull{ovcd} and a loadEventEnd metric balanced towards the requestStart event of NavigationTiming measurements.
+  The results show no clear-cut overall advantage of one single development framework, but outline strengths and weaknesses of all tested frameworks.
+  Component update times indicate Nuxt as the fastest and Next.js as the slowest framework for update times.
+  Similarly, Google Chrome appears to be the fastest and Desktop Safari the slowest browsers for updating the \acrshort{dom} after user input. 
 \end{abstract}
+
+% ?REVIEW: \keywords{framework, web performance, Angular, Astro, Next.js, Nuxt, React, Svelte, Vue.js}
 
 \vfill
 
-\noindent\textbf{Disclaimer:} This paper has been written with the help of AI tools for translating sources and outlining parts of the written content.
+\noindent\textbf{Disclaimer:} This thesis has been written with the help of AI tools for translating sources and outlining parts of the written content.
 All content has been written or created by the author unless marked otherwise.
 
 \pagebreak
@@ -212,25 +256,25 @@ All content has been written or created by the author unless marked otherwise.
 Throughout the evolution of the world wide web, many changes have disrupted the way websites are created.
 From simple file servers run by few selected institutions, simple static web pages and dynamic services like blogs and forums to websites created with the help UI tools and web development frameworks, mainly written in JavaScript, development has changed drastically since its beginning.
 
-Older web pages often lacked features, that developers today work with as a matter of course.
+Older web pages often lacked features that developers today work with as a matter of course.
 Yet their load and rendering most likely would be brazingly fast with today's technological advancements in networking, browser functionalities and user equipment.
 Modern websites though are often bigger in size, have a lot more features and are in many respects more complex.
-Due to the increased complexity, the mere volume of a webiste's data has increased, especially with more and more multimedia files.
+Due to the increased complexity, the mere volume of a website's data has increased, especially with more and more multimedia files.
 That in return has increased the demand for better performance on all components of the load and rendering process.
 This technological advancement has upped the technological sophistication for development tools as well.
 Today's modern web development frameworks support developers with tools to create sites and applications through terminal commands.
 They often increase the content-per-line-of-code quota through implicit page generation in contrast to the explicit writing of source code from earlier times.
-Many frameworks even feature configuration options for directly hosting the webpage.
+Many frameworks even feature configuration options for directly hosting the web page.
 
-As the generation process changed from writing code manually to automatically, this implicit page generation undoubtedly increased speed through faster content generation and a greater developer experience for some developers.
+As the generation process changed from writing code manually to automatically, this implicit page generation undoubtedly increased speed through faster content generation and resulted in a greater development experience for some developers.
 Because developer experience varies between different frameworks and some approaches are more intuitive to respective developers, a current trend has evolved for developers to become experts in a single framework rather than many.
 This trend leads to a tribal conflict as to which framework is better than others with each tribe being convinced that their framework is the best.
-There is no apparant way to determine a \enquote{best framework} in terms of Developer Experience because it is a subjective criterion.
+There is no apparant way to objectively determine a \enquote{best framework} in terms of developer experience because it is a subjective criterion.
 The performance of a framework as assessed by the developer can be similar or greatly different, depending on the frameworks and the interviewees.
 
-When it comes to User Experience and especially the Perceived User Experience however, there are plentiful collections of metrics and criteria to choose from so as to determine the performance of websites, not frameworks.
+When it comes to user experience and especially the perceived user experience however, there are plentiful collections of metrics and criteria to choose from so as to determine the performance of websites, not frameworks.
 The optimization of websites has become a goal during development because it has a real effect on both the ranking of web pages in search engines and the user behaviour.
-Both effects create business interests and financial incentives to invest resources into performance optimization.
+Both effects create business interests and financial incentives to invest resources into performance optimization \citep{webprophet,effectsofwebpagecontents}.
 However, the lack of research on the topic suggests either a consensus for a negligible effect of the development framework on the website's performance or a lack of knowledge of the effect.
 Measurements on the effect of the development framework are a major convoluted task simply because the performance of a specific website can be dependent on many other factors such as the user's device, browser, networking hardware or server-side hardware.
 The number of possible combinations of factors and their reliability makes it difficult to measure a single performance run with a reliable result.
@@ -244,21 +288,49 @@ Relying on marketing material for choice of frameworks is equally questionable b
 This suggests that each would be a great choice for developers.
 
 In order to find a suitable framework for an application, a set of metrics needs to be at least outlined for comparison.
-Many former studies suggest metrics to be relevant for the User Experience or Search Engine Optimization.
-Content metrics such as word count or presence of meta tags might be important for some performance measurements, but might also have no effect on the User Experience.
+Many former studies suggest metrics to be relevant for the user experience or \acrlong{seo}.
+Content metrics such as word count or presence of meta tags might be important for some performance measurements, but might also have no effect on the user experience.
 In contrast, rendering metrics such as page load time or page weight might be ascribed to the framework used during development.
 
 The performance of a framework towards the user can very rarely be compared because there are no publicly available comparisons between exact replicas of web applications built with different frameworks.
 Therefore, a comparative study between the same website built with different frameworks is needed to get as close as possible to an exact website replica.
 With this data, an informed choice might be made for other projects.
 
-The goals of this paper are to propose a set of metrics that allow comparing mainstream JavaScript frameworks for web applications, to provide a comparative study between selected frameworks and create a tool to compare the rendering performance of a page as a whole and of dynamic components within a page.
+The goals of this thesis are to propose a set of metrics that allow comparing mainstream JavaScript frameworks for web applications, to provide a comparative study between selected frameworks and to create a tool to compare the rendering performance of a page as a whole and of dynamic components within a page.
 
 \section{Related Work}\label{sec:relatedwork}
+Methods, measurements and metrics for the performance of web applications have been used and interpreted in many past works.
+\cite{webprefetching} propose a list of metrics used for prefetching resources as well as considerations for comparing results and interpreting measurements from a user's perspective.
+The considerations for the selection of metrics heavily inspire the selection of metrics in this work.
+In addition, they list differences in the underlying base system, the tested workload and key metrics as problems for comparisons between pages and test suites and recommend using latency per page as a key performance metric from the user's point of view.
+\cite{sevenpitfalls} and \cite{webprophet} describe relevant non-technical considerations for performance indicators from a user's and stakeholder's perspective.
+The effect of user-focused measurements of web page speed is clearly important to a site's effectiveness for objective goals, such as customer lifetime value and user retention \citep{webprophet,sevenpitfalls,effectsofwebpagecontents}.
+Also, variants and ambiguities cannot be definitively ruled out as the main source of both bad and good results of performance tests. 
+
+Most previous studies focus on network components and measurements for the evaluation of performance \citep{analyzingfactors,highperformancebrowsernetworking,measuringandmitigatinwebperformance}.
+However, these works also take network speeds with a grain of salt because delays such as propagation, transmission, processing and queueing of requests as well as factors like number of requests, network speed and latency heavily influence the results.
+Recommended best practices for testing networks from these papers include using multiple clients and server sites.
+Additional to these factors, caching is one of the most important strategies for network performance \citep{whatifanalysis,measuringandmitigatinwebperformance}.
+
+\cite{whatifanalysis} separate the page load time into network activities and computation activities by splitting contributions to the load time between rendering jobs.
+They also point out the fluctuation of measurements due to the choice of browsers, especially the negative effect of mobile browsers towards load time.
+The network activities are described by \cite{webprophet}, \cite{highperformancebrowsernetworking} and \cite{measuringandmitigatinwebperformance}.
+In contrast, \cite{effectsofwebpagecontents} point out that the content of a page has a much larger effect on the page load time than the client or network conditions. 
+
+Work on client optimization efforts include the effect of page load time on the user, selection strategies for tested pages and factors for the customers' perception of response time.
+According to \cite{webprophet}, a delay of 100 ms results in a sales loss of 1 \% and 500 ms delay lead to up to 20 \% sales loss.
+A delay of one second, decreases the customer satisfaction by 16 \% \citep{effectsofwebpagecontents}.
+The customers' expectation in most cases are availability and response time and their perception is based on many factors \citep{loadtestingofwebsites}.
+The choice of tested pages is a difficult one because no usage data is available at build time and sitemaps only give hints about the pages' content and pages that are important to the site's effectiveness \citep{onlandingandinternalwebpages}. 
+
+Lastly, \cite{integratedapproach} gives guidelines to designing a web performance testing and points out attributes of good benchmark.
+Tests are based on stakeholders' expectations for load times and web pages are classified based on the complexity and interactivity of their content.
+This classification strategy is also applied in this work.
+Results show that the page load time is pivotal for the bail out percentage of users.
 
 \section{Setup of the application and test environment}\label{sec:design}
 
-Whereas the following chapters cover the implementation of testing and evaluation of results, this section introduces the concept of the comparative study.
+Whereas the following chapters cover the implementation of testing and evaluation of results, this section introduces the conceptual design of the comparative study.
 The goals of and requirements for the example application, the differences and choices for the hosting environments for testing and the tools for testing as well as selected metrics are described here.
 
 \subsection{Example Web Application}\label{subsec:exampleapplication}
@@ -278,46 +350,44 @@ The example application for the study is designed to be a benchmark application 
 The following goals were considered during the design process:
 
 \begin{enumerate}
-  \item \textbf{Page types}: With the goal of covering most kinds of webpages, three types were identified based on the time of data loading.\label{enum:pagetypes}
+  \item \textbf{Page types}: With the goal of covering most kinds of web pages, three types were identified based on the time of data loading.\label{enum:pagetypes}
   These types differ in timing at which the \acrshort{dom} content is loaded or updated.
-  The definition of a finished load or update for this work is that the linking of resources does constitute a finished load or update of the webpage regardless of the load time of said resource.
-  The only condition for that is that any linked resource does not update the \acrshort{dom} in any way.
-  If a resource does, then the load or update is considered not finished.
-  % TODO: WOW! Ändere die obere Definition noch mal
+  The definition of a finished load or update for this work is that the linking of resources does constitute a finished load or update of the web page regardless of the load time of said resource on the condition that any linked resource does not update the \acrshort{dom} in any way.
+  If a resource does mutate the \acrshort{dom}, then the load or update is considered not finished.
   \begin{enumerate}
-    \item Static pages are webpages which do not change their content after the initial response from the web server.
+    \item Static pages are web pages which do not change their content after the initial response from the web server.
     The initial \acrshort{html} document already is the only resource that is necessary to create a complete \acrshort{dom}.
     If inline skripts update the DOM, they are considered external resources.
-    \item Delayed pages do not have a complete \acrshort{dom} after loading and parsing of the initial \acrshort{html} document.
+    \item Delayed pages do not have a complete \acrshort{dom} after loading and parsing the initial \acrshort{html} document.
     Some data or content is loaded and inserted (or removed) into the \acrshort{dom} after the initial render.
     The time of these updates can be any time after the initial render, but the execution of code or start of request for the resource that is responsible for the update has to be directly or indirecly triggered by the content of the initial \acrshort{dom} or \acrshort{html} document.
     \item Dynamic pages can be updated or update themselves by events that are not triggered by the content of the initial \acrshort{dom} or \acrshort{html} document.
     These events can either be triggered by user interaction or other events such as websocket messages.
     The time of such updates is by their nature not predictable.
-    Dynamic pages are either static or delayed with additional possibilities for updates.
+    Dynamic pages are either static or delayed with additional opportunities for updates.
   \end{enumerate}
-  This list is created with the knowledge that frameworks or other technology such as caching may move a webpage from one type to another.
+  This list is created with the knowledge that frameworks or other technologies such as caching may move a web page from one type to another.
 
   \item \textbf{Modern Development Practices}: The example application should contain modern development practices that do project onto the \acrshort{dom}.
-  Practices that have no effect on either the projection of data or user interaction, such as coding styles or project management, are considered to have no effect on the performance of the page.
+  Practices that have no effect on either the projection of data or user interactions, such as coding styles or project management, are considered to have no effect on the performance of the page.
   
   \begin{enumerate}
     \item Components: All pages of the app have to consist of components that encapsulate reproducable \acrshort{html} snippets and may project data onto the \acrshort{dom}.
     \item List iteration: Because iterating long lists may decrease performance noticably, some components or pages should implement list iteration.
     \item String interpolation: Although it is not considered a performance issue before testing, string interpolation is prevalent in all modern frameworks known to the author.
-    \item Services: \label{enum:services} Separation of functions in services is wide spread practice to reduce code duplicates and easy refactoring.
-    In this case, services also allow to intentionaly implement delays for testing purposes.
+    \item Services: \label{enum:services} Separation of functions in services is a wide spread practice to reduce code duplicates and easy refactoring.
+    In this case, services also allow to intentionally implement delays for testing purposes.
   \end{enumerate}
   
-  \item \textbf{\acrshort{css}}: Even though the usage of \acrshort{css} can in no way be considered a modern practice, it is still used on effectively every webpage. % TODO: source for effectivvely every webpage
+  \item \textbf{\acrshort{css}}: Even though the usage of \acrshort{css} can in no way be considered a modern practice, it is still used on effectively every web page.
   Additionally, stylesheets are considered render-blocking resources that impact performance negatively \citep{renderblocking,eliminateRenderBlocking}.
-  For this purpose, \acrshort{css} shall be implemented for both pages and components.
+  For this purpose, \acrshort{css} shall be included in both pages and components.
   
-  \item \textbf{Rendering time}: In addition to page type depending on the time of data load, the machine and time of composing the \acrshort{dom} is dependent on the content availability.
-  For this paper, three different types are considered:
+  \item \textbf{Rendering time}: In addition to the page type depending on the time of data load, the time of composing the \acrshort{dom} is dependent on the content availability.
+  For this thesis, three different types are considered:
   \begin{enumerate}
-    \item \acrfull{csr}: The initial request gets a response with a mostly empty \acrshort{html} document (\enquote{skeleton}) except linked \acrshort{css} and \acrshort{js} resources which after loading, parsing and execution update the \acrshort{dom}.
-    \item \acrfull{ssr}: Updates that happen after receiving the skeleton through \acrshort{js} code execution on \acrshort{csr}, happen before the initial request is responded to on the web server.
+    \item \acrfull{csr}: The initial request gets a response with a mostly empty \acrshort{html} document (\enquote{skeleton}) except linked \acrshort{css} and \acrshort{js} resources which after loading, parsing and executing update the \acrshort{dom}.
+    \item \acrfull{ssr}: Updates that happen after receiving the skeleton through \acrshort{js} code execution on \acrshort{csr} happen before the initial request is responded to on the web server.
     The initial \acrshort{html} document is filled and no longer a skeleton with \acrshort{ssr}.
     Therefore, it has greater byte size.
     \acrlong{ssr} requires an \enquote{active} front-end server rather than only a file server to execute code.
@@ -325,8 +395,8 @@ The following goals were considered during the design process:
     This increases the build time and the byte size of the initial \acrshort{html} document, but only a file server is needed for hosting.
   \end{enumerate}
 
-  \item \textbf{Multimedia}: Most of network load and therefore network delay is made up by multimedia files. % TODO: source
-  Although compression has gotten better over time, the byte size made up by multimedia files of a webpage has gotten larger over the last years. % TODO: source
+  \item \textbf{Multimedia}: Most of network load and therefore network delay is caused by multimedia files.
+  Although compression has gotten better over time, the byte size taken up by multimedia files of a web page has gotten larger over the last years \citep{pageweightreport}.
   Therefore, size optimization of image and video files is considered a major part of performance optimization and a great potential for a performance increase by the used framework.
 
 \end{enumerate}
@@ -336,16 +406,16 @@ It is heavily inspired by Instagram and a partial reproduction of its app design
 \enquote{NotInstagram} consists of four pages (see figure \ref{fig:screenshots}).
 \ref{subfig:index} shows the design of the Feed page.
 It is the start page of the app and contains 4 parts: the header, the profile list, the post list and a footer.
-Each item of the feed page is to be implemented as its own component or components.
+Each item of the Feed page is to be implemented as its own component or components.
 The plus icon in the header links to the create page, the footer links to the about page and every instance of a profile picture and profile name links to a profile page.
 The latter contains profile information including a profile picture, name, user handle / ID, profile creation time, caption and a grid of all the user's posts (see figure \ref{subfig:user}).
 The profile component encapsulates all \acrshort{html} elements of that page except the header containing the app logo and X icon, which both link back to the feed page.
-Both the feed page and the profile page are generally expected to classify as delayed pages, because the content of profile and posts lists can only be loaded after the page load.
+Both the Feed page and the profile page are generally expected to classify as delayed pages, because the content of profile and posts lists can only be loaded after the page load.
 
 The Create page (see figure \ref{subfig:create}) has three parts.
-The header contains the app's logo and a X icon linking to the feed.
-A form with three \verb|<input>| elements and a \verb|<button>| element allows the input of an multimedia source (image or video) and a text caption.
-The multimedia source can either be an URL or a selection from a list of preuploaded files.
+The header contains the app's logo and an X icon linking to the feed.
+A form with three \verb|<input>| elements and a \verb|<button>| element allows for the input of a multimedia source (image or video) and a text caption.
+The multimedia source can either be a URL or a selection from a list of preuploaded files.
 The post caption is a pure text input.
 The lower part of the page is the post preview, in which some predefined information such as user profile and the user inputs are combined.
 As such, the profile page is a static page until the user uses the creation form, at which point it has to be considered a dynamic page.
@@ -361,25 +431,25 @@ The Create page is the only page with dynamic content.
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Feed.png}
     \end{center}
-    \caption{Feed / Index Page (/)}\label{subfig:index}
+    \caption{Feed page (/)}\label{subfig:index}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Profil.png}
     \end{center}
-    \caption{Profile Page (/user/@PeterPoster)}\label{subfig:user}
+    \caption{Profile page (/user/@PeterPoster)}\label{subfig:user}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Beitrag erstellen.png}
     \end{center}
-    \caption{Create Page (/create)}\label{subfig:create}
+    \caption{Create page (/create)}\label{subfig:create}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Informationsseite.png}
     \end{center}
-    \caption{About Page (/about)}\label{subfig:about}
+    \caption{About page (/about)}\label{subfig:about}
   \end{subfigure}
   \caption{Screenshots of the NotInstagram application's pages (path in parentheses)}\label{fig:screenshots}
 \end{figure}
@@ -399,18 +469,18 @@ Seven of those components are icon components.
 Those components serve as wrappers for \acrshort{svg}s to ensure their correct scale and style.
 \verb|XIcon| poses an exception to the design as it is a wrapper for a \verb|PlusIcon| component rotated by 45°.
 The colored arrows show the usage of one of the services.
-Both \verb|FeedView| and \verb|ProfileView| use both services to load data.
+Both \verb|FeedView| and \verb|ProfileView| use the services to load data.
 For the Feed page, both \verb|PostService.getAll()| and \verb|ProfileServices.getAll()| are needed to pass the data to \verb|PostList| and \verb|ProfileList|.
 Notably, each \verb|Post| component accesses the ProfileService again, to get the profile image and name for its headline, even if the information is available in a parent or grandparent component.
 Figure \ref{fig:classes} displays the connections between post and profile object instances.
 The member \verb|userhandle| of a post references the member \verb|handle| of a user profile.
-The Profile page needs access to the service to get the information of the requested profile and a list of posts from the \verb|getByUserHandle| methods to pass into the \verb|Profile| component.
+The Profile page needs access to the services in order to get the information of the requested profile and a list of posts from the \verb|getByUserHandle| methods to pass into the \verb|Profile| component.
 \verb|LogoHeader|, \verb|NotInstagramLogo| and \verb|InfoBlock| are not data-presenting components, but rather styling components.
 Their only function is styling text or projecting \acrshort{html} elements with \acrshort{css} information.
 
 \begin{figure}
   \includegraphics[width=\linewidth]{diagrams/uml.png}
-  \caption{Pages, Components ands Services of the NotInstagram application}\label{fig:uml}
+  \caption{Pages, components and services of the NotInstagram application}\label{fig:uml}
 \end{figure}
 \begin{figure}
   \begin{center}
@@ -419,16 +489,16 @@ Their only function is styling text or projecting \acrshort{html} elements with 
   \caption{Classes used by the NotInstagram services}\label{fig:classes}
 \end{figure}
 
-In contrast, the \verb|MediaComponent| is designed as a way to allow both internal and external images and video source.
+In contrast, the \verb|MediaComponent| is designed as a way to allow both internal and external images and video sources.
 It is used by \verb|ProfileList|, \verb|Post| and \verb|Profile| to display posts and profile images.
-It's main goals is to decide based on the passed image source string how to project the multimedia file onto the \acrshort{dom}.
-The component accepts source strings for images and videos, differentiated against by the string's ending and therefore the file's extension.
+Its main goal is to decide - based on the passed source string - how to project the multimedia file onto the \acrshort{dom}.
+The component accepts source strings for images and videos, differentiated by the string's ending and therefore the file's extension.
 If it is a local image, namely an image that was available for optimization at build time, the best available form of optimized \verb|<img>| tag should be used.
 For external image links starting with \enquote{http://} or \enquote{https://} a less optimized or unoptimized \verb|<img>| tag shall be inserted into the \acrshort{dom}.
 For videos, any source string is to be projected onto a \verb|<source>| tag with identical \verb|<video>| wrapper.
 
-The application referres to local images, which can possibly be optimized, and external images, which cannot be optimized.
-The reason for this is the assumption for this project that optimizing multimedia files uploaded by a user and referencing them in a manner suitable for this application is not suitable for this work.
+The application refers to local images, which can possibly be optimized, and external images, which cannot be optimized.
+The reason for this is the assumption for this project that optimizing multimedia files uploaded by a user and referencing them in a manner suitable for this application is not suitable for this study.
 Rather, the better alternative for serving the use case of the application would be a dedicated server for encoding, decoding and generally optimizing multimedia files.
 Since this solution would be independent from the front-end framework's performance and it would outgrow the scope of this work, a distinction is only made between static images, called local images here, and external images with full URLs.
 
@@ -437,52 +507,79 @@ Since this solution would be independent from the front-end framework's performa
 % Why were these frameworks chosen?
 % Which frameworks/tools were considered
 
+% \addcontentsline{toc}{subsubsection}{Angular}
+% \addcontentsline{toc}{subsubsection}{Astro}
+% \addcontentsline{toc}{subsubsection}{Next.js}
+% \addcontentsline{toc}{subsubsection}{Nuxt}
+% \addcontentsline{toc}{subsubsection}{React}
+% \addcontentsline{toc}{subsubsection}{Svelte}
+% \addcontentsline{toc}{subsubsection}{Vue.js}
+
+\begin{table}[b]
+  \begin{center}
+    \begin{tabular}[h]{|l|c|c|c|}
+      \hline
+      ~                 & \textbf{\acrshort{csr}} & \textbf{\acrshort{ssr}} & \textbf{Previous Experience}  \\ \hline
+      \textbf{Angular}  & yes                     & no                      & yes                           \\ \hline
+      \textbf{Astro}    & yes                     & yes                     & yes                           \\ \hline
+      \textbf{Next.js}  & no                      & yes                     & no                            \\ \hline
+      \textbf{Nuxt}     & yes (generate)          & yes (build)             & no                            \\ \hline
+      \textbf{React}    & yes                     & no                      & yes                           \\ \hline
+      \textbf{Svelte}   & yes                     & no                      & no                            \\ \hline
+      \textbf{Vue.js}   & yes                     & no                      & yes                           \\ \hline
+    \end{tabular}
+  \end{center}
+  \caption{List of selected frameworks. Items with both \acrfull{csr} and \acrfull{ssr} render some pages or components upon request, but also require \acrfull{csr}. Previous Experience refers to the author's experience in develeping web applications with the framework.}
+  \label{tab:frameworks}
+\end{table}
+
 The choice of tested frameworks for this study is the choice for which frameworks the application will be implemented in and tested.
 The requirements for this selection are twofold.
 The application has to be implementable as designed above with the framework without the use of any other non-native tool to the framework or any tool that was not officially intended to be used in combination by the developers of the primary framework.
 Additionally, the application must be implementable in JavaScript.
-This requirement includes TypeScript frameworks because it is possible to use JavaScript in TypeScript applications. % TODO: source
-Ease of use and developer experience should explicitly not influence the selection process because it is part of the evaluation of the frameworks.
+This requirement includes TypeScript frameworks because it is possible to use JavaScript in TypeScript applications \citep{typescript}.
+Ease of use and developer experience should explicitly not influence the selection process because it is not part of the performance of the resulting website.
 
-Because research revealed in early stages of the study that many frameworks fulfil those requirements, the long list of candidates had to be sorted.
+Because research revealed in early stages of the study that many frameworks fulfill those requirements, the long list of candidates had to be sorted.
 The deciding factor for this selection was usage, awareness of and positive sentiment towards tools among developers because the evaluation of mainstream and general-purpose frameworks appear more valuable than lesser known or specialised tools.
-A ranking of the most-used JavaScript front-end frameworks of 2023 \citep{stateOfJs2023} lists the four frameworks with the most developers who have used it before: React (84\%), Vue.js (50\%), Angular (45\%) and Svelte (25\%).
-In addition, Astro was chosen for its especially high awareness among the category \enquote{other front-end tools} (30\%), as well as its usage (19\%) and interest (62\%) in the category \enquote{meta-frameworks}.
+A ranking of the most-used JavaScript front-end frameworks of 2023 \citep{stateOfJs2023} lists the four frameworks with the most developers who have used it before: React (84 \%), Vue.js (50 \%), Angular (45 \%) and Svelte (25 \%).
+In addition, Astro was chosen for its especially high awareness among the category \enquote{other front-end tools} (30 \%), as well as its usage (19 \%) and interest (62 \%) in the category \enquote{meta-frameworks}.
 From the last category of tools, two other frameworks were selected: Next.js and Nuxt.
-Both tools are highly-used frameworks and have the appearance and goal of improving React and Vue.js, respectively.
+Both tools are highly-used frameworks and have the appearance and goal of improving on React and Vue.js, respectively.
 For this reason, they are interesting choices for this study.
-All selected frameworks fulfil the requirements.
+All selected frameworks fulfill the requirements.
 The application is implementable with all frameworks or intended addition of tools.
-Next.js and Nuxt require the usage of React or Vue.js tools and dynamic components cannot be written in pure Astro. % TODO: source
-Astro intends the usage of other frameworks to implement so-called \enquote{islands}.
+Next.js and Nuxt require the usage of React or Vue.js tools and dynamic components cannot be written in pure Astro \citep{AstroIslands}.
+Astro intends the usage of other frameworks to implement so-called \enquote{Islands}.
 For those components, React was chosen for its top usage rate.
 
-\begin{table}[h!]
-  \begin{center}
-    \begin{tabular}[h]{l c c c }
-      ~       & \textbf{\acrshort{csr}} & \textbf{\acrshort{ssr}} & \textbf{Previous Experience} \\ \hline
-      \textbf{Angular}  & yes & no & yes \\ \hline
-      \textbf{Astro}    & yes & yes & yes \\ \hline
-      \textbf{Next.js}  & no & yes & no \\ \hline
-      \textbf{Nuxt}     & yes (generate) & yes (build) & no \\ \hline
-      \textbf{React}    & yes & no & yes \\ \hline
-      \textbf{Svelte}   & yes & no & no \\ \hline
-      \textbf{Vue.js}   & yes & no & yes \\ 
-    \end{tabular}
-  \end{center}
-  \caption{List of selected frameworks. Items with both \acrfull{csr} and \acrfull{ssr} render some pages or components upon request, but also require \acrfull{csr}}
-  \label{tab:frameworks}
-\end{table}
-
 Other frameworks were also considered for selection.
-Solid and Qwik seemed fitting candidates  in this study because of high interest among developers and apparent potential for fast performance of their end product.
-Additionally, from the ranking of most-used front-end frameworks Preact was considered with a usage percentage of 13\%.
-Ultimately, all three were not chosen because of negative sentiment or low usage among developers.
+Solid and Qwik seemed fitting candidates in this study because of high interest among developers without experience with the frameworks and apparent potential for fast performance of their end product.
+Additionally, from the ranking of most-used front-end frameworks Preact was at least considered with a usage percentage of 13 \%.
+Ultimately, all three were not chosen because of negative sentiment or low usage among developers that do have experience with these frameworks.
 This concludes the framework selection for this study.
 Table \ref{tab:frameworks} list the selection and categorizes them into groups with and without \acrshort{csr} and \acrshort{ssr}.
-It also states whether the developer for the application had any previous experience working with the framework.
-This information is important for the unintended performance optimizations and can later be used for interpretation of the frameworks performance measurements.
-Plus, it will influence the assessment of ease of use and developer experience.
+It also states whether the author of this thesis and developer for the application had any previous experience working with the framework.
+This information is important for the unintended performance optimizations and could later be used for interpretation of the frameworks performance measurements.
+
+To summarize some comparisons between frameworks or groups of frameworks, the most appealing for the evaluation are the following:
+
+\begin{enumerate}
+  \item \textbf{\acrshort{csr} - \acrshort{ssr}}: Before testing, differences between \acrshort{csr} and prerendered pages are expected, but the metrics and amount of differences are probable subjects of interest.
+  Because there is no perceivable difference between prerendered pages and server-side rendered pages from a client perspective, they are grouped together in this context.
+  \item \textbf{Angular - React - Vue.js}: Because these \acrshort{csr} frameworks have been competing for eight years at this point and they are still the most famous front-end frameworks \citep{stateOfJs2023}, the comparison of these frameworks is relevant for this study.
+  \item \textbf{Nuxt - Vue.js}: As a next generation of the Vue.js framework, the actual performance increase of Nuxt is interesting for developers.
+  \item \textbf{Next.js - React}: Same as above in relation to React
+  \item \textbf{Vue-based - React-based}: Because a direct comparison of frameworks based on React and based on Vue.js is possible with multiple candidates, a difference in performance is an actual relevant factor for the choice between the two ecosystems.
+  \item \textbf{Svelte - Astro}: As the most recent popular frameworks in the selection of frameworks, Astro and Svelte have the potential to both outdo their contenders and outdo each other.
+  This comparison is most interesting for fans of new tools and the development teams of the frameworks themselves.
+\end{enumerate}
+
+% REVIEW: introduce the frameworks
+% * irgendwie fehlt noch etwas:
+% - Definition des Wortes framework (Grundwissen)
+% - Einführung in Frameworks (Grundwissen)
+% - Welche Art von Framework ist nicht abgedeckt? (Faß ohne Boden)
 
 \subsection{Hosting Environments}\label{subsec:hostingenvironments}
 % Based on former work, networking plays a vital role in performance and load times
@@ -490,7 +587,6 @@ Plus, it will influence the assessment of ease of use and developer experience.
 % What exactly should be tested?
 % What requirements do the environments have to cover?
 % What properties should be considered for the environments?
-% TODO: what are the most used hosting environments?
 % 
 % 1. Vercel
 %    1. Reason
@@ -501,10 +597,10 @@ Plus, it will influence the assessment of ease of use and developer experience.
 %    2. Problems
 
 After designing the application, the next step in the study process was to decide where the application is to be hosted for testing.
-Network delay is a great part of render delay and performance issues % TODO: source
-because loading files in sequence will block rendering if parsing documents and executing code is dependent on network requests.
-The request delay is based on the speed of the web server, the size of the generated file, request and response and the network speed.
+Network delay is a great part of render delay and performance issues \citep{highperformancebrowsernetworking} because loading files in sequence will block rendering if parsing documents and executing code is dependent on network requests.
+The request delay is based on the speed of the web server, the network speed and the size of the generated file, request and response.
 Therefore the time needed for fulfilling network requests should be considered in the choice of hosting environment or service.
+
 \begin{figure}[h]
   \begin{center}
     \includegraphics[width=\linewidth]{img/request-timing.png}
@@ -513,14 +609,14 @@ Therefore the time needed for fulfilling network requests should be considered i
 \end{figure}
 
 
-Figure \ref{fig:timing} illustrates how a slow network may delay the rendering process of a webpage.
-The tests for this study shall cover real-world hosting using publicly available services and local hosting to both test the network delay and test the application without interference of network speeds.
+Figure \ref{fig:timing} illustrates how a slow network may delay the rendering process of a web page.
+The tests for this study shall cover real-world hosting using a publicly available service and local hosting to test the network delay and test the application without interference of network speeds.
 Additionally, tests can not be done only on local servers because tests shall include timings before responseEnd.
 Requirements for the distant hosting environment or service are threefold.
 The service shall have \enquote{active server capabilities}, meaning capabilities that exceed pure static fileserver functions for \acrlong{ssr} and similar functionalities.
 Furthermore, it is required to be a widely used hosting service to ensure the real-world applicability of the study.
-Since this requirement is not clearly applicable, it is considered a guideline.
-Lastly, to be applicable for small projects as well as established larger websites the service chosen fo the study is required to support free usage and integration into a \acrfull{cicd} configuration because it is a widely used development practice. % TODO: source for "widely used"
+Since this requirement is not clearly definable, it is considered a guideline.
+Lastly, to be applicable for small projects as well as established larger websites the service chosen for the study is required to support free usage and integration into a \acrfull{cicd} pipeline because it is a widely used development practice.
 As such, the integration is important to require the least possible manual configuration for hosting the application because this study is not supposed to be about the configurability.
 Rather, the study shall focus on the "out of the box" performance of the frameworks.
 Continuing with that sentiment, the optimization and therefore configuration of the hosting environment is not part of this work.
@@ -535,16 +631,16 @@ This is the methodology for answering the question: With which framework do deve
 % \end{mylist}
 
 \subsubsection{Vercel}
-Based on these considerations and personal experience with the service, Vercel was chosen for hosting the application for this study.
+Based on these considerations and personal experience with the service of the author previously to this project, Vercel was chosen for hosting the application.
 Vercel supports predefined configurations and automatic recognition of all frameworks chosen for this study.
-Also, Vercel projects integrate seamlessly into a \acrshort{cicd} process based on its integration with Github.
+Also, Vercel projects integrate seamlessly into a \acrshort{cicd} pipeline based on its integration with Github.
 A Github repository was created for each framework and connected to a Vercel project.
 During initialization of the Vercel projects and first preliminary tests, one problem with Vercel's free account quickly became apparent:
 The bandwidth limitation of 100GB per month and account was reached after two weeks of testing unoptimized and unfinished versions of the applications with large image and video files.
 Because no information was found on the effect of a reached limit, the account was deemed dead for the month.
 The solution to this problem was the creation a second free Vercel account and the plan to create another account every time the limit would be reached in the future, which it did not.
 
-\subsubsection{Localhost}
+\subsubsection{Localhost}\label{subsubsec:localhost}
 \begin{table}[h]
   \begin{center}
     \begin{tabular}[h]{| l | l | l |}
@@ -563,8 +659,10 @@ The solution to this problem was the creation a second free Vercel account and t
   \caption{Build and host command for each used framework as used for testing the applications hosted locally}\label{tab:hostCommands}
 \end{table}
 
-The second hosting environment for this study is hosting the application locally on the testing machine.
-This environment ensures minimal network load times and eliminates every other connected delays such as resolving domain names.
+The second hosting solution for this study is hosting the application locally on the testing machine.
+The client device in question is a HP Envy x360 Convertible 15-eu0xxx with an AMD Ryzen 5 5500U processor and 16GB RAM.
+The operating system on the device is Windows 11 Home (Version 10.0.22631) during testing.
+This environment ensures minimal network load times and eliminates every other connected delay such as resolving domain names.
 If the framework supports a \enquote{preview} mode, it was used for hosting the application.
 Otherwise, the application would be build and hosted using the \verb|serve| command or the active server would be started with \verb|node <filename>|.
 If neither of the two options would be available, the \enquote{dev} mode of the application would be used and tested.
@@ -580,10 +678,10 @@ Table \ref{tab:hostCommands} lists the used commands for building and starting t
 % 3. Largest/First Contentful/Meaningful Paint
 % 4. TTFB/TTI/SpeedIndex
 
-Slow load time and reactivity of a web page and its user interface decreases user retention and continuing user actions over time independently from the content. %TODO: source
+Slow load time and reactivity of a web page and its user interface decreases user retention and continuing user actions over time independently from the content \citep{webprophet,effectsofwebpagecontents}.
 The \enquote{reaction time} is interpreted in three separate ways for this study: The page load time, meaning the time from navigation start to \acrshort{dom} mutation, the time from a state change, e.g. data query end, to \acrshort{dom} mutation, here called component load time, and the time between a user input to finished \acrshort{dom} mutation, called component update time for this study.
 Nearly most of these times can be combined from or described using navigation events (see figure \ref{fig:timing}).
-These timing categories are not exclusive, but measurements for these time categories do overlap.
+These timing categories are not exclusive, but measurements for these time categories do overlap (see table \ref{tab:metriccategories}).
 
 Naturally, other metrics than the navigation timings were also considered.
 From the list of measurements in Lighthouse reports (see chapter \ref{subsec:testingtools}), sublists with relevant metrics were created to properly represent the time measurements of the described render sections and DOM mutation events.
@@ -597,8 +695,8 @@ The following sections describe which measurements are needed for each render se
   \begin{center}
     \begin{tabular}[h]{|l|l|l|}
       \hline
-      \multicolumn{1}{|c|}{\textbf{Page}}       & \multicolumn{2}{c|}{\textbf{Component}}     \\ \hline
-      \multicolumn{1}{|c|}{\textbf{Load Time}}  & \textbf{Load Time}  & \textbf{Update Time}  \\ \hline
+      \multicolumn{1}{|l|}{\textbf{Page}}       & \multicolumn{2}{c|}{\textbf{Component}}     \\ \hline
+      \multicolumn{1}{|l|}{\textbf{Load Time}}  & \textbf{Load Time}  & \textbf{Update Time}  \\ \hline
       TBW                                       & OLVC                &                       \\ \hline
       TTFB                                      & OFVC                &                       \\ \hline
       \multicolumn{2}{|c|}{TTI}                                       &                       \\ \hline
@@ -609,7 +707,8 @@ The following sections describe which measurements are needed for each render se
       LCP                                       &                               &             \\ \hline
     \end{tabular}
   \end{center}
-  \caption{testse}
+  \caption{Assignment of metrics to the metric categories}
+  \label{tab:metriccategories}
 \end{table}
 
 \subsubsection{Page Load Times}\label{subsubsec:pageloadtimes}
@@ -620,15 +719,15 @@ As a result, the aim of the client's browser and render engine for this first ti
 In order to focus on this time frame, these metrics describe the application's performance.
 
 \begin{itemize}
-  \item \textbf{\acrfull{tbw}}: The total size of files or content of response directly increases either the App Cache time between \verb|fetchStart| and \verb|domLoading| or \verb|domContentLoaded| if the resource can be cached in the client or the response time between \verb|responseStart| and \verb|responseEnd| otherwise.
+  \item \textbf{\acrfull{tbw}}: The total size of files or response body directly increases either the App Cache time between \verb|fetchStart| and \verb|domLoading| or \verb|domContentLoaded| if the resource can be cached in the client, or the response time between \verb|responseStart| and \verb|responseEnd| otherwise.
   \item \textbf{\acrfull{ttfb}}: The time between \verb|navigationStart| and \verb|responseStart|.
   Most of the network delay can be described by the \acrshort{ttfb}.
   Often inaccurately paraphrazed as \enquote{ping}.
-  \item \textbf{\acrfull{tti}}: The time until the page can be interactive, described by the \acrshort{dom}'s loading state \enquote{interactive}.
-  By navigation events described as the time between \verb|navigationStart| and \verb|domInteractive|.
+  \item \textbf{\acrfull{tti}}: The time until the page can be interactive is described by the \acrshort{dom}'s loading state.
+  Is is defined through navigation events as the time between \verb|navigationStart| and \verb|domInteractive|.
   Notably, the timing of \verb|domInteractive| is not reliable because a \acrshort{dom} may become interactive, but the browser may not be interactive yet.
   Additionally, resources may still be loading.
-  For example, a \acrshort{dom} from a \acrshort{html} skeleton may be \enquote{interactive} after a few milliseconds, but no content may be rendered for the user to see \citep{htmlLivingStandard}, because \acrshort{csr} code is still loading \citep{htmlLivingStandard}.
+  For example, a \acrshort{dom} from a \acrshort{html} skeleton may be \enquote{interactive} after a few milliseconds, but no content may be rendered for the user to see, because \acrshort{csr} code is still loading \citep{htmlLivingStandard}.
   \item \textbf{DomContentLoaded}: Similar to \acrshort{tti}, DomContentLoaded measures the time between \verb|navigationStart| and \verb|domContentLoaded|.
   At this point in time, \enquote{all subresources apart from async script elements have loaded} \citep{htmlLivingStandard}.
   A large difference between \acrshort{ttfb} and DomContentLoaded indicates a great size or at least long load time of subresources.
@@ -637,32 +736,31 @@ In order to focus on this time frame, these metrics describe the application's p
   \verb|navigationStart| to \verb|loadEventEnd|.
   The time represents both the capability of the used framework to optimize the usage of a client's and network's resources on initial load and the priorization of JavaScript execution by splitting not immediately needed code into async scripts.
   Therefore, it is a combined indicator for the code performance and general optimization.
-  \item \textbf{\acrfull{tbt}}: The total time spent by a browser with parsing and optionally resources that block the rendering process from finishing.
+  \item \textbf{\acrfull{tbt}}: The \acrshort{tbt} is the total time spent by a browser with parsing and optionally resources that block the rendering process from finishing.
   This includes stylesheets and scripts without the \verb|async| or \verb|defer| tag.
-  The metric directly represent the time before the browser can fulfil the user's goal on initial load.
-  \item \textbf{\acrfull{lvc}}: Time from \verb|navigationStart| until the last visual change above the fold, meaning within the viewport of the user. %TODO: describe Observed lvc
-  \item \textbf{\acrfull{lcp}}: The time between navigation to the page and the time of rendering for the visually largest text or image element in the user's viewport \citep{lcpDocumentation}.
+  The metric directly represents the time before the browser can fulfill the user's goal on initial load.
+  \item \textbf{\acrfull{olvc}}: This is the time from \verb|navigationStart| until the last visual change above the fold, meaning within the viewport of the user.
+  Metrics with the \enquote{observed} are not throttled by the test tool.
+  \item \textbf{\acrfull{lcp}}: The \acrshort{lcp} is the time between navigation to the page and the time of rendering for the visually largest text or image element in the user's viewport \citep{lcpDocumentation}.
   Optimization of this metric requires an understanding of the page's content and element size within the viewport.
 \end{itemize}
 
 From this list of relevant metrics, some expectations can be formulated before testing for them.
-First, \acrshort{tbt} is most likely slower with \acrshort{csr} frameworks because the code execution filling the \acrshort{html} skeleton takes some time that is not necessary in client with SSR and Prerendered pages.
-On delayed pages this difference is expected to be very slight or nonexistent.
-Second, the \acrshort{lcp} probably will not differ across frameworks, but naturally across pages.
-In contrast, if a framework does create a faster result for its \acrshort{lcp}, it is expected to be a \acrshort{ssr} or Prerendering framework because of its expected shorter \acrshort{tbt}.
-Third, \acrshort{csr} frameworks differ from \acrshort{ssr} and Prerendering frameworks by \acrlong{tbw} similar to \acrlong{lcp}.
-Although the \acrshort{html} document is much slimmer with \acrshort{csr}, the \acrshort{js} files are expected to be equally larger than server-side rendered and prerendered pages.
-It is probably nearly equal in sum because the byte size of the page is likely mostly made up from multimedia files such as images and videos, \acrshort{css} and \acrlong{js} files. 
-Fourth, the selected frameworks should be inversely separable into groups by the \acrlong{ttfb}.
-Most likely \acrshort{csr} and Prerendering frameworks will be faster for this metric because the web server can serve as a static fileserver and does not have to execute any additional code.
-Fifth, because \acrshort{csr} pages consist of only nearly empty \acrshort{html} skeletons and links to \acrshort{js} and \acrshort{css} files, the \acrshort{tti} is expected to be much faster for \acrshort{csr} pages.
-Lastly, the timing of the \verb|loadEventEnd| is not clearly predictable before testing.
-The only expectation is that newer framework perform better in this metric simply because they are newer and are expected to make optimizations that go into a faster parsing and rendering of a web page.
-
-With these expectations it would be most interesting to see the differences between CSR and SSR frameworks.
-From the list of selected frameworks for this study, those frameworks with direct competitors are Nuxt compared with Vue.js as well as Next.js in comparison to React.
-Additionally, Angular and Svelte in the group of CSR frameworks shall be compared with the SSR framework group with Astro.
-
+\begin{enumerate}
+  \item \acrshort{tbt} is most likely slower with \acrshort{csr} frameworks because the code execution filling the \acrshort{html} skeleton takes some time that is not necessary in clients with \acrshort{ssr} and Prerendered pages.
+  On delayed pages this difference is expected to be very slight or nonexistent.
+  \item The \acrshort{lcp} probably will not differ across frameworks, but naturally across pages.
+  In contrast, if a framework does create a faster result for its \acrshort{lcp}, it is expected to be a \acrshort{ssr} or Prerendering framework because of its expected shorter \acrshort{tbt}.
+  \item \acrshort{csr} frameworks differ from \acrshort{ssr} and Prerendering frameworks by \acrlong{tbw} similar to \acrlong{lcp}.
+  Although the \acrshort{html} document is much slimmer with \acrshort{csr}, the \acrshort{js} files are expected to be equally larger than server-side rendered and prerendered pages.
+  It is probably nearly equal in sum because the byte size of the page is likely mostly made up from multimedia files such as images and videos. 
+  \item The selected frameworks should be inversely separable into groups by the \acrlong{ttfb}.
+  Most likely \acrshort{csr} and Prerendering frameworks will be faster for this metric because the web server can serve as a static fileserver and does not have to execute any additional code.
+  \item Because \acrshort{csr} pages consist of only nearly empty \acrshort{html} skeletons and links to \acrshort{js} and \acrshort{css} files, the \acrshort{tti} is expected to be much faster for \acrshort{csr} pages.
+  \item The timing of the \verb|loadEventEnd| is not clearly predictable before testing.
+  The only expectation is that newer frameworks perform better in this metric simply because they are newer and are expected to make optimizations that go into a faster parsing and rendering of a web page.
+\end{enumerate}
+  
 \subsubsection{Component Load Times}\label{subsubsec:componentloadtimes}
 % Measuring JS-dependent parts of the webpage
 % 
@@ -673,7 +771,7 @@ As a second category of relevant metrics, measurements for the separation of the
 This category is designed to reflect the performance of the \acrlong{js} that was generated by the framework.
 This stands in contrast to how much content can be rendered by the time of \verb|responseEnd|.
 To this end, only measurements after \verb|responseEnd| can be taken into consideration.
-Each mutation from the initial \acrshort{dom} has to be interpreted as a update to a component.
+Each mutation from the initial \acrshort{dom} has to be interpreted as an update to a component.
 The following metrics are part of this category.
 
 \begin{itemize}
@@ -682,25 +780,28 @@ The following metrics are part of this category.
   \item \textbf{\acrfull{tti}}: as explained in section \ref{subsubsec:pageloadtimes}
   \item \textbf{\acrfull{ofvc}}: The time of the first visual update from a blank canvas.
   It is an indicator for the start of visual rendering and a signal to a user that the page is working or loading.
-  For pages with itneractive elements, this metric is less important that the \acrshort{tti}.
+  For pages with interactive elements, this metric is less important than the \acrshort{tti}.
   \item \textbf{\acrfull{olvc}}: The time of the last visual update to a web page.
-  The metric is the most promisiing for this study as it indicates the end of the perceptable rendering process and therefore perceived load speed.
+  The metric is the most promising for this study as it indicates the end of the perceivable rendering process and therefore perceptable load speed.
   \item \textbf{Mutation Times}: Time from initialization of the app with a predetermined \acrshort{html} element such as \verb|<main>| to a \acrshort{dom} mutation.
   See section \ref{subsub:componentUpdateTimes} for more info on this.
 \end{itemize}
 
-Based on the intention for testing these metrics, comparing or optimizing \acrlong{js} frameworks, the following expectations were presented before tests.
-First, prerendered and \acrshort{ssr} pages are expected to show a earlier \acrshort{fvc} because the execution of any code for delay components can start earlier.
-This expectation comes from the added code of \acrshort{csr} applications to add static elements to the \acrshort{dom} through \acrshort{js}.
-Second, \acrshort{csr} applications probably finish their \acrshort{lvc} slightly earlier than other applications.
-The assumption for this prediction is that every application starts long tasks only after the \acrshort{html} was parsed which takes longer for \acrshort{ssr} or prerendered pages.
-As a result of these two expectations the observations of a \verb|MutationObserver| most likely have a lower maximum and are less spread out for \acrshort{ssr} and prerendered pages, but start later than \acrshort{csr} pages.
-Third, as described above, the \acrshort{tbt} is expected to be slightly later for \acrshort{csr} than for \acrshort{ssr} or prerendered applications and fourth, \acrshort{csr} apps should have a slower \acrshort{tti}.
+Based on the intention for the usage of these metrics, comparing or optimizing \acrlong{js} frameworks, the following expectations were presented before tests.
+\begin{enumerate}
+  \item Prerendered and \acrshort{ssr} pages are expected to show a earlier \acrshort{fvc} because the execution of any code for delayed components can start earlier.
+  This expectation comes from the added code of \acrshort{csr} applications to add static elements to the \acrshort{dom} through \acrshort{js}.
+  \item \acrshort{csr} applications probably finish their \acrshort{lvc} slightly earlier than other applications.
+  The assumption for this prediction is that every application starts long tasks only after the \acrshort{html} was parsed which takes longer for \acrshort{ssr} or prerendered pages.
+  As a result of these two expectations the observations of a \verb|MutationObserver| most likely have a lower maximum and are less spread out for \acrshort{ssr} and prerendered pages, but start later than \acrshort{csr} pages.
+  \item As described above, the \acrshort{tbt} is expected to be slightly later for \acrshort{csr} than for \acrshort{ssr} or prerendered applications.
+  \item \acrshort{csr} apps should have a slower \acrshort{tti}.
+\end{enumerate}
 
 With these metrics, identifying bloated applications and components is the goal.
 \acrlong{js} that is loaded, parsed and executed that increases the initial load time of a page should be indicated through these tests.
 Such unnecessary or render-blocking scripts are pointed out through \acrshort{tbt} and little difference between \acrshort{fvc} and \acrshort{lvc}.
-For example, a script can be considered unnecessary for initial load if it is executed before rendering that only defines functions, initializes objects that are not yet needed or creates a blocking dependency chain, e.g. through importing another script.
+For example, a script can be considered unnecessary for initial load if it is executed before rendering and only defines functions, initializes objects that are not yet needed, or creates a blocking dependency chain, e.g. through importing another script.
 
 \subsubsection{Component Update Times}\label{subsub:componentUpdateTimes}
 % 3rd type of update through JS
@@ -713,7 +814,7 @@ For example, a script can be considered unnecessary for initial load if it is ex
 %   - Svelte vs Astro
 
 For the third category of relevant metrics, \acrshort{dom} mutation stemming from events triggered by the user are grouped together.
-These event influence the user experience on the condition that they lead to \acrshort{dom} mutations.
+These events influence the user experience on the condition that they lead to \acrshort{dom} mutations.
 Only two kinds of measurements can be made to gain insight into the update speed.
 
 \begin{itemize}
@@ -723,29 +824,17 @@ Only two kinds of measurements can be made to gain insight into the update speed
   A \verb|MutationObserver| is initialized and all mutations are recorded. Designated mutations to the \acrshort{dom} are added child elements, removed child elements and attribute updates (added, edited and removed).
 \end{itemize}
 
-For these metrics no expectations could be formulated before testing because the speed of an mutation is purely based on the implementation of the framework itself.
+For these metrics no expectations could be formulated before testing because the speed of a mutation is purely based on the implementation of the framework itself.
 These implementations are not openly accessible without knowledge of the frameworks' source code.
 Still, some prediction can be made independently from a specific framework.
-Apps that represent their state in the DOM, e.g. an \enquote{edited} state for a user input or an updated value attribute of an \verb|<input>| element, will most likely have\dots
+Apps that represent their state in the DOM, e.g. an \enquote{edited} state for a user input or an updated value attribute of an \verb|<input>| element, will most likely have \dots
 
 \begin{enumerate}
-  \item more entries in the recorded \acrshort{dom} mutations and\dots
+  \item more entries in the recorded \acrshort{dom} mutations and \dots
   \item a later last entry in the recorded \acrshort{dom} mutations.
 \end{enumerate}
 
-Also, the implementation of the app shows differences here as additional elements, such as \verb|<div>| elemets as wrappers for each component can influence the time and number of updated elements in either direction, dependent on the use case.
-To summarize some comparisons between frameworks or groups of frameworks, the most appealing for the evaluation are the following.
-
-\begin{enumerate}
-  \item \textbf{\acrshort{csr} - \acrshort{ssr}}: Before testing, deifferences between \acrshort{csr} and prerendered pages are expected, but the metrics and amount of differences are a probable subject of interest.
-  Because there is no perceivable differences between prerendered  pages and server-side rendered pages from a client perspective, they are grouped together in this context.
-  \item \textbf{Angular - React - Vue.js}: Because these \acrshort{csr} frameworks have been competing for eight years at this point and they are still the most famous front-end frameworks \citep{stateOfJs2023}, the comparison of these frameworks is relevant for this study.
-  \item \textbf{Nuxt - Vue.js}:As a next generation of the Vue.js framework, the actual performance increase of Nuxt is interesting for developers.
-  \item \textbf{Next.js - React}: Same as above
-  \item \textbf{Vue-based - React-based}: Because a direct comparison of frameworks based on React and based on Vue.js is possible with multiple candidates, a difference in performance is an actual relevant factor for the choice between the ecosystems.
-  \item \textbf{Svelte - Astro}: As the most recent popular frameworks in the selection of frameworks, Astro and Svelte have the potential to both outdo their contenders and outdo each other.
-  This comparison is most interesting for fans of new tools and the development teams of the frameworks themselves.
-\end{enumerate}
+Also, the implementations of the app show differences here as additional elements, such as \verb|<div>| elemets as wrappers for each component can influence the time and number of updated elements in either direction, dependent on the use case.
 
 \subsection{Testing Tools}\label{subsec:testingtools}
 % What tools were using testing and how do they work? 
@@ -760,20 +849,20 @@ To summarize some comparisons between frameworks or groups of frameworks, the mo
 In order to test for these metrics, a set of multiple testing tools is needed.
 These testing tools are required to cover the measurements describe above and the tools have to work with similar configuration for all selected frameworks.
 Test reports have to be generated in a machine-readable format in order to evaluate the results and create aggregate metrics from them.
-This is a requirement because from previous experience it is known that performance values in the web development context have a considerable variance.
+This is a requirement because it is known from previous work that performance values in the web development context have a considerable variance.
 To this end, two different tools for automating tests were chosen:
 
 \begin{enumerate}
   \item \textbf{Lighthouse \acrshort{cli}}: The Lighthouse \acrshort{cli} makes it possible to automate the generation of Lighthouse reports.
   Tests for these reports combine measurements with weights in categories and reduce them to a single score, as well as five main category scores.
-  These categories are performance, accessibility, best practices, \acrshort{seo} and \acrshort{pwa}.
+  These categories are performance, accessibility, best practices, \acrfull{seo} and \acrfull{pwa}.
   Additionally, Lighthouse reports contain recommendations for optimizing metrics and increasing the scores.
-  It is a popular tool for measuring the initial page loads, page content and meta information for a web site.
+  It is a popular tool for measuring the initial page loads, page content and meta information for a website.
   Changes after the initial page load are not possible to test with the Lighthouse \acrshort{cli}.
   Reports are by default generated as \acrshort{html} files, but the tool was configured to generate both \acrshort{html} and \acrshort{json} reports for this study.
-  Since Lighthouse is designed to test live websites in production, the tool does not support starting a local development server.
-  Testing with Lighthouse therefore needs to include building and hosting the application locally while tests are running.
-  \item \textbf{Playwright}: Playwright features a couple of front-end testing tools for web applications in development.
+  Since Lighthouse is designed to test live websites in production, the tool does not integrate starting a local development server.
+  Testing with Lighthouse therefore needs to be manually joined with building and hosting the application locally while tests are running.
+  \item \textbf{Playwright}: Playwright features front-end testing tools for web applications in development.
   It mainly supports checking page content, but also supports the execution of injected \acrlong{js} and full control over the browser.
   This also means that the control over the user inputs enables measurement of timings connected to user behaviour such as clicking links and buttons, hover the mouse over elements or using \verb|<input>| elements.
   Such options are needed to evaluate the timings of interactive elements.
@@ -785,11 +874,9 @@ To this end, two different tools for automating tests were chosen:
 
 Although all requirements can be fulfilled with these tools, multiple problems were found with them.
 Because Lighthouse reports include data that is influenced by all actors and constraints regarding the web page, many factors contribute to the variability of its results.
-\cite{lighthouseVariability} contains a list of sources of variability.
+\cite{lighthouseVariability} lists possible sources for performance variability.
 The relevant sublist of factors for this study contains for local tests client resource contention, client hardware variability and browser nondeterminism.
-Client hardware variability is mitigated through the usage of the same client device for all tests.
-The client device in question is a HP Envy x360 Convertible 15-eu0xxx with an AMD Ryzen 5 5500U processor and 16GB RAM.
-The operating system on the device is Windows 11 Home (Version 10.0.22631) during testing.
+Client hardware variability is mitigated through the usage of the same client device for all tests (see section \ref{subsubsec:localhost}).
 Client resource contention could not be fully mitigated.
 Attempts to keep a lid on client resources were killing the most hardware intensive background tasks and services on the test machine before starting tests.
 Browser nondeterminism was taken into account and adopted as a test dimension because the target group of an application should be factor for the choice of framework, especially for purely desktop or mobile applications.
@@ -801,7 +888,7 @@ A Lighthouse report was not generated on other browsers.
 For tests on a distant server, other factors contribute to the fluctuation of Lighthouse test results in addition.
 Local network variability, tier-1 network variability and web server variability have to be considered for the tests.
 The first two could not be mitigated.
-The internet connection speed at the test location was 100 Mbit/s to simulate common modern consumer internet connections. % TODO: source
+The internet connection speed at the test location was 100 Mbit/s to simulate common modern consumer internet connections in Germany \citep{internetconnections}.
 Web server variability could not be mitigated as well.
 For this reason, a hosting service was explicitly chosen for all tests to minimize the variability across frameworks (see section \ref{subsec:hostingenvironments}).
 
@@ -810,9 +897,9 @@ The repetitions were configured with the same browser context and web server for
 The reason for this decision is that fluctuations based on the first requests within the client or the server should be mitigated with this method.
 
 Two additional problems with Playwright were found before the start of the test phase.
-The time of injection for \acrshort{js} script could not be properly determined.
+The time of injection for \acrshort{js} scripts could not be properly determined.
 This fluctuation could not be mitigated.
-Also, reading data from the window context after the fact proved to be difficult because the context closes after the test ends and the report only contains explicitly tested values.
+Also, reading data from the window context after the fact proved to be difficult because the context closes after the test ends and the report only contains the explicitly tested values.
 Objects such as the needed navigation timings are no longer available after the fact.
 The solution to this problem was to attach all necessary information as a file to the report so it is readable after the context closed.
 
@@ -836,15 +923,15 @@ The solution to this problem was to attach all necessary information as a file t
 \end{table}
 
 With all tools and workarounds in place, the data needed for the study could be collected.
-Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt}, \acrshort{lcp}, \acrshort{fvc}, \acrshort{ofvc} and \acrshort{olvc} whereas Playwright cover all navigation and \acrshort{html} event times, namely DomContentLoaded, LoadEventEnd, user input times and mutation times (see table \ref{tab:metricassignment}).
+Lighthouse covers \acrshort{tbw}, \acrshort{ttfb}, \acrshort{tti}, \acrshort{tbt}, \acrshort{lcp}, \acrshort{fvc}, \acrshort{ofvc} and \acrshort{olvc}, whereas Playwright covers all navigation and \acrshort{html} event times, namely DomContentLoaded, LoadEventEnd, user input times and mutation times (see table \ref{tab:metricassignment}).
 
-\section{Implementation}\label{sec:implementation} 
+\section{Implementation of the study}\label{sec:implementation} 
 % Project creation strategy
 % Project separation strategy
 % 
 % Goals: reproducability, interpretability, tracability of implementation choices
 
-This chapter contains details of the implementation and the strategies for creation of the project as well as for the separation of projects for each framework.
+This chapter contains details of the implementation and the strategies for the creation of the project as well as for the separation of projects for each framework.
 The goal is to define taken steps to ensure reproducability and tracability of implementation choices and, as a result, interpretability of the results in the following chapter.
 
 The implementation for each framework was started using the official \enquote{get started} guide on the framework's website \citep{AngularGetStarted,AstroGetStarted,NextGetStarted,NuxtGetStarted,ReactGetStarted,SvelteGetStarted,VueGetStarted}.
@@ -853,22 +940,22 @@ The initialization options for the creation process were chosen with the followi
 
 \begin{enumerate}
   \item The project is to be created as empty as possible to ensure the focus on the framework \enquote{as is} rather than how it can be configured.
-  No demo projcet is chosen if an option with fewer preconfigured files is available.
-  \item No testing tools is to be preconfigured except Playwright.
+  No demo project is chosen if an option with fewer preconfigured files is available.
+  \item No testing tools are to be preconfigured except Playwright.
   If Playwright is not an option, then no testing tool should be chosen.
   \item Otherwise the default options (recommended or first) should be chosen.
   If \enquote{none} is an option, it it should be selected.
 \end{enumerate}
 
-After the initialization under these rules, the app's four pages and components as well as routing between the pages were configured.
+After the initialization under these rules, the four web pages of the respective apps, their components and the routing between the pages were configured.
 After creation of the Vue.js and React app, each component's template, code and style information was copied from either their Vue.js or React counterparts and adapted to the framework in question to speed up the creation process.
-Only after this process optimization efforts such as configuring image components (see section \ref{subsec:components}) and adaptation to the hosting environment were performed.
+Then, Optimization efforts such as configuring image components (see section \ref{subsec:components}) and adaptation to the hosting environment were performed.
 
 Additionally, project directories were separated into Github repositories.
 The separation is a requirement for hosting with Vercel as a maximum of three Vercel projects can be hosted from the same repository.
 This study exceeds this limit.
 This limiting condition entails that all testing configuration could not be centralized, but had to be duplicated across repositories.
-The setup of the testing environment has been the last step of the project creation (see section \ref{subsec:tests}).
+The setup of the testing environment was the last step of the project creation (see section \ref{subsec:tests}).
 
 \subsection{Component implementation}\label{subsec:components}
 % Notable components and HTML elements
@@ -882,15 +969,26 @@ The setup of the testing environment has been the last step of the project creat
 
 While most of the design decisions for the components of the application have been made during the design of the application itself, the design choices relating to the implementation of said components are open to adaptation to the framework.
 The goals for this implementation period are few.
-First, the implementation for each framework should be as similar to the others as possible, meaning the \acrshort{html} elements should be the same.
-Second, the implementation should follow the design language of the framework.
-Therefore no principles should translate from one implementation to another if they do not fit to the framework's design principles.
-Third, it has to follow the component design as described in section \ref{subsec:exampleapplication}.
-If the design of the example application cannot be followed, changes are to be as minimal as possible.
+
+\begin{enumerate}
+  \item The implementation for each framework should be as similar to the others as possible, meaning the \acrshort{html} elements should be the same.
+  \item The implementation should follow the design language of the framework.
+  Therefore no principles should translate from one implementation to another if they do not fit to the framework's design principles.
+  \item The implementation has to follow the component design as described in section \ref{subsec:exampleapplication}.
+  If the design of the example application cannot be followed, changes are to be as minimal as possible.
+\end{enumerate}
+
 This section describes selected components and code snippets where they are either interesting for the performance, unforeseen choices or where they differ notably inbetween frameworks.
-The author of this study had had the most experience with Vue.js prior to this project.
+The author of this study has had the most experience with Vue.js prior to this project.
 For this reason, code snippets in Vue.js have the most presentability and code snippets in this paper are shown in Vue.js wherever possible.
 The components described in this section are the About and the Create page, the Post component because it has two variations and the MediaComponent.
+
+\begin{figure}[h!]
+  \begin{center}
+  \includegraphics[width=0.4\linewidth, keepaspectratio]{diagrams/about-dom-2.png}
+  \end{center}
+  \caption{Graphical subdivision of the About page into components}\label{fig:graphicalAboutPage}
+\end{figure}
 
 The About page is an interesting case because, as described in section \ref{subsec:exampleapplication}, it is the only static page of the application.
 Its components and \acrshort{html} children are therefore also static.
@@ -901,24 +999,8 @@ Functionally, its only purpose is styling and its only effect on the \acrshort{d
 The other imported subcomponents \verb|<NotInstagramLogo>| and \verb|<SendIcon>| are also wrappers for a \verb|<h1>| and a \verb|<img>| element, respectively.
 Listing \ref{lst:Vue:About} demonstrates the static nature of the page view and the hard-coded addition of all text and multimedia in the template.
 
-\begin{figure}
-  \begin{center}
-    \begin{subfigure}{0.49\linewidth}
-      \begin{center}
-        \includegraphics[width=\linewidth, keepaspectratio]{diagrams/about-dom.png}
-      \end{center}
-    \end{subfigure}
-    \begin{subfigure}{0.49\linewidth}
-      \begin{center}
-        \includegraphics[width=\linewidth, keepaspectratio]{diagrams/about-dom-2.png}
-      \end{center}
-    \end{subfigure}
-  \end{center}
-  \caption{Graphical subdivision of the About page into components \textcolor{red}{(Welches Diagramm ist besser?)}}\label{fig:graphicalAboutPage}
-\end{figure}
-
 \vspace{1cm}
-\begin{lstlisting}[caption=About page in Vue.js (as displayed in figure \ref{fig:uml}), label={lst:Vue:About}, language=HTML]
+\begin{lstlisting}[caption=About page in Vue.js (as displayed in figure \ref{fig:graphicalAboutPage}), label={lst:Vue:About}, language=HTML]
 <!-- AboutView.vue -->
 <template>
   <div id="AboutView">
@@ -983,10 +1065,10 @@ The data of the component has four dynamic parts: The options and the choice for
 The last data point for the component is the user handle, which is static for the preview in this example application.
 The computed property mediaSource (see listing \ref{lst:Vue:Create:Script}, line \ref{line:computedMediaSource:createPage}) represents the logical choice between the media selection and source \acrshort{url} for the multimedia file in the previewed post.
 This template contains a static \verb|<header>|, the \verb|<form>| with dynamic attributes and a Post component.
-This subcomponent hast to be dynamic and reactive to its props as they are changing throughout the process of post creation.
+This subcomponent has to be dynamic and reactive to its props as they are changing throughout the process of post creation.
 
 \vspace{1cm}
-\begin{lstlisting}[caption=Create Page in Vue.js (Template), label={lst:Vue:Create:Template}, language=HTML]
+\begin{lstlisting}[caption=Create page in Vue.js (Template), label={lst:Vue:Create:Template}, language=HTML]
 <!-- CreateView.vue -->
 <template>
   <header>
@@ -1013,7 +1095,7 @@ This subcomponent hast to be dynamic and reactive to its props as they are chang
 </template>
 \end{lstlisting}
 \hrule
-\begin{lstlisting}[caption=Create Page in Vue.js (Script), label={lst:Vue:Create:Script}, language=JavaScript, firstnumber=25, escapechar=°]
+\begin{lstlisting}[caption=Create page in Vue.js (Script), label={lst:Vue:Create:Script}, language=JavaScript, firstnumber=25, escapechar=°]
 // CreateView.vue
 export default {
   name: "CreateView",
@@ -1039,15 +1121,15 @@ export default {
 \vspace{1cm}
 
 Listings \ref{lst:Vue:Post:Template} and \ref{lst:Vue:Post:Script} show the implementation of the Post component in Vue.js.
-It requires seven props for the five data points of a post (see figure \ref{fig:classes}) and two additional props for the control over the design and loading behaviour of the post's image or video.
+It requires five props for the five data points of a post (see figure \ref{fig:classes}) and two additional props for the control over the design and loading behaviour of the post's image or video.
 Additionally, the \verb|mounted| method loads the user data through the \verb|ProfileService| (see listing \ref{lst:Vue:Post:Script}, line \ref{line:postMounted}).
 The template of the component uses MediaComponent twice, once for the profile picture and once for the post image or video.
 The attributes for the profile picture are mainly static because the user data is not edited through the create form.
-The attributes of the post multimedia except the class, width and height are dynamic and editable.
+The attributes of the post multimedia are dynamic and editable except the class, width and height.
 Additionally, the projection of the post's caption onto the \acrshort{dom} is dynamic.
 Every time the caption changes, the string is split by whitespaces and each word is projected onto a \verb|<span>| element, so it can be styled as an hashtag if applicable.
 Afterwards, the list of \verb|<span>| elements is joined using whitespaces.
-The purpose of this method for the projection of the caption is only for the styling of hashtags.
+The purpose of this projection method for the caption is only the styling of hashtags.
 
 \vspace{1cm}
 \begin{lstlisting}[caption=Post in Vue.js (Template), label={lst:Vue:Post:Template}, language=HTML]
@@ -1114,7 +1196,7 @@ Because the creation of such a dynamic component is an intended use case for Ang
 Astro poses as an opposite to this.
 Because dynamic or reactive components are not implementable natively as Astro components, another framework has to be used in Astro Islands.
 For this reason, other components had to be invented in addition to the components as described in figure \ref{fig:uml}.
-\verb|CreateForm| encapsulates the dynamic parts of the Create Page.
+\verb|CreateForm| encapsulates the dynamic parts of the Create page.
 It is a React component with the form and post preview.
 Because Astro components cannot be used in Islands, every subcomponent used here had to be implemented with React as a duplicate to an Astro component.
 
@@ -1196,17 +1278,17 @@ export default CreateForm;
 \end{lstlisting}
 \vspace{1cm}
 
-\begin{figure}
+\begin{figure}[h!]
   \begin{center}
     \includegraphics[width=\linewidth]{diagrams/uml-astro.png}
   \end{center}
   \caption{Adapted component structure for Astro Islands (React components are marked blue, duplicate components are white and blue)}\label{fig:astroUml}
 \end{figure}
 
-The MediaComponent is a presenter component for multimedia content, namely an image or a video.
+MediaComponent is a presenter component for multimedia content, namely an image or a video.
 It is used within the ProfileList, Profile and Post components (see figure \ref{fig:uml}).
 As described in section \ref{subsec:exampleapplication}, the main use of this component for a developer is to centralize the optimization of multimedia files and to ensure its correct size and style.
-As such, it is a catchall component for many kinds of multimedia sources. Listings \ref{lst:Vue:MediaComponent:Template} and \ref{lst:Vue:MediaComponent:Script} show parts of its implementation in Vue.js.
+As such, it is a catch-all component for many kinds of multimedia sources. Listings \ref{lst:Vue:MediaComponent:Template} and \ref{lst:Vue:MediaComponent:Script} show parts of its implementation in Vue.js.
 
 \vspace{1cm}
 \begin{lstlisting}[caption=MediaComponent in Vue.js (Template), label={lst:Vue:MediaComponent:Template}, language=HTML]
@@ -1261,7 +1343,7 @@ First, the component takes five props that can be passed to it as \acrshort{html
 The \verb|src| string contains either the file name or \acrshort{url} to the file.
 The \verb|alt| prop is the alternative text for an image to simple pass to the \verb|alt| attribtue of the \verb|<img>| tag, as well as the width and height of the image or video.
 These props are primarily needed for optimization of layout shifts and to optionally tell the browser which image variant is needed from a source set on the page.
-Lastly, the \verb|eagerLoading| prop is a boolean indicator for whether the file need to be loaded first for images or preloaded fully for videos.
+Lastly, the \verb|eagerLoading| prop is a boolean indicator for whether the file needs to be loaded first (images) or preloaded fully (videos).
 
 Second, the computed property \verb|mediaSource| returns the correct link to either the image or video source based on the start of the \verb|src| prop.
 This allows the component to identify faulty or external source \acrshort{url}s and only import needed local multimedia files.
@@ -1277,10 +1359,10 @@ For image source strings starting with \enquote{http}, an \acrshort{html}-native
 The remaining frameworks use either one or the other method to insert images.
 Vue.js, React and Angular do not support enhanced image elements.
 These frameworks only include images using the \verb|<img>| tag.
-In contrast, Astro, Next.js, Nuxt and Svelte do have commponents that improve the performance of image elements.
+In contrast, Astro, Next.js, Nuxt and Svelte do have components that improve the performance of image elements.
 Astro natively supports an \verb|<Image>| component that outputs an \verb|<img>| tag with optimized attributes.
 Next.js comes with another \verb|<Image>| component that optimizes images with a predefined width and height and Nuxt has a \verb|<NuxtImg>| component to optimize images and define presets for its images.
-Svelte is the only one of that group that does not support full \acrshort{url}s to be passed to its image component.
+Svelte is the only one of this group that does not support full \acrshort{url}s to be passed to its enhanced image component.
 
 Fourth, the attributes of the \verb|<img>| elements are designed to optimize their load performance, size and image quality.
 While no way to optimize the size and quality of the source of simple \verb|<img>| elements is apparent, the load performance is adapted to the usage of a \verb|<MediaComponent>|.
@@ -1289,8 +1371,8 @@ The size of the bounding box of the image is also defined in order to prevent la
 Enhanced image components are configured to ideally optimize the size and quality of the requested image, as well as to insert placeholder images if possible.
 
 The \verb|<video>| elements are designed to optimize the load behaviour of the browser and to change the default presentation and styling.
-Each video has a defined width and height, controls and playback behaviour.
-In order to come as close to the application's model, Instagram, videos should autoplay, but stay muted.
+Each video has a defined width and height, playback behaviour and controls.
+In order to come as close to the application's model, Instagram, videos should autoplay, but be muted by default.
 Each single behaviour is a single attribute to set, but autoplaying every video requires every video to be loaded on page load.
 This network load bears a performance decrease.
 For this reason, only the metadata is preloaded unless it is the first post in the PostList.
@@ -1544,7 +1626,7 @@ export default defineConfig({
   projects: [
     { name: 'Chromium', use: {...devices['Desktop Chrome']} },
     { name: 'Firefox', use: {...devices['Desktop Firefox']} },
-    { name: 'Webkit', use: {...devices['Desktop Safari']} },
+    { name: 'Desktop Safari', use: {...devices['Desktop Safari']} },
     { name: 'Mobile Chrome', use: {...devices['Pixel 5']} },
     { name: 'Mobile Safari', use: {...devices['iPhone 12']} },
     { name: 'Microsoft Edge', use: {channel: 'msedge'} },
@@ -1565,6 +1647,7 @@ The tests and test configuration are similar for all frameworks.
 Listing \ref{lst:playwright-config} shows how the test suite is configured.
 Timeouts are defined for all tests so that even slowly loading pages are tested properly and retries are specified to repeat failing tests twice.
 The reason for this specification is that fluctuating timings close to the limit of failure should be tested multiple times to ensure that the test is supposed to fail.
+Unfortunately, repetitions cannot be configured for the opposite case in which the test passes because of fluctuations, but is supposed to fail on average.
 All test executions and repetitions are configured to run in sequence to minimize the influence of the availability of resources on the testing machine.
 This is especially important because Playwright both opens the application in a browser and runs a webserver for local tests.
 It is set to start a webserver, wait for its availability and then open the application under the specified \verb|baseURL|.
@@ -1619,7 +1702,7 @@ async function measurePerformance(page) {
 \begin{lstlisting}[caption={Test pages configuration}, label={lst:pages-config}, language=JavaScript]
 // pages.js
 const routes = [
-  { name: "Index page", path: "/", pageLoadBudgetMs: 2_000 },
+  { name: "Feed page", path: "/", pageLoadBudgetMs: 2_000 },
   { name: "About page", path: "/about", pageLoadBudgetMs: 1_500 },
   { name: "Create page", path: "/create", pageLoadBudgetMs: 2_000 },
   { name: "Profile page", path: "/user/@PeterPoster", pageLoadBudgetMs: 2_000 },
@@ -1629,10 +1712,12 @@ export default routes;
 \end{lstlisting}
 \vspace{1cm}
 
-Second, component load times are measured with the help of \verb|dynamic-performance.spec.js|.
-The same routes are opened after in initialization script is injected into the browser window.
+Second, \verb|dynamic-performance.spec.js| describes how component load times are measured.
+The same routes are opened after an initialization script is injected into the browser window.
 Listings \ref{lst:dynamic-performance-spec} and \ref{lst:performance-recorder} show parts of the test definition and the injected script.
-The latter waits for a specific element to appear in the \acrshort{dom} that does not appear in the \acrshort{html} skeleton, if it exists. % TODO: which element is that for each framework?
+The latter waits for a specific element to appear in the \acrshort{dom} that does not appear in the \acrshort{html} skeleton, if it exists.
+The element in question has a predetermined \verb|id|.
+For Angular, Astro, Next.js, Svelte and Vue.js it is \enquote{app}, for Nuxt it is \enquote{\_\_nuxt} and for React it is \enquote{root}.
 Afterwards, it initializes a \verb|MutationObserver| on that element.
 Each observation is stored with an xpath, id and the last mutation time.
 The mutation time is overwritten every time so that only the latest update is recorded and the list of times is published as a member of the window object.
@@ -1641,10 +1726,10 @@ Because the time of mutation is only measured as the time difference to the addi
 
 The test script waits for ten seconds after the injection of the recording script and then evaluates the recorded timings.
 The update times are also attached to the test as a \acrshort{json} file so that they can be traced after the test context no longer exists.
-The test to pass for the page is that the latest \acrshort{dom} mutation happens within the page's load time budget.
-In order to trace the failing components more easily, screenshots are token of each slow \acrshort{html} element.
+In order for the test to pass for the page the latest \acrshort{dom} mutation needs to happen within the page's load time budget.
+In order to trace the failing components more easily, screenshots are taken of each slow \acrshort{html} element.
 Additionally, a screenshot of the whole page is taken in which slow elements are colored. Every screenshot is then attached to the test.
-This method ensures that slow components can be identified visually even if xpath and id of the element change between component lifecycles or application builds.
+This method ensures that slow components can be identified visually even if the xpath and the id of the element changes between component lifecycles or application builds.
 
 \vspace{1cm}
 \begin{lstlisting}[caption={Test file for component load times}, label={lst:dynamic-performance-spec}, language=JavaScript, escapechar=°]
@@ -1847,16 +1932,16 @@ window.dynamic_component_performance = loadTimes
 \end{lstlisting}
 \vspace{1cm}
 
-Third, tests for the component update times are specified in \verb|state-change.spec.js| (see listing \ref{lst:state-change-spec}).
+Third, tests in \verb|state-change.spec.js| specify measurements for component update times (see listing \ref{lst:state-change-spec}).
 In this test specification two other time budgets are defined.
 The first update to the \acrshort{dom} and the slowest update to the \acrshort{dom} are tested.
-The idea behind these time budgets is that users may perceive the \enquote{reaction time} as the time frame in which their action had any effect or the time frame in which the effect of their actions finishes.
+The idea behind these time budgets is that users may perceive the \enquote{reaction time} as the time frame in which their action had any effect or the time frame in which the effects of their actions finish.
 To this end, user actions are defined in combination with a route to perform these actions on.
-For this work, four actions are defined on the Create page: The changing of the caption, the selection of an image, the insertion of a media source and the creation of a new post, which is a combination of caption change and media selection.
+For this work, four actions are defined on the Create page: The changing of the caption, the selection of an image, the insertion of a media source \acrshort{url} and the creation of a new post, which is a combination of caption change and media selection.
 
 In order to evaluate the reaction speed to those user actions, the same mutation recording script is inserted as for component load times.
-The page is then opened and the recorded mutation timings are reset. Afterwards, the user action is performaned and the new mutation times are extracted, attached to the test and evaluated.
-The tests to pass are then that the earliest mutation timing is within 100 ms of the user input and the latest mutation timing is within 500 ms of the user input.
+The page is then opened and the recorded mutation timings are reset. Afterwards, the user action is performed and the new mutation times are extracted, attached to the test and evaluated.
+The requirements for the tests to pass are that the earliest mutation timing is within 100 ms of the user input and the latest mutation timing is within 500 ms of the user input.
 Again, screenshots are taken of all \acrshort{html} elements that were recorded as mutated and do not pass the tests.
 These screenshots are also attached to the test in order to debug applications that do no pass the tests.
 
@@ -1996,11 +2081,11 @@ These results are presented as summaries of results of the described test implem
 % 3. Which frameworks creates fast-loading pages?
 % 4. Does it match my expectations?
 
-For page load times, the \acrshort{tbw} \acrshort{ttfb}, observed domContentLoaded, \acrshort{tbt}, observed \acrshort{lvc} and \acrshort{lcp} are presented from the Lighthouse reports and the loadEventEnd is deduced from the Playwright tests relating to page load times.
+For page load times, the \acrfull{tbw}, \acrfull{ttfb}, observed domContentLoaded, \acrfull{tbt}, \acrfull{olvc} and \acrfull{lcp} are presented from the Lighthouse reports and the loadEventEnd is deduced from the Playwright tests relating to page load times.
 The results of Lighthouse tests are visualized per path.
 On every path, each framework's application is tested once on Vercel and once hosted locally with two exceptions.
 Nuxt is tested with its \verb|nuxt build| and \verb|nuxt generate| build scripts (see table \ref{tab:hostCommands}).
-Astro is tested locally with both duplicate components (simlar Astro and React components) and its mixed version, in which the React components do not have Astro duplicates even if the component is not dynamic.
+Astro is tested locally with both duplicate components (similar Astro and React components) and its mixed version, in which the React components do not have Astro duplicates even if the component is not dynamic.
 The version of Astro hosted on Vercel is the version with duplicate components.
 
 % Lighthouse result graphs
@@ -2057,26 +2142,27 @@ The version of Astro hosted on Vercel is the version with duplicate components.
   \caption{Lighthouse test results in Google Chrome}\label{fig:lighthouseResults}
 \end{figure}
 
-The \acrlong{tbw} is presented in figure \ref{subfig:LH:totalbyteweight}.
+\textbf{(a)} The \acrlong{tbw} is presented in figure \ref{subfig:LH:totalbyteweight}.
 Primarily, the great size of the pages build with Nuxt stand out.
 Out of all four pages, this is mainly surpring for the Create page because on initial load only one image has to be loaded.
-Yet the Create page and the Profile page appear to be equal in byte size although one has decidedly more images on it.
+Yet the Create page and the Profile page appear to be equal in byte size although the latter has decidedly more images on it.
 Moreover, the byte size of the Profile page decreases for Nuxt-generate, a characteristic of the two build structures that cannot be found on the Feed page.
 The property of Nuxt, that the Create page is as heavy as the Profile page, can be explained through the implementation of the MediaComponent (see listing \ref{lst:Nuxt:MediaComponent:Script}).
 All preconfigured image files are imported using \lstinline{import.meta.glob()} (see listing \ref{lst:Nuxt:MediaComponent:Script}, line \ref{line:Nuxt:MediaComponent:imageImport}).
 For this reason, the byte size of the page is at least the size of all images on pages that use MediaComponent.
-Although this import method is used with Astro, Svelte and Nuxt, Nuxt is the framework with which this behaviour seems to have this impact.
+Although this import method is used with Nuxt, Astro and Svelte, Nuxt is the only framework with which this behaviour seems to have this impact.
 Secondly, the About page has a small byte size, which is not surprising because it has only one \acrshort{svg} as an image.
 
-In general, pages from Next, Astro and Svelte have a small byte weight on the Feed page as well as the Profile page, most likeyl due to successful image compression.
+In general, pages from Next.js, Astro and Svelte have a small byte weight on the Feed page as well as the Profile page, most likely due to successful image compression.
 The byte weight of the Create page and the Profile page is a representation of how well the framework handles selecting which parts of the application have to be loaded.
 For the Create page, eight out of the 15 components of the app have to be loaded (nine out of 16 for Astro-duplicate) and five of 15 for the Profile page.
 Interestingly, the Create page weighs less than the Profile page for most frameworks except Nuxt.
+\\
 
-The measurements of the \acrlong{ttfb} indicate clearly the response time difference from locally hosted applications to applications hosted on Vercel (see figure \ref{subfig:LH:timeToFirstByte}).
+\textbf{(b)} The measurements of the \acrlong{ttfb} indicate clearly the response time difference from locally hosted applications to applications hosted on Vercel (see figure \ref{subfig:LH:timeToFirstByte}).
 To this end, the timings of the About page should be examined.
 The difference in \acrshort{ttfb} between local and Vercel lies around 185 ms with local applications responding within 452-457 ms and Vercel reponding within 632-651 ms.
-Taking this difference as the normal reference for the time difference, additional measurements stand out.
+Taking this difference as reference for the normal time difference, additional measurements stand out.
 Although the local webserver returns the first byte almost equally fast on all paths, Nuxt-generate takes 80 ms longer than its sibling Nuxt-build on the Feed page.
 The first response byte is registered 19 ms later on the Feed page with Svelte than the other paths.
 
@@ -2085,67 +2171,72 @@ On the Feed page the frameworks can be separated into three groups.
 Astro, Nuxt-generate and Svelte are the fastest with response times between 635 and 657 ms.
 Between 712 and 756 ms lie the times for Next.js, React, Nuxt-build and Vue.js.
 Angular has the slowest response time on Vercel and on the Feed page with 882 ms.
-The resposne times on Vercel on the Create page are increased for Astro to 10730 ms by about 430 ms compared to its competitors.
+The response times on Vercel on the Create page are increased for Astro to 10730 ms by about 430 ms compared to its competitors.
 A similar increase is measured on the Profile page with a \acrshort{ttfb} for Astro on Vercel of 872 ms, about 230 ms later than other frameworks.
+\\
 
-The \acrlong{tti} of the applications is shown in figure \ref{subfig:LH:interactive}. In contrast to the \acrshort{ttfb}, the \acrshort{tti} is faster on Vercel with the exception of React on the Feed page and both React and Astro on the Profile page.
+\textbf{(c)} The \acrlong{tti} of the applications is shown in figure \ref{subfig:LH:interactive}. In contrast to the \acrshort{ttfb}, the \acrshort{tti} is faster on Vercel with the exception of React on the Feed page and both React and Astro on the Profile page.
 Possible reasons for this phenomenon include the content encoding, which is missing from local hosting, or simply better traditional webserver performance such as parallelization of request handling on Vercel.
 With these faster applications on Vercel, Astro, Svelte, Next.js and Vue.js turn out to be the fastest frameworks for the \acrlong{tti} of the application.
 In general, Astro appears to be the framework from which the application has the fastest \acrshort{tti} across pages and hosting environments.
 Interestingly, Vue.js, Nuxt, Svelte, Angular and Astro show small fluctuations inbetween pages of 500 ms or less which is relatively little compared to Next.js and React.
+\\
 
-Figure \ref{subfig:LH:observedDomContentLoaded} shows the average of observed times of the domContentLoaded event.
+\textbf{(d)} Figure \ref{subfig:LH:observedDomContentLoaded} shows the average of observed times of the domContentLoaded event.
 Two general characteristics stand out of the data.
 First, the timing of the applications that are hosted locally are at least 45 ms earlier than the applications hosted on Vercel.
 Second, the observedDomContentLoaded is measured to be much earlier than the \acrshort{ttfb}.
-The first can be explained by the slower network speed.
+The first observation can be explained by the slower network speed.
 The order of \acrshort{ttfb} and observed timing of the domContentLoaded event goes back to throttling not being applied for Lighthouse metrics starting with \enquote{observed} \citep{observedMetrics}.
 
-Astro on Vercel shows the latest domContentLoaded times on Vercel except on the About page.
+Astro on Vercel shows the latest domContentLoaded on Vercel except on the About page.
 On the other hand, Astro locally shows some of the fastest times on the About page and the Create page.
 Angular, Nuxt-build, Next.js and Svelte are the other frameworks with late times for the event.
-In contrast, React, Vue and Nuxt-generate build applications with earlier event times.
+In contrast, React, Vue.js and Nuxt-generate build applications with earlier event times.
 Both measurement characteristics can be explained by the rendering behaviour of the applications.
 Astro returns the fully complete \acrshort{dom} in its initial \acrshort{html} document, whereas the frameworks of the second fastest group return half-complete \acrshort{html} documents.
 These frameworks demonstrate their rendering capabilities here.
 The fastest frameworks for this metric respond to the request with \acrshort{html} skeletons, which naturally results in early domContentLoaded events.
 Interestingly, Angular and Nuxt-generate break this pattern.
-Angular generates an \acrshort{html} skeleton for all page, which references \acrshort{css} and \acrshort{js} files.
+Angular generates an \acrshort{html} skeleton for all pages that references \acrshort{css} and \acrshort{js} files.
 The main difference to Vue.js, for example, is that the \acrshort{js} modules are included in the \acrshort{html} \verb|<body>| for Angular and in the \acrshort{html} \verb|<head>| for Vue.js.
 Additionally, all imports are lazy-loading with Vue.js and the scripts for the Angular application are packed into fewer and bigger \acrshort{js} files.
 Nuxt-generate on the other hand does not return an empty \acrshort{html} skeleton and is still in the group of fastest frameworks for this metric.
 The main difference to other frameworks is that \acrshort{js} files are included in the \acrshort{html} document with \verb|rel="modulepreload"|.
-Both of these strategies appaer to have a noticable impact on the timing of the domContentLoaded event.
+Both of these strategies appear to have a noticable impact on the timing of the domContentLoaded event.
+\\
 
-The results of measurements for the \acrlong{tbt} show drastic differences between the frameworks (see figure \ref{subfig:LH:totalBlockingTime}).
+\textbf{(e)} The results of measurements for the \acrlong{tbt} show drastic differences between the frameworks (see figure \ref{subfig:LH:totalBlockingTime}).
 On the one hand, the blocking time is practically negligible for most frameworks on the About, Create and Profile page indicating no unnecessary code execution before rendering.
 On the other hand, some frameworks show relatively large \acrshort{tbt}, especially on the Feed page.
 Firstly, Astro and Svelte are among the fastest frameworks in the \acrshort{tbt}, although Astro with duplicate components demonstrates a blocking time of 31 ms on the Feed page.
-Secondly, the application built with React and Vue also have a short blocking time.
-Thirdly, Angular produces an application with veryl low blocking time when hosted locally using the \verb|serve| command, but high blocking time when hosted on Vercel.
-The later two can be explained through an analysis of the scripts and modules loaded and executed on page load.
-While Vue and React include their scripts in smaller files and only import scripts when needed, Angular bundles \acrlong{js} in fewer and bigger files.
+Secondly, the application built with React and Vue.js also have a short blocking time.
+Thirdly, Angular produces an application with very low blocking time when hosted locally using the \verb|serve| command, but high blocking time when hosted on Vercel.
+The latter two can be explained through an analysis of the scripts and modules loaded and executed on page load.
+While Vue.js and React include their scripts in smaller files and only import scripts when needed, Angular bundles \acrlong{js} in fewer and bigger files.
 This increases the blocking time, especially for code that is not needed for the page.
 
 The main outlier, however, is Next.js on the Feed and the Profile page.
 The \acrshort{tbt} of the application surpasses its next competitor's \acrshort{tbt} by 254 ms on the Feed page on Vercel, 164 ms on the Feed page locally and 56 ms on the Profile page on Vercel.
-This is not definitively explainable, but the fact that this effect only greatly affects pages in which images are included using the MediaComponent is and indicator.
+This is not definitively explainable, but the fact that this effect only greatly affects pages in which images are included using the MediaComponent is an indicator.
 Images and videos are loaded using \lstinline|require(`@/assets/stock-footage/${src}`).default|, which is similar to React's \lstinline|require(`src/assets/stock-footage/${src}`)| (see listing \ref{lst:Next:MediaComponent}, line \ref{line:Next:MediaComponent:imageImport} and listing \ref{lst:React:MediaComponent}, line \ref{line:React:MediaComponent:imageImport}).
 The interpreted behaviour then is that both applications load the multimedia files synchronously, but Next.js also loads the components synchronously, which results in such a high \acrlong{tbt}.
 This would also explain why the effect is less on the local webserver.
+\\
 
-Unsurprisingly, the measurements for the \acrfull{olvc} are also in general faster when the application is hosted locally (see figure \ref{subfig:LH:observedLastVisualChange}).
+\textbf{(f)} Unsurprisingly, the measurements for the \acrfull{olvc} are also in general faster when the application is hosted locally (see figure \ref{subfig:LH:observedLastVisualChange}).
 Next.js is the only exception to that on the Create page.
 Amongst the frameworks, no clear separation can be identified across the pages or hosting environment, although Vue.js and React are always among the fastest in this metric compared to other frameworks with the same hosting method.
-Additionally, Nuxt has the slowest \acrshort{olvc} across pages, expecially on the Feed page.
+Additionally, Nuxt has the slowest \acrshort{olvc} across pages, especially on the Feed page.
 However, the average of Nuxt-build on Vercel is deceiving.
-The distribution of the \acrshort{olvc} measurements of Nuxt-build throughout the 20 test repetitions clearly shows that most measurements lie around 4500 ms rather than the average of all values which 6012 ms.
+The distribution of the \acrshort{olvc} measurements of Nuxt-build throughout the 20 test repetitions clearly shows that most measurements lie around 4500 ms rather than the average of all values which is 6012 ms.
 Nonetheless, the \acrshort{olvc} of Nuxt is still far above the average of other frameworks.
+\\
 
-The average measurements for \acrfull{lcp} are shown in figure \ref{subfig:LH:largestContentfulPaint}.
+\textbf{(g)} The average measurements for \acrfull{lcp} are shown in figure \ref{subfig:LH:largestContentfulPaint}.
 In contrast to other presented metrics, the time of the \acrshort{lcp} is in general earlier for applications hosted on Vercel.
 However, both Astro implementations regularly have a faster \acrshort{lcp} locally than other frameworks on Vercel.
-Other than that, no clear outlier framework can be identified except Angular.
+Other than that, Angular is the only framework with outlier measurements.
 The \acrshort{lcp} measurements are extraordinarily high on the Feed page when hosted locally and on the Profile page independently from the hosting environment.
 There is no apparent explanation for either characteristic at this time.
 
@@ -2168,8 +2259,8 @@ There is no apparent explanation for either characteristic at this time.
 \end{table}
 
 The numbers of passed page load tests with Playwright are listed in table \ref{tab:playwright:pageLoad}.
-The only frameworks with which the application does pass the tests are Astro and Svelte.
-For both frameworks the page load budget is exceeded on all four pages of the application when opened in Firefox.
+The only frameworks with which the application does not pass the tests are Astro and Svelte.
+For both frameworks the page load budget is exceeded on all four pages when opened in Firefox.
 The repetitions of failed tests also exceed the time budget, which causes the tests to be marked as failed.
 Figure \ref{subfig:Playwright:loadEventEnd:unbalanced} shows the timinigs of loadEventEnd across browsers, frameworks and pages, including test repetitions.
 It is clear that these test results are outliers compared to other frameworks and browsers.
@@ -2185,6 +2276,19 @@ The balanced loadEventEnd time can be described as
 \mathit{loadEventEnd}_\mathit{balanced} = \mathit{loadEventEnd}_\mathit{raw} - \mathit{requestStart}
 \end{equation}
 
+Figure \ref{subfig:Playwright:loadEventEnd:balanced} shows the new balanced values.
+Using the balanced metric, all pages from all frameworks are loaded within the page load time budgets and the tests should pass.
+Still, differences can be found between frameworks and between browsers.
+The overview over all results shows four different patterns within a browser.
+Unsurprisingly, Chromium and Mobile Chrome as well Desktop Safari and Mobile Safari have similar results.
+They differ mainly in the load times of Astro, Svelte and Angular pages.
+The third pattern can be found in Microsoft Edge and Google Chrome.
+Pages load relatively fast in these two browsers especially with Astro.
+The measurements made in Firefox do not resemble the ones made in other browsers.
+This might indicate, that its rendering engine \enquote{Gecko} behaves differently to \enquote{Blink} and \enquote{WebKit} which are used in the other browsers.
+First, the results are slower on average and it is the only browser in which the load times of React pages fluctuate more than 30 ms inbetween pages.
+Second, the fastest times with React are slower than the fastest times with Astro, Nuxt and Vue.js.
+
 \begin{figure}
   \centering
   \begin{subfigure}{\linewidth}
@@ -2199,19 +2303,7 @@ The balanced loadEventEnd time can be described as
   \label{fig:Playwright:loadEventEnd}
 \end{figure}
 
-Figure \ref{subfig:Playwright:loadEventEnd:unbalanced} shows the new balanced values.
-Using the balanced metric, all pages from all frameworks are loaded within the page load time budgets.
-Still, differences can be found between frameworks and between browsers.
-The overview over all results shows four different patterns within a browser.
-Unsurprisingly, Chromium and Mobile Chrome as well Webkit and Mobile Safari have similar results.
-They differ mainly in the load times of Astro, Svelte and Angular pages.
-The third pattern can be found in Microsoft Edge and Google Chrome.
-Pages load relatively fast in these two browsers especially with Astro.
-The measurements made in Firefox do not resemble the ones made in other browsers.
-First, the results are slower on average and it is the only browser in which the load times of React pages fluctuate more than 30 ms inbetween pages.
-Second, the fastest times with React are slowser than the fastest times with Astro, Nuxt and Vue.js.
-
-As for the frameworks, React is clearly the fastest relating to its loadEventEnd in Chromium, Mobile Chrome, Webkit and Mobile Safari and second fastest in Microsoft Edge and Google Chrome.
+As for the frameworks, React is clearly the fastest relating to its loadEventEnd in Chromium, Mobile Chrome, Desktop Safari and Mobile Safari and second fastest in Microsoft Edge and Google Chrome.
 Vue.js is second fastest in most browsers and also fluctuates very little. Nuxt, Next.js and Svelte are the next-fastest frameworks across all browsers.
 Angular is one of the slowest frameworks for most pages and browsers except some measurements of Astro.
 The fastest or the slowest measured times are measured with Astro depending on the browsers, but always fluctuate relatively much compared to other frameworks.
@@ -2234,12 +2326,12 @@ Additional metrics are needed to identify component load times.
 
 The \acrshort{ofvc} is the time after which the first visual change is made within the viewport (see figure \ref{subfig:LH:observedFirstVisualChange}).
 It can be either the time after which prerendered \acrshort{html} elements appear or the time after which an empty \acrshort{dom} gets filled through \acrshort{js} and visual changes are made.
-The measurements of the \acrshort{ofvc} show that, in general, the first visual change is earlier for locally hosted applications, which is unsurprising because the resources load faster.
+The measurements of the \acrshort{ofvc} show that, in general, the first visual change is earlier for locally hosted applications, which is unsurprising because the resources load earlier.
 Frameworks with an early \acrshort{ofvc} are Astro, React and Next.js with the only exception being Astro on Vercel on the Create page.
 The Angular application on the other hand displays late \acrshort{ofvc} values compared to its competitors locally.
 On Vercel, Nuxt-build has relatively late values across all pages.
 
-% TODO: write more interpretation about the results
+% REVIEW: write more interpretation about the results
 
 % OVCD
 \begin{figure}[ht!]
@@ -2258,11 +2350,11 @@ On Vercel, Nuxt-build has relatively late values across all pages.
     \caption{\acrfull{ovcd}}\label{subfig:LH:observedVisualChangeDuration}
     \label{fig:LH:OVCD}
   \end{subfigure}
-  \caption{}
+  \caption{\acrfull{ofvc} (\subref{subfig:LH:observedFirstVisualChange}) and \acrfull{ovcd} (\subref{subfig:LH:observedVisualChangeDuration})}
 \end{figure}
 
 More intersting than the raw \acrshort{olvc} and \acrshort{ofvc} values is the difference between the measurements.
-This paper defines a new metric \enquote{Observed Visual Change Duration}.
+This thesis defines a new metric \enquote{Observed Visual Change Duration}.
 It shows the time after the first visual mutation to the page has been bade until the last visual change.
 It is simply deferred from the \acrshort{olvc} and \acrshort{ofvc} and is defined as
 
@@ -2270,14 +2362,14 @@ It is simply deferred from the \acrshort{olvc} and \acrshort{ofvc} and is define
   \mathit{observedVisualChangeDuration} =\\ \mathit{observedLastVisualChange} - \mathit{observedFirstVisualChange}
 \end{multline}
 
-Figure \ref{fig:LH:OVCD} shows the resulting values for \acrfull{ovcd} from this study.
+Figure \ref{fig:LH:OVCD} shows the resulting values for the \acrfull{ovcd} from this study.
 The great difference between locally tested applications and applications on Vercel means that visual changes, especially the last, are dependent on network delay or \acrlong{js} execution speed.
 Vue.js, React and Angular produce low \acrshort{ovcd} measurements except on the Profile page.
 This is even the case if the \acrshort{ofvc} is late.
-The reason for this is that no visual changes are made to the page until the \acrshort{html} and \acrshort{js} is parsed and executed.
+The reason for this result is that no visual changes are made to the page until the \acrshort{html} and \acrshort{js} is parsed and executed.
 This stands in contrast to prerendered, server-side rendered or semi-rendered pages.
 With these pages, the first visual update can already be made after only the \acrshort{html} is parsed.
-Therefore \acrshort{csr} frameworks can achieve faster \acrshort{ovcd} values on the pages without components that have differenctly fast loading components.
+Therefore \acrshort{csr} frameworks can achieve faster \acrshort{ovcd} values on the pages without components that have differently fast loading components.
 Notably, the Profile page is an outlier among the pages.
 This is because the static header of the page can be displayed as soon as possible, but the rest of the page needs two additional service functions to finish before images and videos can be loaded.
 The effect of those chained \acrlong{js} executions can clearly be identified using the \acrshort{ovcd}.
@@ -2286,7 +2378,7 @@ The effect of those chained \acrlong{js} executions can clearly be identified us
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/pageLoadMutations/total.png}
-  \caption{Page load mutation times}
+  \caption{Component load mutation times}
   \label{fig:Playwright:pageLoadMutations:total}
 \end{figure}
 
@@ -2298,58 +2390,58 @@ The other possible reason for this phenomenon could be that mutations are slower
 Therefore, missing recordings indicate the framework is either loading too fast or too slow to record \acrshort{dom} mutations.
 Because the applications have differences in the \acrshort{dom} structure and render time, the number of mutations fluctuates naturally.
 Adjusting for possible variations here, four frameworks seem to have missing measurements.
+The possibility of missing \acrshort{dom} mutations due to the limited recording time being non-zero can be ignored here because other measurements match the interpretation (see section \ref{subsec:componentupdatetimes}).
 The applications built with Angular (no mutations), Astro (11 mutations), Vue.js (174 mutations) and React (527 mutations) have surprisingly few mutations.
 The applications built with Nuxt (1011 mutations), Next.js (1654 mutations) and Svelte (1857 mutations) have over 1000 mutations.
 Although the latter numbers could indicate full recording coverage of the mutations, the distribution of recordings between browsers and pages prove that not all mutations were recorded, even with these latter three frameworks.
 For example, no mutations were recorded on the About page with Nuxt and Next.js.
-In fact, Svelte is the only framework with which mutations were recorded on the About page, but only in Mobile Chrome, Chromium, Mobile Safari and Webkit.
+In fact, Svelte is the only framework with which mutations were recorded on the About page, but only in Mobile Chrome, Chromium, Mobile Safari and Desktop Safari.
 Then again, there are apparently no mutations with Svelte on the Profile page in any browser.
 
 Although the missing data prevents some unambiguous comparisons between frameworks, the presence of some recordings indicates load speed differences between frameworks and browsers.
-First, many relatively late recordings could be made in Webkit and Mobile Safari.
+First, many relatively late recordings could be made in Desktop Safari and Mobile Safari.
 This indicates that the method of measurement results in slow \acrshort{dom} mutation times in these browsers, especially with Svelte and Next.js.
-The possibility of missing \acrshort{dom} mutations due to the limited recording time being non-zero can be ignored here because other measurements match the interpretation (see section \ref{subsec:componentupdatetimes}). % TODO: move this sentence somewhere else
 Additionally, in Microsoft Edge and Google Chrome only very few measurements could be made, so the two browsers can be considered especially fast for this measurement method.
 Second, Next.js appears to be the slowest of the frameworks in this metric.
-Svelte also demonstrates slow mutations, but only in Webkit and Mobile Safari.
+Svelte also demonstrates slow mutations, but only in Desktop Safari and Mobile Safari.
 The other frameworks that appear in the summary of mutations, Nuxt, React and Vue.js, also have some relatively high recorded mutation times, but all recorded times are below 760 ms.
 With these frameworks, the most interesting observation is that not only are the mutation times faster with Microsoft Edge and Google Chrome, but they are also more bundled together than with other browsers.
 
 The last possible observation from the data is that no mutation time is below 100 ms.
 The implementation of the MutationObserver is the reason for this.
 Because the start time is defined immediately and the interval callback is executed first after a 100 ms delay, no mutation times below 100 ms can be recorded.
-Changing the implementation to an interval of 20 ms and executing the initialization function ones immediately does allow for earlier recording times for few frameworks.
+Changing the implementation to an interval of 20 ms and executing the initialization function once immediately does allow for earlier recording times for few frameworks.
 The tested applications built with Astro, Next.js, React, Svelte and Vue.js then have recorded mutation times below 100 ms.
 The earliest recorded time with the 20 ms interval is 41 ms with Vue.js on the About page in Microsoft Edge.
 Naturally, the number of recordings also increases drastically for all frameworks except Angular.
 42 mutations with Astro, 640 mutations with Vue.js, 1309 mutations with Nuxt, 1704 mutations with React, 2260 mutations with Next.js and 6412 mutations with Svelte were recorded.
-The increase in early recordings and the minimum times per framework indicate two interpretations relating to the interval time.
+The increase in early recordings and the minimum times per framework support two interpretations relating to the interval time.
 First, quick initialization intervals do make the recording more complete because fewer fast mutations are not recorded.
 If these fast mutations are required to be present in the test or its report, then decreasing the interval speed is a requirement.
 Second, the minimal time becomes dependent on the initialization behaviour and speed.
-The presence of fast data points for some frameworks cannot be definitively be traced back to the framework being faster than others because fast data points might still be missing for other frameworks due to unreliable injection behaviour.
+The presence of fast data points for some frameworks cannot be definitively traced back to the framework being faster than others because fast data points might still be missing for other frameworks due to unreliable injection behaviour.
 In addition, rapid initialization attempts require more resources and therefore might actually decrease the performance of any code execution or rendering.
-For these reasons, the configuration of a initialization interval is a balance between complete list of \acrshort{dom} mutations and comparability of fast mutations.
+For these reasons, the configuration of a initialization interval is a balance between the completeness of \acrshort{dom} mutation recordings and comparability of fast mutations.
 
 \subsection{Component Update Times}\label{subsec:componentupdatetimes}
 % 1. Which differences can be made out towards [Component update times](#component-update-times)?
 % 2. Which HTML-Elements even update?
 % 3. Which frameworks update HTML-Elements faster than others?
 
-Section \ref{subsec:tests} defines the update time of a component using the user input timethe time of the \acrshort{dom} mutation.
+Section \ref{subsec:tests} defines the update time of a component using the user input time and the time of the \acrshort{dom} mutation.
 Only the mutation times were used in this study to keep the method of measurement valid for as many applications frameworks as possible.
 Because the user input action is delayed and the zero-time is reset beforehand (see listing \ref{lst:state-change-spec}, lines \ref{line:actionDelay} - \ref{line:userAction}), the punctual initialization of the MutationObserver is not an issue when testing \acrshort{dom} mutations triggered by user inputs (as described in section \ref{subsec:componentloadtimes}).
 
-The number of total changes to the \acrshort{dom} per user action are displayed in table \ref{tab:mutations:total}.
-It is clear that the frameworks can be split into three distinct groups by number of different mutations
+The number of mutation types to the \acrshort{dom} per user action are displayed in table \ref{tab:mutations:total}.
+It is clear that the frameworks can be split into three distinct groups by number of different mutations.
 This list intentionally does not count identical mutations such as appending another element to the list of \verb|<span>| elements in the post caption of the preview.
 Angular and Next.js make the most changes to the \acrshort{dom} during the user actions with 14 and 15 recorded mutations, respectively.
-Then, both Astro and React have a similar number number of mutations with nine mutations in total.
-This similarity is not surprising because the Astro island of the CreateForm consissts of identical React components to the pure React application.
+Then, both Astro and React have a similar number of mutations with nine mutations in total.
+This similarity is not surprising because the Astro island of the CreateForm consists of identical React components to the pure React application.
 The group of frameworks with the least \acrshort{dom} mutations changes on six different elements in the \acrshort{dom} in total.
 They are Nuxt, Vue.js and Svelte.
 Tables \ref{tab:mutations:captionChange}, \ref{tab:mutations:mediaSelection}, \ref{tab:mutations:mediaSourceInsertion} and \ref{tab:mutations:postCreation} list the \acrshort{html} elements that were mutated after user input for all four user actions.
-Surprisingly, the grouping og the frameworks does not translate directly to the specific mutated elements.
+Surprisingly, the grouping of the frameworks does not translate directly to the specific mutated elements.
 In general, each described group does update similar elements with similar mutations, but they are not exact copies of each other in this regard.
 
 % Total user action mutations
@@ -2366,15 +2458,16 @@ In general, each described group does update similar elements with similar mutat
       \textbf{Total}          & 14                & 9               & 15                & 6             & 9               & 6               & 6               \\ \hline
     \end{tabular}
   \end{adjustbox}
-  \caption{Total mutations per framework and user action}
+  \caption{Total number of \acrshort{dom} mutation types per framework and user action}
   \label{tab:mutations:total}
 \end{table}
 
 Figure \ref{fig:playwrightResults:total} presents the mutation times of each framework per browser with all recorded times across user actions.
-The first results for this study is that all frameworks do finish mutating the \acrshort{dom} within the predefined time budget of 500 ms.
+The first results for this study is that almost all frameworks do finish mutating the \acrshort{dom} within the predefined time budget of 500 ms.
+Slower mutations do speed up in test repetitions.
 As a result, the Playwright tests pass.
 In addition, the maximum time for mutations is decidedly dependent on the browser.
-While Webkit apparently is the slowest browser for \acrshort{dom} mutations triggered by the user, especially with Next.js, almost all mutations in Chromium, Microsoft Edge and Google Chrome finish within the time limit for earliest mutations of 100 ms.
+While Desktop Safari apparently is the slowest browser for \acrshort{dom} mutations triggered by the user, especially with Next.js, almost all mutations in Chromium, Microsoft Edge and Google Chrome even finish within the time limit for earliest mutations of 100 ms.
 Mobile Chrome also shows the same characteristics with the exception of some mutations by Svelte and Next.js after the Post Creation action.
 
 % Playwright results
@@ -2408,6 +2501,7 @@ Mobile Chrome also shows the same characteristics with the exception of some mut
   \end{subfigure}
 \end{figure}
 \begin{figure}[ht!]\ContinuedFloat
+  \centering
   \begin{subfigure}{0.8\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, keepaspectratio]{img/playwright-results/userActions_byUserAction/postCreation.png}
@@ -2421,46 +2515,57 @@ Mobile Chrome also shows the same characteristics with the exception of some mut
 Figure \ref{fig:playwrightResults:frameworks} contains the update times of the four user actions per browser and frameworks.
 A few generalizations are possible to extract from these results.
 For the Caption Change (see figure \ref{subfig:PW:captionChange}), Nuxt appears to be the fastest framework on all browsers except on Google Chrome where Next.js makes faster \acrshort{dom} mutations.
-Astro is also a relatively fast framework in Microsoft Edge and Google Chrome, but is is one of the slowest frameworks in Webkit and Mobile Safari.
+Astro is also a relatively fast framework in Microsoft Edge and Google Chrome, but is is one of the slowest frameworks in Desktop Safari and Mobile Safari.
 In general, Nuxt, Next.js, Vue.js, React and Angular make \acrshort{dom} mutations in under 70 ms in Chromium, Mobile Chrome, Microsoft Edge and Google Chrome.
 Svelte on the other hand is apparently the slowest framework for this user action on average.
 The recorded \acrshort{dom} mutation times for Media Selection can be found in figure \ref{subfig:PW:mediaSelection}.
 Most of the mutations are below the 100 ms time limit with only few exceptions.
-Astro is slower than the limit in Webkit, Next.js is slower in Google Chrome, Mobile Safari and Webkit and Vue.js has an outlier measurement in Firefox.
+Astro is slower than the limit in Desktop Safari, Next.js is slower in Google Chrome, Mobile Safari and Desktop Safari and Vue.js has an outlier measurement in Firefox.
 Here, Nuxt, Vue.js, React, Angular and Svelte have similarly well to each other.
 Apart from the mentioned outliers, the results from these frameworks lie between 38 and 85 ms.
 The measurements for the Media Source Insert action are very similar to the Media Selection action (see figure \ref{subfig:PW:mediaSourceInsert}).
-Again, Nuxt performes very fast in all browsers and all frameworks are somewhat similar to each other except in Firefox, Mobile Safari and Webkit.
+Again, Nuxt performes very fast in all browsers and all frameworks are somewhat similar to each other except in Firefox, Mobile Safari and Desktop Safari.
 The latter two are again the slowest browsers on average and Firefox is the third slowest.
 In these browsers, Nuxt and Svelte are the fastest frameworks.
-The Poxt Creation action is the slowest user action to finish (see figure \ref{subfig:PW:postCreation}), which is unsurprising because it is combined from two other actions.
+The Post Creation action is the slowest user action to finish (see figure \ref{subfig:PW:postCreation}), which is unsurprising because it is combined from two other actions.
 It is therefore impossible to finish faster than either single user action.
 The update times for each user action can even be seen in two disting groupings in the recordings.
-For this action, Next.js is clearly the slowest framework in relation to its competitors, but this difference is only significant on Webkit and Mobile Safari.
+For this action, Next.js is clearly the slowest framework in relation to its competitors, but this difference is only significant on Desktop Safari and Mobile Safari.
 
-Across all user actions, applications mutate the \acrshort{dom} slowest in Mobile Safari and Webkit, closely followed by Firefox.
+Across all user actions, applications mutate the \acrshort{dom} slowest in Mobile Safari and Desktop Safari, closely followed by Firefox.
 The other browsers Chromium, Mobile Chrome, Google Chrome and Microsoft Edge lie very close to each other and the average mutations times differ from each other at a maximum of 15 ms.
 
+Table \ref{tab:mutations:times} lists the minimal and maximal mutation times of the frameworks in each browser, as well as the mean average for each combination.
+In addition, the mean average and weighted averages of all minima, maxima and averages of mutation times in each framework are calculated.
+The weighted averages are based on the usage percentages of browsers (see table \ref{tab:browserUsage}).
+These results indicate clearly that Next.js produces the slowest mutations both on average and weighted average.
+In contrast, Nuxt makes the fastest updates across browsers.
+Then, Angular comes in second, Vue.js is third and React is the fourth-fastest framework.
+The second-slowest framework on average is Astro, but it comes in faster than Svelte in the ranking of frameworks when the weights are calculated in.
+
+
 % browser usage
-\begin{table}[!ht]
+\begin{table}[!h]
   \centering
-    \begin{tabular}{|l|r|}
-      \hline
-      \textbf{Browser}  & \textbf{Usage quota} \\ \hline
-      Chromium          & NA \\ \hline
-      Firefox           & 2,75 \% \\ \hline
-      Webkit            & 17.96 \% \\ \hline
-      Mobile Chrome     & NA \\ \hline
-      Mobile Safari     & NA \\ \hline
-      Microsoft Edge    & 5.26 \% \\ \hline
-      Google Chrome     & 65.68 \% \\ \hline
-    \end{tabular}
+  \begin{tabular}{|l|r|}
+    \hline
+    \textbf{Browser}  & \textbf{Usage quota} \\ \hline
+    Google Chrome     & 65.68 \% \\ \hline
+    Desktop Safari    & 17.96 \% \\ \hline
+    Microsoft Edge    & 5.26 \% \\ \hline
+    Firefox           & 2,75 \% \\ \hline
+    Chromium          & NA \\ \hline
+    Mobile Chrome     & NA \\ \hline
+    Mobile Safari     & NA \\ \hline
+  \end{tabular}
   \caption{Browser usage \citep{browserUsage}}
   \label{tab:browserUsage}
 \end{table}
 
+\pagebreak
+
 % DOM Mutation times state change
-\begin{table}[!ht]
+\begin{table}[!h]
   \centering
   \begin{adjustbox}{angle=90}
     {
@@ -2476,7 +2581,7 @@ The other browsers Chromium, Mobile Chrome, Google Chrome and Microsoft Edge lie
                  \multirow{-3}{*}{Firefox}           & 123     & 142                       & 235                       & 108                     & 181     & 129     & 103     & 145,857 \\ \hline
 \rowcolor{white}                                     & 77      & \cellcolor{red!50}87      & 79                        & 51                      & 84      & 70      & 47      & 70,714  \\
 \rowcolor{white}                                     & 122,7   & 170,1                     & \cellcolor{red!50}303,54  & 86,02                   & 169     & 164,23  & 135,72  & 164,473 \\
-\rowcolor{white} \multirow{-3}{*}{Webkit}            & 172     & 270                       & \cellcolor{red!50}493     & 124                     & 280     & 283     & 200     & 260,286 \\ \hline
+\rowcolor{white} \multirow{-3}{*}{Desktop Safari}    & 172     & 270                       & \cellcolor{red!50}493     & 124                     & 280     & 283     & 200     & 260,286 \\ \hline
                                                      & 44      & 49                        & 47                        & 42                      & 44      & 45      & 46      & 45,286  \\
                                                      & 66,84   & 68,96                     & 93,7                      & 61,14                   & 67,41   & 80,81   & 69,04   & 72,557  \\
                  \multirow{-3}{*}{Mobile Chrome}     & 90      & 85                        & 143                       & 82                      & 82      & 116     & 89      & 98,143  \\ \hline
@@ -2503,19 +2608,13 @@ The other browsers Chromium, Mobile Chrome, Google Chrome and Microsoft Edge lie
   \label{tab:mutations:times}
 \end{table}
 
-Table \ref{tab:mutations:times} lists the minimal and maximal mutation times of the frameworks in each browser, as well as the mean average for each combination.
-In addition, the mean average and weighted averages of all minima, maxima and averages of mutation times in each framework are calculated.
-The weighted averages are based on the usage percentages of browsers (see table \ref{tab:browserUsage}).
-These results indicate clearly that Next.js produces the slowest mutations both on average and weighted average.
-In contrast, Nuxt makes the fastest updates across browsers.
-Then, Angular comes in seconds, Vue.js is third and React is the fourth-fastest framework.
-The second-slowest framework on average is Astro, but it comes in faster than Svelte in the ranking of frameworks when the weights are calculated in.
+\pagebreak
 
-As indicated earlier, Google Chrome and Microsoft Edge are the fastest and Webkit and Mobile Safari are the slowest browsers across frameworks on average.
+As indicated earlier, Google Chrome and Microsoft Edge are the fastest and Desktop Safari and Mobile Safari are the slowest browsers across frameworks on average.
 The highlighted fastest and slowest values for minimum, mean average and maximum recorded mutation times verify these assessments.
-The fastest times are all recorded in Google Chrome and slowest in Webkit.
+The fastest times are all recorded in Google Chrome and slowest in Desktop Safari.
 Notably, both the slowest first mutation and the fastest average and last mutation are recorded in Astro.
-Based on the average per browser, the ranking of fastest browsers in component update time is as follows:
+Based on the average per browser, the ranking of fastest browsers by component update time is as follows:
 
 \begin{enumerate}
   \item Google Chrome
@@ -2524,7 +2623,7 @@ Based on the average per browser, the ranking of fastest browsers in component u
   \item Mobile Chrome
   \item Firefox
   \item Mobile Safari
-  \item Webkit
+  \item Desktop Safari
 \end{enumerate}
 
 \section{Summary}\label{sec:summary}
@@ -2532,8 +2631,8 @@ Based on the average per browser, the ranking of fastest browsers in component u
 % 2. Which framework works best with component load times?
 % 3. Which framework works best with component update times?
 
-The previous chapter has presented results to the proposed measurements.
-The purpose of this chapter is to summarize the results as to which framework performes well in which metric category and which browser the applications perform well.
+The previous chapter has presented the results to the proposed measurements.
+The purpose of this chapter is to summarize the results as to which framework performes well in which metric category and in which browser the applications perform well.
 Table \ref{tab:playwright:total} displays the number of passed, failed and flaky tests.
 Flaky tests fail at least once, but pass in any of the test repetitions.
 Across all Playwright tests, Angular and Nuxt share the first place of most passed tests, Next.js is third-fastest and the fourth place is shared by React and Vue.js.
@@ -2546,52 +2645,52 @@ The fewest tests are passed by Svelte and Astro with 4 failed tests and 6 failed
     \hline
     ~         & \textbf{Passed} & \textbf{Flaky}  & \textbf{Failed} \\ \hline
     Angular   & 112             & 0               & 0               \\ \hline
-    Astro     & 103             & 3               & 6               \\ \hline
-    Next.js   & 111             & 0               & 1               \\ \hline
     Nuxt      & 112             & 0               & 0               \\ \hline
+    Next.js   & 111             & 0               & 1               \\ \hline
     React     & 110             & 2               & 0               \\ \hline
-    Svelte    & 108             & 0               & 4               \\ \hline
     Vue.js    & 110             & 2               & 0               \\ \hline
+    Svelte    & 108             & 0               & 4               \\ \hline
+    Astro     & 103             & 3               & 6               \\ \hline
   \end{tabular}
   \caption{Total passed, flaky and failed Playwright tests per framework}
   \label{tab:playwright:total}
 \end{table}
 
-Concerning the page load behaviour, the metrics do not favor any one framework.
-Frameworks that have fast load times when being inspected through one metric, demonstrate slow performances in ohter metrics.
+Concerning the page load behaviour, the results do not favor any one framework.
+Frameworks that have fast load times when being inspected through one metric, demonstrate slow performances in other metrics.
 In their \acrlong{tbw}, Next.js, Astro and Svelte are the leading frameworks with their small byte size.
 Svelte, Next.js, Vue.js and especially Astro have fast \acrlong{tti} results in this application.
 In Addition, Astro, Angular, Svelte, Nuxt and Vue.js stand out through little fluctuations in \acrshort{tti} across pages and test repetitions.
 Astro and Svelte also beat their competition in \acrlong{tbt}.
 In contrast, Vue, React and Nuxt are the fastest frameworks when the domContentLoaded or raw loadEventEnd events are timed.
 These metrics show the weaknesses of Astro and Svelte.
-Vue.js and React are also the fastest frameworks OLVC.
+Vue.js and React are also the fastest frameworks in OLVC.
 Within these metrics, rankings of the frameworks can be created, even if the rankings do not match across metrics.
-Other metrics do not in the category do not support such a ranking.
+Other metrics in the category do not support such a ranking.
 For example, the \acrlong{ttfb} also shows a dependency on the page and host, which often influences the results more than the chosen framework.
 However, Astro, Next.js and Angular show slow results.
-The balanced loadEventEnd hightlights Vue and React positively, but also demonstrates the difference of the browser clearly.
+The balanced loadEventEnd hightlights Vue.js and React positively, but also demonstrates the differences between browsers clearly.
 
 The metrics for the component load time have similar characteristics.
 Overlapping metrics (\acrshort{tbt}, \acrshort{olvc}, \acrshort{tti} and loadEventEnd) focus positively on Astro, Svelte, Vue.js, React and Next.js, but they do not all have good results in every one of those metrics.
-The \acrshort{ofvc} of the applications are early in Astor, React and Next.js.
+The \acrshort{ofvc} of the applications are early in Astro, React and Next.js.
 Only React translates this dominant property over its competitors to \acrshort{ovcd}, where it is joined by Vue.js and Angular.
-This grouping of frameworks in \acrshort{ofvc}, \acrshort{olvc} and \acrshort{ovcd} is due to the fact that performaing well in all three metrics is very difficult to achieve.
+This grouping of frameworks in \acrshort{ofvc}, \acrshort{olvc} and \acrshort{ovcd} is due to the fact that performing well in all three metrics is very difficult to achieve.
 The recordings of early \acrshort{dom} mutations favor Angular, Astro, Vue.js and React based on their \acrshort{csr}.
 
 In contrast, the measurements made for the component update times do indicate clear rankings of frameworks and browsers.
 Nuxt, Vue.js and Svelte are economical with \acrshort{dom} mutations.
 The other tested frameworks Next.js, React, Angular and Astro mutate the \acrshort{dom} more often.
-However, the times of mutations are close to each other except in in Mobile Safari and Webkit.
-In only these two browsers, next.js is the slowest and Nuxt is the fastest framework.
-The recorded times of \acrshort{dom} muatations permit the creation of rankings of browsers and frameworks.
-The browsers rank fastest to slowest Google Chrome, Microsoft Edge, Chromium, Mobile Chrome, Firefox and Mobile Safari and then Webkit.
-Judging from this ranking, in Google Chrome it is the easiest to test below below a predefined time budget and Webkit is the most challenging browser to achieve performance goals in.
+However, the times of mutations are close to each other except in in Mobile Safari and Desktop Safari.
+In only these two browsers, Next.js is the slowest and Nuxt is the fastest framework.
+The recorded times of \acrshort{dom} mutations permit the creation of rankings of browsers and frameworks.
+The browsers rank fastest to slowest Google Chrome, Microsoft Edge, Chromium, Mobile Chrome, Firefox and Mobile Safari and then Desktop Safari.
+Judging from this ranking, in Google Chrome it is the easiest to test below below a predefined time budget and Desktop Safari is the most challenging browser to achieve performance goals in.
 The resulting ranking of frameworks for the component update times of the example application is from fastest to slowest Nuxt, Angular, Vue.js, React, Astro/Svelte and Next.js.
 This ranking can influence the choice of frameworks for user input heavy applications.
 For this kind of web application, Nuxt, Angular, Vue.js and React present themselves as the best choices in regard of component update times.
 
-\section{Conclusion}\label{sec:conclusion}
+\section{Concluding remarks}\label{sec:conclusion}
 % results are application-specific
 % Browser choice should dependent on the intention and framework
 % Browser choice makes a big difference
@@ -2599,36 +2698,36 @@ For this kind of web application, Nuxt, Angular, Vue.js and React present themse
 % 10 second limit for mutationobserver: slow components and fast updating components
 % initialization interval does change the completeness and comparability of the results of component load times
 
-This paper has presentatd a study comparing mainstream JavaScript frameworks based on an example application.
+This thesis has presented a study comparing mainstream JavaScript frameworks based on an example application.
 To this end, a web application was designed based on the Android mobile app of Instagram and three rendering phases were identified to categorize measurement: the page load as representative for pur \acrshort{html} websites, the load time of \acrlong{js} components and the update time of \acrlong{js} components.
 In this study, Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js were contrasted with each other.
 The measurement results show that the results are not clear-cut towards any framework, but rather indicate tendencies of load and update speeds of frameworks, browsers, page types, hosting environments and implementation.
 All frameworks display strenghts in at least one metric relating to page and component load.
 Component update time is the only metric category outlining fast and slow frameworks, as well as browsers.
 Google Chrome and Microsoft Edge turn out to be the fastest of the compared browsers and Nuxt appears to be the fastest framework.
-On the other end of the spectrum, Mobile Safari and Webkit as well as Next.js produce slow component update times.
+On the other end of the spectrum, Mobile Safari and Desktop Safari as well as Next.js produce slow component update times.
 
 Because the framework choice appears to be dependent on more than just the framework itself, some considerations can be recommended for it.
-Before choosing a framework for new projects, the browser usage of users should be taken into consideration, especially with Mobile Safari and Webkit.
+Before choosing a framework for new projects, the browser usage of users should be taken into consideration, especially with Mobile Safari and Desktop Safari.
 If the used browsers are known, budgets for any tested metrics should be adapted to match expectations based on the results presented in this study.
-Additionally, results have shown that performance measurements fluctuate to up to 30\% in either direction.
+Additionally, results have shown that performance measurements fluctuate to up to 30 \% in either direction.
 Therefore, all performance tests should be executed multiple times before a test should be considered passing.
 This recommendation should especially be considered when comparing frameworks, as shown in this work.
 
-Future works might find solutions for uncovered difficulties with testing strategems and missing data in this study.
-First, the measurements do not cover navigation between the pages, but only the load behaviour of single pages,
-The current expectation is that navigation measurements would favor Angular applicatinos because no additional \acrlong{js} files have to be loaded on navigation to another page.
-Especially, the byte weight of pages might be compensated in favor of Angular for this reason.
+Future works might find solutions for uncovered difficulties with testing strategies and missing data in this study.
+First, the measurements do not cover navigation between the pages, but only the load behaviour of single pages.
+The current expectation is that navigation measurements would favor Angular applications because no additional \acrlong{js} files have to be loaded on navigation to another page.
+Especially the byte weight of pages might be compensated in favor of Angular for this reason.
 Second, the actual time between updates to the application's state and visual changes in the user's viewport are skipped in this study with the goal of keeping measurement methods as open as possible.
-Solutions to this end include white-box tetsing and might involve triggering custom events on state update that are registerable in a testing suite.
-Third, the interpretations of test results uncovered trade-offs relating to the recording initialization and end.
+Solutions to this end include white-box testing and might involve triggering custom events on state updates that are registerable in a testing suite.
+Third, the interpretations of test results uncovered trade-offs relating to the initialization and end of recording.
 A slow interval for initialization of the MutationObserver for \acrshort{dom} mutations makes results comparable to other test execution, but also leads to missing data for early mutations between injection of the recording script and initialization of the MutationObserver.
 This might be solved through a different initialization process, e.g. including the recording script into the application's code.
-Additionally, the end of the recording time frame has to possible conflicts.
+Additionally, the end of the recording time frame has two possible conflicts.
 Components that load slower than ten seconds are not recorded at all and components that update constantly, such as a digital clock component, are also not properly recorded.
 For the former, no solution is currently apparent except a longer recording, which does not fully solve the problem.
-A solutino for the later conflict is implemented by setting a custom \acrshort{html} attribute \verb|skipPerformance="true"| to elements that should be ignored for the recording.
-A different approach might open opportunitiesto improve the registration of a fully loaded application in test suites appart from the events of the \acrshort{html} standard.
+A solution for the latter conflict is implemented by setting a custom \acrshort{html} attribute \verb|skipPerformance="true"| to elements that should be ignored for the recording.
+A different approach might open opportunities to improve the registration of a fully loaded application in test suites appart from the events of the \acrshort{html} standard.
 Lastly, this study only covers four pages of a single application, two hosting environments and up to 20 repetitions per Lighthouse test and three repetitions of Playwright tests if the test fails.
 Future work should verify the results by repeating the measurements of the example application of this study with more test repetitions to eliminate fluctuations.
 Also, insights into differences in performance and considerations for tests might be gained through the addition of pages for all page types and the usage of other hosting environments. 
@@ -3229,7 +3328,7 @@ export default {
 
 \vspace{0.5cm} \hrule \vspace{0.5cm}
 
-\begin{lstlisting}[caption=Create in React, label={lst:React:Create}, language=JavaScript]
+\begin{lstlisting}[caption=Create page in React, label={lst:React:Create}, language=JavaScript]
 // CreatePost.js
 import { useState } from "react"
 import { Link } from "react-router-dom"
@@ -3289,7 +3388,7 @@ export default CreatePost
 
 \vspace{0.5cm} \hrule \vspace{0.5cm}
 
-\begin{lstlisting}[caption=Create in Svelte (Script), label={lst:Svelte:Create:Script}, language=JavaScript]
+\begin{lstlisting}[caption=Create page in Svelte (Script), label={lst:Svelte:Create:Script}, language=JavaScript]
 // create/+page.svelte
 import NotInstagramLogo from '$lib/components/NotInstagramLogo.svelte';
 import XIcon from '$lib/components/icons/XIcon.svelte';
@@ -3313,7 +3412,7 @@ function getMediaSource(url: string, choice: string) {
 
 \vspace{0.5cm} \hrule \vspace{0.5cm}
 
-\begin{lstlisting}[caption=Create in Svelte (Template), label={lst:Svelte:Create:Template}, language=HTML, firstnumber=20]
+\begin{lstlisting}[caption=Create page in Svelte (Template), label={lst:Svelte:Create:Template}, language=HTML, firstnumber=20]
 <!-- create/+page.svelte -->
 <header>
 	<a href="/">
@@ -3349,7 +3448,7 @@ function getMediaSource(url: string, choice: string) {
 \pagebreak
 
 \rowcolors{1}{white}{white}
-\glsaddall
+% \glsaddall
 \printnoidxglossary[
   type=\acronymtype,
   nonumberlist,
@@ -3358,7 +3457,7 @@ function getMediaSource(url: string, choice: string) {
 
 \pagebreak
 
-\nocite{*}
+% \nocite{*}
 \bibliography{sources}{}
 
 \vfill

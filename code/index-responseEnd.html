@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playwright test presentation</title>
+    <style>
+      body {
+        max-width: 1000pt;
+        margin: auto;
+        padding: 20px;
+      }
+
+      h1,
+      summary {
+        text-align: center;
+      }
+
+      ol {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Overview</h1>
+
+    <div>
+      <canvas id="allActions"></canvas>
+    </div>
+
+    <hr />
+
+    <h1 id="browserComparison">Browser Comparisons</h1>
+    <div>
+      <h2>Angular</h2>
+      <canvas id="angularBrowsers"></canvas>
+      <h2>Astro</h2>
+      <canvas id="astroBrowsers"></canvas>
+      <h2>Next.js</h2>
+      <canvas id="nextBrowsers"></canvas>
+      <h2>Nuxt</h2>
+      <canvas id="nuxtBrowsers"></canvas>
+      <h2>React</h2>
+      <canvas id="reactBrowsers"></canvas>
+      <h2>Svelte</h2>
+      <canvas id="svelteBrowsers"></canvas>
+      <h2>Vue.js</h2>
+      <canvas id="vueBrowsers"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      Object.defineProperty(String.prototype, "capitalize", {
+        value: function () {
+          return this.charAt(0).toUpperCase() + this.slice(1);
+        },
+        enumerable: false,
+      });
+
+      const opacity = "ff";
+      const fontSize = 14;
+
+      const tooltip = {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label || "Unknown dataset"}: ${
+              context.parsed.y
+            } ms`;
+          },
+          afterLabel: function (context) {
+            return context.raw.name;
+          },
+        },
+      };
+
+      const tooltipAverageForBrowsers = {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label || "Unknown dataset"}: ${
+              Math.round(context.parsed.y * 100) / 100
+            } ms`;
+          },
+          afterLabel: function (context) {
+            const currentAction = context.label;
+            const chartData = context.dataset.domUpdates;
+            let currentBrowser = context.dataset.label.split(" ");
+            if (
+              currentBrowser.slice(-1)[0] == "(min)" ||
+              currentBrowser.slice(-1)[0] == "(max)" ||
+              currentBrowser.slice(-1)[0] == "(range)"
+            )
+              currentBrowser.pop();
+            currentBrowser = currentBrowser.join(" ");
+
+            const updateTimes = chartData
+              .filter(
+                (i) => i.tag == currentAction && i.projectName == currentBrowser
+              )
+              .map((i) => i.responseEnd);
+
+            return `Max: ${Math.max(...updateTimes)} ms\nMin: ${Math.min(
+              ...updateTimes
+            )} ms\nRange: ${
+              Math.max(...updateTimes) - Math.min(...updateTimes)
+            } ms`;
+          },
+        },
+      };
+
+      const tooltipAverageForFrameworks = {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label || "Unknown dataset"}: ${
+              Math.round(context.parsed.y * 100) / 100
+            } ms`;
+          },
+          afterLabel: function (context) {
+            const currentBrowser = context.label;
+            const chartData = context.dataset.domUpdates;
+            let currentFramework = context.dataset.label.split(" ");
+
+            if (
+              currentFramework.slice(-1)[0] == "(min)" ||
+              currentFramework.slice(-1)[0] == "(max)" ||
+              currentFramework.slice(-1)[0] == "(range)"
+            )
+              currentFramework.pop();
+            currentFramework = currentFramework.join(" ");
+
+            const updateTimes = chartData
+              .filter(
+                (i) =>
+                  i.framework == currentFramework &&
+                  i.projectName == currentBrowser
+              )
+              .map((i) => i.responseEnd);
+
+            return `Max: ${Math.max(...updateTimes)} ms\nMin: ${Math.min(
+              ...updateTimes
+            )} ms\nRange: ${
+              Math.max(...updateTimes) - Math.min(...updateTimes)
+            } ms`;
+          },
+        },
+      };
+
+      const scatterLegendPlugin = {
+        beforeDraw: function (chart) {
+          const legendEntries = chart.legend.legendItems;
+          legendEntries.forEach(
+            (entry) => (entry.fillStyle = entry.fillStyle.substring(0, 7))
+          );
+        },
+      };
+
+      function createBrowserComparison(canvasId, data, title = null) {
+        const ctx = document.getElementById(canvasId);
+        const ctxAverage = document.getElementById(canvasId + "-average");
+
+        const stateChangeData = data.suites.find(
+          // (s) => s.title == "state-change.spec.js"
+          // (s) => s.title == "dynamic-performance.spec.js"
+          (s) => s.title == "page-load.spec.js"
+        );
+
+        const chartData = stateChangeData.suites
+          .map((suite) => {
+            return suite.specs
+              .map((spec) => [spec.tags, spec.tests])
+              .map(([tags, tests]) => {
+                return tests.map((test) => {
+                  return test.results.map((result) => {
+                    const status = result.status;
+                    return JSON.parse(
+                      atob(
+                        result.attachments.find(
+                          // (att) => att.name.startsWith("update-times")
+                          (att) => att.name.startsWith("timing")
+                          // att.name.startsWith("domUpdates")
+                        ).body
+                      )
+                    ).map((update) => ({
+                      ...update,
+                      status,
+                      tag: tags[0] == "Index" ? "Feed" : tags[0],
+                      projectName:
+                        test.projectName == "webkit"
+                          ? "Desktop Safari"
+                          : test.projectName.capitalize(),
+                    }));
+                  });
+                });
+              })
+              .flat(Infinity);
+          })
+          .flat();
+
+        const tags = ["Feed", "About", "Create", "Profile"];
+
+        const browserColors = [
+          { name: "Chromium", color: "#4483ec" },
+          { name: "Mobile Chrome", color: "#df3c32" },
+          { name: "Google Chrome", color: "#fbc31e" },
+          { name: "Microsoft Edge", color: "#4fd572" },
+          { name: "Firefox", color: "#d86f1a" },
+          { name: "Mobile Safari", color: "#15b8ee" },
+          { name: "Desktop Safari", color: "#478500" },
+        ];
+
+        const labels = browserColors.map((i) => i.name);
+        const colors = browserColors.map((i) => i.color);
+
+        new Chart(ctx, {
+          type: "scatter",
+          data: {
+            datasets: [
+              ...labels.map((label) => ({
+                label,
+                data: chartData
+                  .filter((c) => c.projectName == label)
+                  .map((domUpdate) => ({
+                    ...domUpdate,
+                    x:
+                      tags.indexOf(domUpdate.tag) +
+                      (labels.indexOf(domUpdate.projectName) / labels.length) *
+                        0.5 -
+                      3 / 14,
+                    y: domUpdate.responseEnd,
+                  })),
+                backgroundColor: colors[labels.indexOf(label)] + opacity,
+                borderColor: colors[labels.indexOf(label)] + opacity,
+              })),
+              // {
+              //   type: "line",
+              //   // label: "100 ms Threshold",
+              //   data: Array(labels.length).fill(100),
+              //   xAxisID: "x2",
+              //   pointRadius: 0,
+              //   backgroundColor: "#e5e5e5",
+              //   borderColor: "#e5e5e5",
+              // },
+            ],
+            labels: tags,
+          },
+          options: {
+            plugins: {
+              tooltip,
+              legend: {
+                labels: {
+                  filter: function (item, chart) {
+                    return item.text?.capitalize();
+                  },
+                  font: { size: fontSize },
+                },
+              },
+              title: {
+                display: Boolean(title),
+                text: title,
+                font: { size: fontSize },
+              },
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: "ms until DOM mutation",
+                  font: { size: fontSize },
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return value + " ms";
+                  },
+                  font: { size: fontSize },
+                },
+              },
+              x: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "Page",
+                  font: { size: fontSize },
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return tags[value]?.capitalize() || "";
+                  },
+                  font: { size: fontSize },
+                },
+                grid: {
+                  color: function (context) {
+                    return context.tick.value % 1 == 0
+                      ? "#00000000"
+                      : "#e5e5e5";
+                  },
+                },
+              },
+              x2: {
+                type: "category",
+                display: false,
+              },
+            },
+          },
+          plugins: [scatterLegendPlugin],
+        });
+
+        return chartData;
+      }
+
+      function createFrameworkComparison(
+        canvasId,
+        data,
+        title = null,
+        dotOpacity = opacity
+      ) {
+        const ctx = document.getElementById(canvasId);
+        const ctxAverage = document.getElementById(canvasId + "-average");
+
+        const browsers = Array.from(new Set(data.map((i) => i.projectName)));
+
+        const frameWorkColors = [
+          { name: "Nuxt", color: "#04df9f" },
+          { name: "Astro", color: "#f75505" },
+          { name: "Vue.js", color: "#40b080" },
+          { name: "React", color: "#61dbfb" },
+          { name: "Angular", color: "#c3002f" },
+          { name: "Svelte", color: "#f73c00" },
+          { name: "Next.js", color: "#1c64fb" },
+        ];
+
+        const frameworks = frameWorkColors.map((f) => f.name);
+        const colors = frameWorkColors.map((f) => f.color);
+
+        new Chart(ctx, {
+          type: "scatter",
+
+          data: {
+            labels: browsers,
+            datasets: [
+              ...frameworks.map((framework) => ({
+                label: framework,
+                data: data
+                  .filter((d) => d.framework == framework)
+                  .map((domUpdate) => ({
+                    ...domUpdate,
+                    x:
+                      browsers.indexOf(domUpdate.projectName) +
+                      (frameworks.indexOf(framework) / frameworks.length) *
+                        0.5 -
+                      3 / 14,
+                    y: domUpdate.responseEnd,
+                  })),
+                backgroundColor:
+                  colors[frameworks.indexOf(framework)] + dotOpacity,
+                borderColor: colors[frameworks.indexOf(framework)] + dotOpacity,
+              })),
+              // {
+              //   type: "line",
+              //   // label: "100 ms Threshold",
+              //   data: Array(browsers.length + 1).fill(100),
+              //   xAxisID: "x2",
+              //   pointRadius: 0,
+              //   backgroundColor: "#e5e5e5",
+              //   borderColor: "#e5e5e5",
+              // },
+            ],
+          },
+          options: {
+            plugins: {
+              tooltip,
+              legend: {
+                labels: {
+                  filter: function (item, chart) {
+                    return item.text?.capitalize();
+                  },
+                  font: { size: fontSize },
+                },
+              },
+              title: {
+                display: Boolean(title),
+                text: title,
+                font: { size: fontSize },
+              },
+            },
+            scales: {
+              y: {
+                title: {
+                  display: true,
+                  text: "ms until DOM mutation",
+                  font: { size: fontSize },
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return value + " ms";
+                  },
+                  font: { size: fontSize },
+                },
+              },
+              x: {
+                type: "linear",
+                title: {
+                  display: true,
+                  text: "Browser",
+                  font: { size: fontSize },
+                },
+                ticks: {
+                  callback: function (value, index, ticks) {
+                    return browsers[value]?.capitalize() || "";
+                  },
+                  stepSize: 0.5,
+                  font: { size: fontSize },
+                },
+                grid: {
+                  color: function (context) {
+                    return context.tick.value % 1 == 0
+                      ? "#00000000"
+                      : "#e5e5e5";
+                  },
+                },
+              },
+              x2: {
+                type: "category",
+                display: false,
+              },
+            },
+          },
+          plugins: [scatterLegendPlugin],
+        });
+      }
+
+      Promise.all([
+        fetch("./ig-clone/ig-clone-angular/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "angularBrowsers",
+              data,
+              "responseEnd - Angular"
+            ).map((i) => ({ ...i, framework: "Angular" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-astro/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "astroBrowsers",
+              data,
+              "responseEnd - Astro"
+            ).map((i) => ({ ...i, framework: "Astro" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-next/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "nextBrowsers",
+              data,
+              "responseEnd - Next.js"
+            ).map((i) => ({ ...i, framework: "Next.js" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-nuxt/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "nuxtBrowsers",
+              data,
+              "responseEnd - Nuxt"
+            ).map((i) => ({ ...i, framework: "Nuxt" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-react/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "reactBrowsers",
+              data,
+              "responseEnd - React"
+            ).map((i) => ({ ...i, framework: "React" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-svelte/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "svelteBrowsers",
+              data,
+              "responseEnd - Svelte"
+            ).map((i) => ({ ...i, framework: "Svelte" }))
+          ),
+
+        fetch("./ig-clone/ig-clone-vue/playwright-report/test-results.json")
+          .then((data) => data.json())
+          .then((data) =>
+            createBrowserComparison(
+              "vueBrowsers",
+              data,
+              "responseEnd - Vue.js"
+            ).map((i) => ({ ...i, framework: "Vue.js" }))
+          ),
+      ]).then((chartDataList) => {
+        chartDataList = chartDataList.flat();
+
+        const userActions = [
+          "CaptionChange",
+          "MediaSelection",
+          "MediaSourceInsert",
+          "PostCreation",
+        ];
+
+        // userActions.forEach((action) => {
+        //   createFrameworkComparison(
+        //     action,
+        //     chartDataList.filter((i) => i.tag == action),
+        //     "Framework Reaction Times - " + action
+        //   );
+        // });
+
+        createFrameworkComparison(
+          "allActions",
+          chartDataList,
+          "responseEnd",
+          "88"
+        );
+      });
+
+      Array.from(document.getElementsByTagName("details")).forEach(
+        (element) => {
+          element.setAttribute("open", true);
+          // element.removeAttribute("open")
+        }
+      );
+    </script>
+  </body>
+</html>

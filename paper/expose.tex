@@ -156,18 +156,18 @@
 
 \noindent\textbf{\Author}\\
 Hochschule der Medien Stuttgart\\
-Matrikelnummer: 44835 
+an067@hdm-stuttgart.de 
 
 \vspace{10px}
-\noindent Prüfer: Prof. Dr. Fridtjof Toenniessen \& Stephan Soller
+\noindent Prof. Dr. Fridtjof Toenniessen \& Stephan Soller
 
 \selectlanguage{english}
 \begin{abstract}
   Part of every web application project is the choice of tooling, especially the choice of framework for the development team.
   Unfortunately, this discussion has evolved into a sentiment matter rather than a factual one.
-  This thesis presents a study of a single examplary web application created identically with seven mainstream \acrlong{js} web development frameworks: Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js.
+  This thesis presents a study of a single example of a web application created identically with seven mainstream \acrlong{js} web development frameworks: Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js.
   A testing suite is proposed using Lighthouse and Playwright to cover the classic page load, the load of \acrlong{js} components and the update of \acrlong{js} components.
-  The evaluation of the measurements include the usage of two new derivative metrics: the \acrfull{ovcd} and a loadEventEnd metric balanced towards the requestStart event of NavigationTiming measurements.
+  The evaluation of the measurements include the usage of two new derivative metrics: the \acrfull{ovcd} and a loadEventEnd metric.
   The results show no clear-cut overall advantage of one single development framework, but outline strengths and weaknesses of all tested frameworks.
   Component update times indicate Nuxt as the fastest and Next.js as the slowest framework for update times.
   Similarly, Google Chrome appears to be the fastest and Desktop Safari the slowest browsers for updating the \acrshort{dom} after user input. 
@@ -204,7 +204,7 @@ The goals of this thesis are to propose a set of metrics that allow comparing ma
 % What metrics are used?
 % What tools can do that?
 
-One of the choices for the setup of the study is which frameworks to implement the application in and compare.
+\textbf{Frameworks.} One of the choices for the setup of the study is which frameworks to implement the application in and compare.
 The selected frameworks have to support the designed web application without the help of another tool or framework unless intended by the developers of the framework.
 Plus, the frameworks have to use \acrfull{js}  in order to narrow down the scope the study.
 TypeScript frameworks are allowed because they support \acrshort{js} \citep{typescript}.
@@ -225,8 +225,9 @@ The following frameworks were selected for this framework:
 \end{multicols}
 
 In addition, Preact, Solid and Qwik were considered to be included in this study, but were dropped because of relatively negative sentiment or low usage among developers that have experience with the tools.
+\\
 
-The web application used for this study is designed to be the subject of comparisons between frameworks.
+\textbf{Web application.} The web application used for this study is designed to be the subject of comparisons between frameworks.
 Its look is derived from the Android app of Instagram \citep{instagram} and it has four pages (see figure \ref{fig:screenshots}).
 The four pages cover three generally valid page types identified in the design process.
 The About page is a \enquote{Static page} as it does not change its content after the initial response from the web server.
@@ -240,6 +241,12 @@ Mutations to the \acrshort{dom} are therefore not only triggered by the initial 
 The time of such mutations is therefore not predictable.
 
 \begin{figure}[h]
+  \begin{subfigure}{0.24\linewidth}
+    \begin{center}
+      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Informationsseite.png}
+    \end{center}
+    \caption{About page}\label{subfig:about}
+  \end{subfigure}
   \begin{subfigure}{0.24\linewidth}
     \begin{center}
       \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Feed.png}
@@ -258,16 +265,10 @@ The time of such mutations is therefore not predictable.
     \end{center}
     \caption{Create page}\label{subfig:create}
   \end{subfigure}
-  \begin{subfigure}{0.24\linewidth}
-    \begin{center}
-      \includegraphics[width=\linewidth, height=0.3\textheight, keepaspectratio,frame]{img/ig-clone/Informationsseite.png}
-    \end{center}
-    \caption{About page}\label{subfig:about}
-  \end{subfigure}
   \caption{Screenshots of the \enquote{NotInstagram} application's pages}\label{fig:screenshots}
 \end{figure}
 
-These four pages are comprised of 15 components, most of which are wrappers to encapsulate image components, styled text or iterations over lists with subcomponents.
+\textbf{Components.} These four pages are comprised of 15 components, most of which are wrappers to encapsulate image components, styled text or iterations over lists with subcomponents.
 However, two components stand out because of their special purpose and implementation differences between frameworks.
 
 \begin{enumerate}
@@ -286,7 +287,7 @@ However, two components stand out because of their special purpose and implement
   One additional React component \enquote{CreateForm} was created in order to encapsulate React subcomponents and six components were implemented in React because they are part of the form and the Post preview on the Create page.
 \end{enumerate}
 
-In order to test the end-products of the frameworks, at least one web server is needed to host the application.
+\textbf{Hosting.} In order to test the end-products of the frameworks, at least one web server is needed to host the application.
 Previous work suggest that network delay is a great part of render delay and performance issues \citep{highperformancebrowsernetworking}.
 For this reason, the tests for this study are performed on two different web servers: An online hosting service and the local testing machine.
 
@@ -298,56 +299,72 @@ For this reason, the tests for this study are performed on two different web ser
   The application is hosted on the testing machine.
   A HP Envy x360 with an AMD Ryzen 5 5500U processor and 16 GB RAM is used here.
   The OS on the device is Windows 11 Home (Version 10.0.22631) during testing.
-  The application is built before every test and hosted using either built-in commands for the framework or using the \verb|serve| command (see table \ref{tab:hostCommands})
+  The application is built before every test and hosted using either built-in commands for the framework or using the \verb|serve| command. %(see table \ref{tab:hostCommands})
 \end{enumerate}
 
-\begin{table}[h]
-  \begin{center}
-    \begin{tabular}[h]{| l | l | l |}
-      \hline
-      \textbf{Framework} & \textbf{Build Command} & \textbf{Host Command} \\ \hline
-      Angular & \verb|ng build| & \verb|serve| \\ \hline
-      Astro & \verb|astro build| & \verb|astro preview| \\ \hline
-      Next.js & \verb|next build| & \verb|next start| \\ \hline
-      Nuxt & \verb|nuxt build| & \verb|nuxt preview| \\
-      & \verb|nuxt generate| & \verb|nuxt preview| \\ \hline
-      React & \verb|react-scripts build| & \verb|serve| \\ \hline
-      Svelte & \verb|vite build| & \verb|vite preview| \\ \hline
-      Vue.js & \verb|vite build| & \verb|serve| \\ \hline
-    \end{tabular}
-  \end{center}
-  \caption{Build and host command for each used framework as used for testing the applications when hosted locally}\label{tab:hostCommands}
-\end{table}
+% \begin{table}[h]
+%   \begin{center}
+%     \begin{tabular}[h]{| l | l | l |}
+%       \hline
+%       \textbf{Framework} & \textbf{Build Command} & \textbf{Host Command} \\ \hline
+%       Angular & \verb|ng build| & \verb|serve| \\ \hline
+%       Astro & \verb|astro build| & \verb|astro preview| \\ \hline
+%       Next.js & \verb|next build| & \verb|next start| \\ \hline
+%       Nuxt & \verb|nuxt build| & \verb|nuxt preview| \\
+%       & \verb|nuxt generate| & \verb|nuxt preview| \\ \hline
+%       React & \verb|react-scripts build| & \verb|serve| \\ \hline
+%       Svelte & \verb|vite build| & \verb|vite preview| \\ \hline
+%       Vue.js & \verb|vite build| & \verb|serve| \\ \hline
+%     \end{tabular}
+%   \end{center}
+%   \caption{Build and host command for each used framework as used for testing the applications when hosted locally}\label{tab:hostCommands}
+% \end{table}
 
-To identify weaknesses of the frameworks and to simplify the evaluation of the results, eleven metrics were chosen to test the frameworks in three categories (see table \ref{tab:metriccategories}).
-The page load covers the classic load time of web pages and is specified to outline the load speed from \verb|requestStart| to the last change to the page.
-The Component Load is defined as the time frame in which any changes to the \acrshort{dom} with \acrshort{js} can be identified and the rendering process of \acrshort{js} components are shown.
-The Component Update Time is defined as the time between a user interaction and a \acrshort{dom} mutation.
+\textbf{Metrics.} To identify weaknesses of the frameworks and to simplify the evaluation of the results, eleven metrics were chosen to test the frameworks in three categories (see table \ref{tab:metriccategories}).
+The Page Load Time (PLT) covers the classic load time of web pages and is specified to outline the load speed from \verb|requestStart| to the last change to the page.
+The Component Load Time (CLT) is defined as the time frame in which any changes to the \acrshort{dom} with \acrshort{js} can be identified and the rendering process of \acrshort{js} components are shown.
+The Component Update Time (CUT) is defined as the time between a user interaction and a \acrshort{dom} mutation.
 This time frame describes the speed of feedback to the user that the interaction has been registered and something is happening as well as the speed until that something finishes happening.
 Especially \acrshort{dom} mutation times are expected to show differences inbetween frameworks and implementations as the \acrshort{html} elements and internal implementation change from one framework to another.
 
 \begin{table}[h]
   \begin{center}
-    \begin{tabular}[h]{|l|l|l|}
+    \begin{tabular}[h]{|l|c|c|c|}
       \hline
-      \multicolumn{1}{|c|}{\textbf{Page}}       & \multicolumn{2}{c|}{\textbf{Component}}     \\ \hline
-      \multicolumn{1}{|c|}{\textbf{Load Time}}  & \textbf{Load Time}  & \textbf{Update Time}  \\ \hline
-      \acrlong{tbw}                             & \acrlong{olvc}      &                       \\ \hline
-      \acrlong{ttfb}                            & \acrlong{ofvc}      &                       \\ \hline
-      \multicolumn{2}{|c|}{\acrlong{tti}}                             &                       \\ \hline
-      \multicolumn{2}{|c|}{\acrlong{tbt}}                             &                       \\ \hline
-      \multicolumn{2}{|c|}{LoadEventEnd}                              &                       \\ \hline
-      DomContentLoaded                          & \multicolumn{2}{c|}{DOM Mutation Times}     \\ \hline
-      \acrlong{lvc}                             &                               &             \\ \hline
-      \acrlong{lcp}                             &                               &             \\ \hline
+                          & \textbf{PLT} & \textbf{CLT}  & \textbf{CUT}  \\ \hline
+      \acrlong{tbw}       & x            &               &               \\ \hline
+      \acrlong{ttfb}      & x            &               &               \\ \hline
+      \acrlong{tti}       & x            & x             &               \\ \hline
+      \acrlong{tbt}       & x            & x             &               \\ \hline
+      LoadEventEnd        & x            & x             &               \\ \hline
+      DomContentLoaded    & x            &               &               \\ \hline
+      \acrlong{lvc}       & x            &               &               \\ \hline
+      \acrlong{lcp}       & x            &               &               \\ \hline
+      \acrlong{olvc}      &              & x             &               \\ \hline
+      \acrlong{ofvc}      &              & x             &               \\ \hline
+      DOM Mutation Times  &              & x             & x             \\ \hline
     \end{tabular}
+    % \begin{tabular}[h]{|l|l|l|}
+    %   \hline
+    %   \multicolumn{1}{|c|}{\textbf{Page}}       & \multicolumn{2}{c|}{\textbf{Component}}     \\ \hline
+    %   \multicolumn{1}{|c|}{\textbf{Load Time}}  & \textbf{Load Time}  & \textbf{Update Time}  \\ \hline
+    %   \acrlong{tbw}                             & \acrlong{olvc}      &                       \\ \hline
+    %   \acrlong{ttfb}                            & \acrlong{ofvc}      &                       \\ \hline
+    %   \multicolumn{2}{|c|}{\acrlong{tti}}                             &                       \\ \hline
+    %   \multicolumn{2}{|c|}{\acrlong{tbt}}                             &                       \\ \hline
+    %   \multicolumn{2}{|c|}{LoadEventEnd}                              &                       \\ \hline
+    %   DomContentLoaded                          & \multicolumn{2}{c|}{DOM Mutation Times}     \\ \hline
+    %   \acrlong{lvc}                             &                               &             \\ \hline
+    %   \acrlong{lcp}                             &                               &             \\ \hline
+    % \end{tabular}
   \end{center}
-  \caption{Assignment of metrics to the metric categories}
+  \caption{Assignment of metrics to the metric categories: Page Load Time (PUT), Component Load Time (CLT) and Component Update Time (CUT)}
   \label{tab:metriccategories}
 \end{table}
 
-The requirements for testing tools - created by hosting the application on two different web servers and by the list list of metrics - are fulfilled by the Lighthouse CLI and Playwright.
+\textbf{Test tools.} The requirements for testing tools - created by hosting the application on two different web servers and by the list list of metrics - are fulfilled by the Lighthouse CLI and Playwright.
 Both are required to output their results in human-readable and machine-readable format to support easy debugging and the creation of aggregate metrics.
+\\
 
 \begin{enumerate}
   \item Using the \textbf{Lighthouse CLI}, a script for starting the web server and running Lighthouse tests on the web application is executed.
@@ -388,6 +405,7 @@ Which metric is measured by which tool can be seen in table \ref{tab:metricassig
 Metrics for the page load and for the component load times show no clear generally applicable evidence for a single framework being faster than the others.
 Such a distinction can only be made on a per-metric basis.
 Figure \ref{fig:lighthouseResults} presents the averages of measurements from the Lighthouse reports per page and framework.
+\\
 
 % Lighthouse result graphs
 \begin{figure}[!h]
@@ -443,34 +461,38 @@ Figure \ref{fig:lighthouseResults} presents the averages of measurements from th
   \caption{Lighthouse test results in Google Chrome}\label{fig:lighthouseResults}
 \end{figure}
 
-Next.js, Astro and Svelte are the leading frameworks in \acrshort{tbw} and Svelte, Next.js, Vue.js and especially Astro have fast results in their \acrshort{tti}.
+\textbf{Page Load Time.} Next.js, Astro and Svelte are the leading frameworks in \acrshort{tbw} and Svelte, Next.js, Vue.js and especially Astro have fast results in their \acrshort{tti}.
 In addition, Astro, Angular, Svelte, Nuxt and Vue.js stand out through little fluctuations in \acrshort{tti} across the four pages and the test repetitions.
 The results of measurements for the \acrshort{tbt} also favor Astro and Svelte.
 In contrast, Astro and Svelte perform poorly in DomContentLoaded and balanced LoadEventEnd (see figure \ref{fig:Playwright:loadEventEnd}).
 These metrics are strengths of Vue.js, React and Nuxt.
-The balanced LoadEventEnd is balanced towards the requestStart (see equation \ref{eq:balancedloadeventend}).
+The balanced LoadEventEnd is the difference between LoadEventEnd and the requestStart (see equation \ref{eq:balancedloadeventend}).
 Vue.js and React are also the fastest frameworks in \acrshort{olvc}.
 The \acrshort{ttfb} does not support a ranking of frameworks.
 Instead, it is more dependent on the page content and the host, which influence the results more than the framework.
 However, Astro, Next.js and Angular stand out through slow results in this metric.
-The balanced LoadEventEnd hightlights Vue.js and React positively, but also demonstrates a high dependency on the browser.
+The balanced LoadEventEnd highlights Vue.js and React positively, but also demonstrates a high dependency on the browser.
 
+\vspace{-0.3cm}
 \begin{equation}\label{eq:balancedloadeventend}
 \mathit{loadEventEnd}_\mathit{balanced} = \mathit{loadEventEnd}_\mathit{raw} - \mathit{requestStart}
 \end{equation}
+\vspace{-0.2cm}
 
-The metrics for the component load time have similar characteristics.
+\textbf{Component Load Time.} The metrics for the component load time have similar characteristics.
 The \acrshort{ofvc} of the applications are early in Astro, React and Next.js, which indicates a strength of React-based frameworks.
 React, Vue.js and Angular also naturally have a short \acrfull{ovcd} (see figure \ref{fig:LH:OVCD}), which is unsurprising.
 The \acrshort{ovcd} is defined as the time difference between \acrshort{ofvc} and \acrshort{olvc} (see equation \ref{eq:ovcd}).
 The recordings of early \acrshort{dom} mutations are also very fast for Astro, Vue.js and React, whereas recordings are missing completely for Angular (see figure \ref{fig:Playwright:pageLoadMutations:total}).
 This is most likely due to a faulty initialization of the MutationObserver that is responsible for recording mutation times.
 
+\vspace{-0.8cm}
 \begin{multline}\label{eq:ovcd}
   \mathit{observedVisualChangeDuration} =\\ \mathit{observedLastVisualChange} - \mathit{observedFirstVisualChange}
 \end{multline}
+% \vspace{0.0cm}
 
-In contrast, the measurements made for the component update times suggest clear rankings of the frameworks and of the used browsers (see figure \ref{fig:playwrightResults:total} and table \ref{tab:mutations:times}).
+\textbf{Component Update Time.} In contrast, the measurements made for the component update times suggest clear rankings of the frameworks and of the used browsers (see figure \ref{fig:playwrightResults:total} and table \ref{tab:mutations:times}).
 The times of the \acrshort{dom} mutations are quite similar to each other except in Mobile Safari and Desktop Safari.
 In these browsers, Next.js is the slowest and Nuxt is the fastest framework.
 Across all pages and frameworks, the ranking of browsers from fastest to slowest is Google Chrome, Microsoft Edge, Chromium, Mobile Chrome, Firefox, Mobile Safari and Desktop Safari.
@@ -514,46 +536,64 @@ For this kind of application, Nuxt, Angular, Vue.js and React present themselves
 \end{figure}
 
 % DOM Mutation times state change
-\begin{table}[h]
+\begin{table}[h!]
   {\footnotesize
   \centering
   \begin{adjustbox}{angle=0}
     {
       \rowcolors{1}{lightgray!40!}{lightgray!40!}
-      \begin{tabular}{|l|c|c|c|c|c|c|c|r|}
+      \begin{tabular}{|l|c|c|c|c|c|c|c|}
         \hline
-        ~                                   & \textbf{Angular} & \textbf{Astro}   & \textbf{Next.js}          & \textbf{Nuxt}           & \textbf{React} & \textbf{Svelte} & \textbf{Vue.js} & \textbf{Average} \\ \hline
-\rowcolor{white}                                     & 44      & 51                        & 47                        & 39                      & 44      & 38      & 51      & 44,857  \\
-\rowcolor{white}                                     & 68,9    & 71,75                     & 75,41                     & 66,4                    & 57,87   & 73,65   & 77,18   & 70,166  \\
-\rowcolor{white} \multirow{-3}{*}{Chromium}          & 95      & 89                        & 108                       & 94                      & 85      & 95      & 104     & 95,714  \\ \hline
-                                                     & 54      & 63                        & 59                        & 59                      & 54      & 60      & 52      & 57,286  \\
-                                                     & 88,7    & 99,34                     & 142,18                    & 82,78                   & 83,72   & 93,67   & 82,24   & 96,090  \\
-                 \multirow{-3}{*}{Firefox}           & 123     & 142                       & 235                       & 108                     & 181     & 129     & 103     & 145,857 \\ \hline
-\rowcolor{white}                                     & 77      & \cellcolor{red!50}87      & 79                        & 51                      & 84      & 70      & 47      & 70,714  \\
-\rowcolor{white}                                     & 122,7   & 170,1                     & \cellcolor{red!50}303,54  & 86,02                   & 169     & 164,23  & 135,72  & 164,473 \\
-\rowcolor{white} \multirow{-3}{*}{Desktop Safari}    & 172     & 270                       & \cellcolor{red!50}493     & 124                     & 280     & 283     & 200     & 260,286 \\ \hline
-                                                     & 44      & 49                        & 47                        & 42                      & 44      & 45      & 46      & 45,286  \\
-                                                     & 66,84   & 68,96                     & 93,7                      & 61,14                   & 67,41   & 80,81   & 69,04   & 72,557  \\
-                 \multirow{-3}{*}{Mobile Chrome}     & 90      & 85                        & 143                       & 82                      & 82      & 116     & 89      & 98,143  \\ \hline
-\rowcolor{white}                                     & 52      & 78                        & 73                        & 47                      & 67      & 56      & 52      & 60,714  \\
-\rowcolor{white}                                     & 105,61  & 154,28                    & 196,39                    & 110,32                  & 125,67  & 126,19  & 133,03  & 135,927 \\
-\rowcolor{white} \multirow{-3}{*}{Mobile Safari}     & 152     & 254                       & 372                       & 167                     & 183     & 208     & 206     & 220,286 \\ \hline
-                                                     & 43      & 44                        & 46                        & 37                      & 41      & 40      & 40      & 41,571  \\
-                                                     & 70,38   & 64,25                     & 72,77                     & 60,88                   & 62,13   & 74,46   & 60,9    & 66,539  \\
-                 \multirow{-3}{*}{Microsoft Edge}    & 90      & 80                        & 134                       & 85                      & 75      & 102     & 79      & 93,143  \\ \hline
-\rowcolor{white}                                     & 41      & 43                        & 41                        & \cellcolor{green!50}34  & 40      & 39      & 37      & 39,286  \\
-\rowcolor{white}                                     & 62      & \cellcolor{green!50}57,49 & 68,75                     & 59,92                   & 59,48   & 64,24   & 61,1    & 61,854  \\
-\rowcolor{white} \multirow{-3}{*}{Google Chrome}     & 84      & \cellcolor{green!50}72    & 99                        & 77                      & 77      & 89      & 77      & 82,143  \\ \hline
+        ~                                            & \textbf{Angular} & \textbf{Astro}                  & \textbf{Next.js}                & \textbf{Nuxt}          & \textbf{React}  & \textbf{Svelte} & \textbf{Vue.js} \\ \hline
+\rowcolor{white}                                     & 44               & 51                              & 47                              & 39                     & 44              & 38              & 51              \\
+\rowcolor{white}                                     & \textbf{69}      & \textbf{71}                     & \textbf{75}                     & \textbf{66}            & \textbf{58}     & \textbf{74}     & \textbf{77}     \\
+\rowcolor{white} \multirow{-3}{*}{Chromium}          & 95               & 89                              & 108                             & 94                     & 85              & 95              & 104             \\ \hline
+                                                     & 54               & 63                              & 59                              & 59                     & 54              & 60              & 52              \\
+                                                     & \textbf{89}      & \textbf{99}                     & \textbf{142}                    & \textbf{83}            & \textbf{84}     & \textbf{94}     & \textbf{82}     \\
+                 \multirow{-3}{*}{Firefox}           & 123              & 142                             & 235                             & 108                    & 181             & 129             & 103             \\ \hline
+\rowcolor{white}                                     & 77               & \cellcolor{red!50}87            & 79                              & 51                     & 84              & 70              & 47              \\
+\rowcolor{white}                                     & \textbf{123}     & \textbf{170}                    & \cellcolor{red!50}\textbf{304}  & \textbf{86}            & \textbf{169}    & \textbf{164}    & \textbf{136}    \\
+\rowcolor{white} \multirow{-3}{*}{Desktop Safari}    & 172              & 270                             & \cellcolor{red!50}493           & 124                    & 280             & 283             & 200             \\ \hline
+                                                     & 44               & 49                              & 47                              & 42                     & 44              & 45              & 46              \\
+                                                     & \textbf{67}      & \textbf{69}                     & \textbf{94}                     & \textbf{61}            & \textbf{67}     & \textbf{81}     & \textbf{69}     \\
+                 \multirow{-3}{*}{Mobile Chrome}     & 90               & 85                              & 143                             & 82                     & 82              & 116             & 89              \\ \hline
+\rowcolor{white}                                     & 52               & 78                              & 73                              & 47                     & 67              & 56              & 52              \\
+\rowcolor{white}                                     & \textbf{106}     & \textbf{154}                    & \textbf{196}                    & \textbf{110}           & \textbf{126}    & \textbf{126}    & \textbf{133}    \\
+\rowcolor{white} \multirow{-3}{*}{Mobile Safari}     & 152              & 254                             & 372                             & 167                    & 183             & 208             & 206             \\ \hline
+                                                     & 43               & 44                              & 46                              & 37                     & 41              & 40              & 40              \\
+                                                     & \textbf{70}      & \textbf{64}                     & \textbf{73}                     & \textbf{61}            & \textbf{62}     & \textbf{74}     & \textbf{61}     \\
+                 \multirow{-3}{*}{Microsoft Edge}    & 90               & 80                              & 134                             & 85                     & 75              & 102             & 79              \\ \hline
+\rowcolor{white}                                     & 41               & 43                              & 41                              & \cellcolor{green!50}34 & 40              & 39              & 37              \\
+\rowcolor{white}                                     & \textbf{62}      & \cellcolor{green!50}\textbf{57} & \textbf{69}                     & \textbf{60}            & \textbf{59}     & \textbf{64}     & \textbf{61}     \\
+\rowcolor{white} \multirow{-3}{*}{Google Chrome}     & 84               & \cellcolor{green!50}72          & 99                              & 77                     & 77              & 89              & 77              \\ \hline
                  \hline
-                                                     & 50,714  & 59,286                    & 56                        & 44,143                  & 53,429  & 49,714  & 46,429  & ~       \\
-                                                     & 83,59   & 98,024                    & 136,106                   & 75,351                  & 89,326  & 96,75   & 88,459  & ~       \\
-                 \multirow{-3}{*}{Average}           & 115,143 & 141,714                   & 226,286                   & 105,286                 & 137,571 & 146     & 122,571 & ~       \\ \hline
-\rowcolor{white}                                     & 44,505  & 47,915                    & 45,159                    & 35,06                   & 45      & 41,941  & 36,277  & ~       \\
-\rowcolor{white}                                     & 68,9    & 74,421                    & 107,408                   & 60,283                  & 74,989  & 78,181  & 69,971  & ~       \\
-\rowcolor{white} \multirow{-3}{*}{Weighted average}  & 94,179  & 103,895                   & 167,077                   & 80,285                  & 109,784 & 118,195 & 93,482  & ~       \\ \hline
+                                                     & 51               & 59                              & 56                              & 44                     & 53              & 50              & 46              \\
+                                                     & \textbf{84}      & \textbf{98}                     & \textbf{136}                    & \textbf{75}            & \textbf{89}     & \textbf{97}     & \textbf{88}     \\
+                 \multirow{-3}{*}{Browser Average}   & 115              & 142                             & 226                             & 105                    & 138             & 146             & 123             \\ \hline
+\rowcolor{white}                                     & 45               & 48                              & 45                              & 35                     & 45              & 42              & 36              \\
+\rowcolor{white}                                     & \textbf{69}      & \textbf{74}                     & \textbf{107}                    & \textbf{60}            & \textbf{75}     & \textbf{78}     & \textbf{70}     \\
+\rowcolor{white} \multirow{-3}{*}{Weighted Browser Average}    & 94     & 104                             & 167                             & 80                     & 110             & 118             & 93              \\ \hline
+      \end{tabular}
+
+    }
+
+    \end{adjustbox}
+
+    \vspace{0.5cm}
+      
+    {\rowcolors{1}{lightgray!40!}{lightgray!40!}
+    
+      \begin{tabular}{|l|c|}
+        \hline
+      ~ & Framework \\ \hline
+      \rowcolor{white}                            & minimum with framework in browser \\
+      \rowcolor{white}                            & \textbf{average with framework in browser} \\
+      \rowcolor{white} \multirow{-3}{*}{Browser}  & maximum with framework in browser \\ \hline \hline
+                                                  & average of minima across browsers \\
+                                                  & \textbf{total average across browsers} \\
+               \multirow{-3}{*}{Browser Average}  & average of maxima across browsers \\ \hline
       \end{tabular}
     }
-  \end{adjustbox}
   \caption{Minimum, average and maximum of recorded mutation times after user input in milliseconds (fastest times are highlighted green, slowest red). Weights are based on browser usage quota \citep{browserUsage}.}
   \label{tab:mutations:times}
   }
@@ -567,17 +607,18 @@ For this kind of application, Nuxt, Angular, Vue.js and React present themselves
 The results of the study are inconclusive for the metrics in relation to page and component load time.
 The measurements only show general advantages of single frameworks over others for the component update time.
 Nuxt is the fastest framework in regards to component update time, whereas Next.js is the slowest.
-In kind, Google Chrome turns out to be the fastest browser for component updates and these updates are slowest in Desktop Safari.
+Similarly, Google Chrome turns out to be the fastest browser for component updates and these updates are slowest in Desktop Safari.
 
-Due to these fluctuating results, future work should focus on making these results more reliable.
+However, test results fluctuate between repetitions. For this reason, future work should focus on making these results more reliable and statistically interpretable.
 Reliability might be achieved through repetition of the study with more test repetitions and the inclusion of other hosting environments.
 Additional pages might outline dependencies of the performance on the type of web page.
-Continuations of this study could also expand the mocked user actions to other interactions than filling a form.
+Continuations of this study could also expand the user actions to other interactions than filling a form.
 A preferred expansion of the user actions includes navigation between pages.
 
-Solutions to problems within this study should lead to a better initialization algorithm and end of recording \acrshort{dom} mutations.
-Currently, some mutations are not recorded at all and the end time of recording is arbitrarily set.
-For this reason, early mutations, purposefully continuously mutating components and very late mutations cannot be recorded properly.
+This study also revealed that the used initialization and ending algorithms for recording are suboptimal for the goals. 
+% Solutions to problems within this study should lead to a better initialization algorithm and end of recording \acrshort{dom} mutations.
+Therefore, some mutations are currently not recorded at all and the ending of the time frame for recording is manually set.
+For these reasons, early mutations (fast loading components), slow mutations (slow loading components) and periodically mutating components, e.g. a digital clock, cannot be recorded properly.
 
 \pagebreak
 

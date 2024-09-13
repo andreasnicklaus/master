@@ -18,6 +18,7 @@ nav_order: 4
 - [Version vom 09.08.2024](./proofread/2024-08-09_performance_of_webpages_built_with_js_frameworks.pdf) - [Feedback geben](mailto:an067@hdm-stuttgart.de?subject=Feedback%20zur%20Masterarbeit%20(Version%20vom%2009.08.2024))
 - [Version vom 26.08.2024](./proofread/2024-08-26_performance_of_webpages_built_with_js_frameworks.pdf) - [Feedback geben](mailto:an067@hdm-stuttgart.de?subject=Feedback%20zur%20Masterarbeit%20(Version%20vom%2026.08.2024))
 - [Version vom 09.09.2024](./proofread/2024-09-09_performance_of_webpages_built_with_js_frameworks.pdf) - [Feedback geben](mailto:an067@hdm-stuttgart.de?subject=Feedback%20zur%20Masterarbeit%20(Version%20vom%2009.09.2024))
+- [Version vom 13.09.2024](./proofread/2024-09-13_performance_of_webpages_built_with_js_frameworks.pdf) - [Feedback geben](mailto:an067@hdm-stuttgart.de?subject=Feedback%20zur%20Masterarbeit%20(Version%20vom%2013.09.2024))
 
 ---
 

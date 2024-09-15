@@ -191,18 +191,11 @@
 
 \section*{Ehrenwörtliche Erklärung}
 	
-	Hiermit versichere ich, \Author, ehrenwörtlich, dass ich die
-	vorliegende Masterarbeit mit dem Titel: „\Title“ selbstständig und ohne fremde Hilfe verfasst und keine
-	anderen als die angegebenen Hilfsmittel benutzt habe. Die Stellen der Arbeit, die dem
-	Wortlaut oder dem Sinn nach anderen Werken entnommen wurden, sind in jedem Fall
-	unter Angabe der Quelle kenntlich gemacht. Die Arbeit ist noch nicht veröffentlicht oder
-	in anderer Form als Prüfungsleistung vorgelegt worden.\\
+	Hiermit versichere ich, \Author, ehrenwörtlich, dass ich die vorliegende Masterarbeit mit dem Titel: \enquote{\Title} selbstständig und ohne fremde Hilfe verfasst und keine anderen als die angegebenen Hilfsmittel benutzt habe.
+  Die Stellen der Arbeit, die dem Wortlaut oder dem Sinn nach anderen Werken entnommen wurden, sind in jedem Fall unter Angabe der Quelle kenntlich gemacht.
+  Die Arbeit ist noch nicht veröffentlicht oder in anderer Form als Prüfungsleistung vorgelegt worden.\\
 	
-	Ich habe die Bedeutung der ehrenwörtlichen Versicherung und die prüfungsrechtlichen
-	Folgen (§26 Abs. 2 Bachelor-SPO (6 Semester), § 24 Abs. 2 Bachelor-SPO (7 Semester), §
-	23 Abs. 2 Master-SPO (3 Semester) bzw. § 19 Abs. 2 Master-SPO (4 Semester und
-	berufsbegleitend) der HdM) einer unrichtigen oder unvollständigen ehrenwörtlichen
-	Versicherung zur Kenntnis genommen.
+	Ich habe die Bedeutung der ehrenwörtlichen Versicherung und die prüfungsrechtlichen Folgen (§26 Abs. 2 Bachelor-SPO (6 Semester), § 24 Abs. 2 Bachelor-SPO (7 Semester), §23 Abs. 2 Master-SPO (3 Semester) bzw. §19 Abs. 2 Master-SPO (4 Semester und berufsbegleitend) der HdM) einer unrichtigen oder unvollständigen ehrenwörtlichen Versicherung zur Kenntnis genommen.
 	\vspace{30px}
 	
 	Eislingen, den \today
@@ -218,26 +211,38 @@
 
 \selectlanguage{ngerman}
 \begin{abstract}
-  Teil eines jeden Webanwendungsprojekts ist die Wahl der Werkzeuge, insbesondere die Wahl des Frameworks für das Entwicklungsteam.
-  Leider hat sich diese Diskussion eher zu einer Gefühlsangelegenheit als zu einer sachlichen Angelegenheit entwickelt.
-  Diese Arbeit stellt eine Studie über eine beispielhafte Webanwendung vor, die identisch mit sieben gängigen \acrlong{js}-Webentwicklungs-Frameworks erstellt wurde: Angular, Astro, Next.js, Nuxt, React, Svelte und Vue.js.
-  Es wird eine Testreihe mit Lighthouse und Playwright vorgeschlagen, um das klassische Laden der Seite, das Laden von \acrlong{js}-Komponenten und die Aktualisierung von \acrlong{js}-Komponenten abzudecken.
-  Die Auswertung der Messungen umfasst die Verwendung von zwei neuen abgeleiteten Metriken: die \acrfull{ovcd} und eine loadEventEnd-Metrik, die auf das requestStart-Ereignis der NavigationTiming-Messungen abgestimmt ist.
-  Die Ergebnisse zeigen keinen eindeutigen Gesamtvorteil eines einzelnen Entwicklungs-Frameworks, sondern zeigen die Stärken und Schwächen aller getesteten Frameworks auf.
-  Die Aktualisierungszeiten von Komponenten weisen Nuxt als das schnellste und Next.js als das langsamste Framework aus.
-  Ebenso sind Google Chrome der schnellste und Desktop Safari der langsamste Browser für die Aktualisierung des \acrshort{dom} nach Benutzereingaben.
+  Ein wesentlicher erster Schritt in jedem modernen Webanwendungsprojekt ist die Auswahl eines geeigneten Webentwicklungs-Frameworks.
+  Oft werden schwerwiegende Entscheidungen aufgrund von Gefühlen getroffen, anstatt die Leistung des Frameworks im Vergleich zu den Projektanforderungen und -ressourcen richtig zu bewerten.
+
+  In dieser Arbeit wird eine Modell-Webanwendung untersucht, die mit sieben Mainstream-JavaScript-Webentwicklungs-Frameworks identisch erstellt wurde: Angular, Astro, Next.js, Nuxt, React, Svelte und Vue.js.
+
+  Leistungsmessungen werden mit den Tools Lighthouse und Playwright durchgeführt, um Stärken und Schwächen der Frameworks zu ermitteln.
+  Dazu werden unter anderem die klassischen Seitenladezeiten sowie die Lade- und Aktualisierungszeiten von JavaScript-Komponenten ermittelt.
+  Zusätzlich werden zwei neue geeignete abgeleitete Metriken evaluiert: die \enquote{Observed Visual Change Duration} und eine „loadEventEnd“-Metrik.
+
+  Die Ergebnisse zeigen keinen eindeutigen allgemeinen Vorteil eines einzelnen Webentwicklungs-Frameworks.
+  Die Aktualisierungszeiten der Komponenten weisen Nuxt als das schnellste Webentwicklungs-Framework aus.
+  Next.js ist in diesem Zusammenhang das langsamste.
+  In ähnlicher Weise scheint Google Chrome der schnellste Client-Browser zu sein.
+  Desktop Safari ist der langsamste für die Aktualisierung des DOM nach Benutzereingaben.
 \end{abstract}
 
 \selectlanguage{english}
 \begin{abstract}
-  Part of every web application project is the choice of tooling, especially the choice of framework for the development team.
-  Unfortunately, this discussion has evolved into a sentiment matter rather than a factual one.
-  This thesis presents a study of a single example of a web application created identically with seven mainstream \acrlong{js} web development frameworks: Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js.
-  A testing suite is proposed using Lighthouse and Playwright to cover the classic page load, the load of \acrlong{js} components and the update of \acrlong{js} components.
-  The evaluation of the measurements include the usage of two new derivative metrics: the \acrfull{ovcd} and a loadEventEnd metric.
-  The results show no clear-cut overall advantage of one single development framework, but outline strengths and weaknesses of all tested frameworks.
-  Component update times indicate Nuxt as the fastest and Next.js as the slowest framework for update times.
-  Similarly, Google Chrome appears to be the fastest and Desktop Safari the slowest browsers for updating the \acrshort{dom} after user input. 
+  An essential initial step in every modern web application project is the selection of an appropriate web development framework.
+  Often, detrimental decisions are made based on sentiment rather than a proper assessment of the framework's performance vs. the project requirements and resources.
+
+  This thesis presents a study of a model web application created identically with seven mainstream JavaScript web development frameworks: Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js.
+
+  Performance measurements are done with Lighthouse and Playwright tools to identify strengths and weaknesses of the frameworks.
+  To this end, classic page load times and the load and update times of JavaScript components are retrieved among other data.
+  Additionally two new suitable derivative metrics are evaluated: the \enquote{Observed Visual Change Duration} and a "loadEventEnd" metric.
+
+  The results show no clear-cut general advantage of a single web development framework.
+  Component update times indicate Nuxt as the fastest web development framework.
+  Next.js is the slowest one in this context.
+  Similarly, Google Chrome appears to be the fastest client browser.
+  Desktop Safari is the slowest one for updating the DOM after user input
 \end{abstract}
 
 % ?REVIEW: \keywords{framework, web performance, Angular, Astro, Next.js, Nuxt, React, Svelte, Vue.js}
@@ -253,7 +258,7 @@ All content has been written or created by the author unless marked otherwise.
 \pagebreak
 
 \section{Introduction}\label{sec:introduction}
-Throughout the evolution of the world wide web, many changes have disrupted the way websites are created.
+With the evolution of the world wide web, many changes have disrupted the way websites are created.
 From simple file servers run by few selected institutions, simple static web pages and dynamic services like blogs and forums to websites created with the help UI tools and web development frameworks, mainly written in JavaScript, development has changed drastically since its beginning.
 
 Older web pages often lacked features that developers today work with as a matter of course.
@@ -275,7 +280,7 @@ The performance of a framework as assessed by the developer can be similar or gr
 When it comes to user experience and especially the perceived user experience however, there are plentiful collections of metrics and criteria to choose from so as to determine the performance of websites, not frameworks.
 The optimization of websites has become a goal during development because it has a real effect on both the ranking of web pages in search engines and the user behaviour.
 Both effects create business interests and financial incentives to invest resources into performance optimization \citep{webprophet,effectsofwebpagecontents}.
-However, the lack of research on the topic suggests either a consensus for a negligible effect of the development framework on the website's performance or a lack of knowledge of the effect.
+The lack of research on the topic suggests either a consensus for a negligible effect of the development framework on the website's performance or a lack of knowledge of the effect.
 Measurements on the effect of the development framework are a major convoluted task simply because the performance of a specific website can be dependent on many other factors such as the user's device, browser, networking hardware or server-side hardware.
 The number of possible combinations of factors and their reliability makes it difficult to measure a single performance run with a reliable result.
 Every single result is only a small part of a large number of possible performances the same application could achieve with different parameters.
@@ -363,7 +368,7 @@ The following goals were considered during the design process:
     The time of these updates can be any time after the initial render, but the execution of code or start of request for the resource that is responsible for the update has to be directly or indirectly triggered by the content of the initial \acrshort{dom} or \acrshort{html} document.
     \item Dynamic pages can be updated or update themselves by events that are not triggered by the content of the initial \acrshort{dom} or \acrshort{html} document.
     These events can either be triggered by user interaction or other events such as websocket messages.
-    The time of such updates is by their nature not predictable.
+    The time of such changes is by their nature not predictable.
     Dynamic pages are either static or delayed with additional opportunities for updates.
   \end{enumerate}
   This list is created with the knowledge that frameworks or other technologies such as caching may move a web page from one type to another.
@@ -979,7 +984,7 @@ The goals for this implementation period are few:
   If the design of the example application cannot be followed, changes are to be as minimal as possible.
 \end{enumerate}
 
-This section describes selected components and code snippets where they are either interesting for the performance, unforeseen choices or where they differ notably inbetween frameworks.
+This section describes selected components and code snippets where they are either interesting for the performance, unforeseen choices or where they differ notably between frameworks.
 The author of this study has had the most experience with Vue.js prior to this project.
 For this reason, code snippets in Vue.js have the most presentability and code snippets in this paper are shown in Vue.js wherever possible.
 The components described in this section are the About as a opportunity for fast load times, the Create page as an example for dynamic pages and components and the MediaComponent for its implementation differences between frameworks.
@@ -1189,7 +1194,7 @@ Because dynamic or reactive components are not implementable natively as Astro c
 For this reason, other components had to be invented in addition to the components as described in figure \ref{fig:uml}.
 \verb|CreateForm| encapsulates the dynamic parts of the Create page.
 It is a React component with the form and post preview.
-Because Astro components cannot be used in Islands, every subcomponent used here had to be implemented with React as a duplicate to an Astro component.
+Because Astro components cannot be used in Islands, every subcomponent used here had to be implemented with React as a duplicate to a native Astro component.
 
 Listings \ref{lst:Astro:Create:Script}, \ref{lst:Astro:Create:HTML} and \ref{lst:Astro:Createform} show the implementation of this unique design in Astro.
 The Create component imports and inserts the React component \verb|CreateForm| into \acrshort{html} snippets for the page and marks it as a \acrshort{csr} component with \verb|client:load| (see listing \ref{lst:Astro:Create:HTML}, line \ref{line:clientLoad}).
@@ -2075,7 +2080,7 @@ A similar increase is measured on the Profile page with a \acrshort{ttfb} for As
 Possible reasons for this phenomenon include the content encoding, which is missing from local hosting, or simply better traditional webserver performance such as parallelization of request handling on Vercel.
 With these faster applications on Vercel, Astro, Svelte, Next.js and Vue.js turn out to be the fastest frameworks for the \acrlong{tti} of the application.
 In general, Astro appears to be the framework from which the application has the fastest \acrshort{tti} across pages and hosting environments.
-Interestingly, Vue.js, Nuxt, Svelte, Angular and Astro show small fluctuations inbetween pages of 500 ms or less which is relatively little compared to Next.js and React.
+Interestingly, Vue.js, Nuxt, Svelte, Angular and Astro show small fluctuations between pages of 500 ms or less which is relatively little compared to Next.js and React.
 \\
 
 \textbf{(d)} Figure \ref{subfig:LH:observedDomContentLoaded} shows the average of observed times of the domContentLoaded event.
@@ -2183,7 +2188,7 @@ The third pattern can be found in Microsoft Edge and Google Chrome.
 Pages load relatively fast in these two browsers especially with Astro.
 The measurements made in Firefox do not resemble the ones made in other browsers.
 This might indicate, that its rendering engine \enquote{Gecko} behaves differently to \enquote{Blink} and \enquote{WebKit} which are used in the other browsers.
-First, the results are slower on average and it is the only browser in which the load times of React pages fluctuate more than 30 ms inbetween pages.
+First, the results are slower on average and it is the only browser in which the load times of React pages fluctuate more than 30 ms between pages.
 Second, the fastest times with React are slower than the fastest times with Astro, Nuxt and Vue.js.
 
 \begin{figure}
@@ -2250,12 +2255,14 @@ On Vercel, Nuxt-build has relatively late values across all pages.
   \caption{\acrfull{ofvc} (\subref{subfig:LH:observedFirstVisualChange}) and \acrfull{ovcd} (\subref{subfig:LH:observedVisualChangeDuration})}
 \end{figure}
 
+\pagebreak
+
 More interesting than the raw \acrshort{olvc} and \acrshort{ofvc} values is the difference between the measurements.
 This thesis defines a new metric \enquote{Observed Visual Change Duration}.
 It shows the time after the first visual mutation to the page has been bade until the last visual change.
 It is simply deferred from the \acrshort{olvc} and \acrshort{ofvc} and is defined as
 
-\begin{multline}
+\begin{multline}\label{eq:ovcd}
   \mathit{observedVisualChangeDuration} =\\ \mathit{observedLastVisualChange} - \mathit{observedFirstVisualChange}
 \end{multline}
 \vspace{0cm}
@@ -2513,13 +2520,13 @@ The second-slowest framework on average is Astro, but it comes in faster than Sv
     
       \begin{tabular}{|l|c|}
         \hline
-      ~ & Framework \\ \hline
-      \rowcolor{white}                            & minimum with framework in browser \\
-      \rowcolor{white}                            & \textbf{average with framework in browser} \\
-      \rowcolor{white} \multirow{-3}{*}{Browser}  & maximum with framework in browser \\ \hline \hline
-                                                  & average of minima across browsers \\
-                                                  & \textbf{total average across browsers} \\
-               \multirow{-3}{*}{Browser Average}  & average of maxima across browsers \\ \hline
+        ~                                           & \textbf{Framework} \\ \hline
+        \rowcolor{white}                            & minimum with framework in browser \\
+        \rowcolor{white}                            & \textbf{average with framework in browser} \\
+        \rowcolor{white} \multirow{-3}{*}{Browser}  & maximum with framework in browser \\ \hline \hline
+                                                    & average of minima across browsers \\
+                                                    & \textbf{total average across browsers} \\
+                \multirow{-3}{*}{Browser Average}   & average of maxima across browsers \\ \hline
       \end{tabular}
     }
   }
@@ -2604,7 +2611,7 @@ However, the times of mutations are close to each other except in in Mobile Safa
 In only these two browsers, Next.js is the slowest and Nuxt is the fastest framework.
 The recorded times of \acrshort{dom} mutations permit the creation of rankings of browsers and frameworks.
 The browsers rank fastest to slowest Google Chrome, Microsoft Edge, Chromium, Mobile Chrome, Firefox and Mobile Safari and then Desktop Safari.
-Judging from this ranking, it is the easiest to test below below a predefined time budget in Google Chrome and Desktop Safari is the most challenging browser to achieve performance goals in.
+Judging from this ranking, it is the easiest to test below a predefined time budget in Google Chrome and hardest in Desktop Safari.
 The resulting ranking of frameworks for the component update times of the example application is from fastest to slowest Nuxt, Angular, Vue.js, React, Astro/Svelte and Next.js.
 This ranking can influence the choice of frameworks for user input heavy applications.
 For this kind of web application, Nuxt, Angular, Vue.js and React present themselves as the best choices in regard of component update times.
@@ -2648,7 +2655,7 @@ For the former, no solution is currently apparent except a longer recording, whi
 A solution for the latter conflict is implemented by setting a custom \acrshort{html} attribute \verb|skipPerformance="true"| to elements that should be ignored for the recording.
 A different approach might open opportunities to improve the registration of a fully loaded application in test suites apart from the events of the \acrshort{html} standard.
 Lastly, this study only covers four pages of a single application, two hosting environments and up to 20 repetitions per Lighthouse test and three repetitions of Playwright tests if the test fails.
-Future work should verify the results by repeating the measurements of the example application of this study with more test repetitions to eliminate fluctuations.
+Future work should verify the results by repeating the measurements of the example application of this study with more test runs to eliminate fluctuations.
 Also, insights into differences in performance and considerations for tests might be gained through the addition of pages for all page types and the usage of other hosting environments. 
 
 \pagebreak

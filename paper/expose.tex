@@ -170,7 +170,7 @@ an067@hdm-stuttgart.de
 
   Performance measurements are done with Lighthouse and Playwright tools to identify strengths and weaknesses of the frameworks.
   To this end, classic page load times and the load and update times of JavaScript components are retrieved among other data.
-  Additionally two new suitable derivative metrics are evaluated: the \enquote{Observed Visual Change Duration} and a "loadEventEnd" metric.
+  Additionally, two new suitable derivative metrics are evaluated: the \enquote{Observed Visual Change Duration} and a "loadEventEnd" metric.
 
   The results show no clear-cut general advantage of a single web development framework.
   Component update times indicate Nuxt as the fastest web development framework.
@@ -181,8 +181,6 @@ an067@hdm-stuttgart.de
 
 % \tableofcontents
 % \pagebreak
-
-% TODO: Ort der Tabellen und Bilder anpassen
 
 \section{Introduction}
 % What is the current situation?
@@ -489,7 +487,7 @@ The balanced LoadEventEnd highlights Vue.js and React positively, but also demon
 \end{equation}
 \vspace{-0.2cm}
 
-\textbf{Component Load Time.} The metrics for the component load time have similar characteristics.
+\textbf{Component Load Time.} The metrics for the Component Load Time have similar characteristics as with the Page Load Time.
 The \acrshort{ofvc} of the applications are early in Astro, React and Next.js, which indicates a strength of React-based frameworks.
 React, Vue.js and Angular also naturally have a short \acrfull{ovcd} (see figure \ref{fig:LH:OVCD}), which is unsurprising.
 The \acrshort{ovcd} is defined as the time difference between \acrshort{ofvc} and \acrshort{olvc} (see equation \ref{eq:ovcd}).
@@ -501,16 +499,7 @@ This is most likely due to a faulty initialization of the MutationObserver that 
   \mathit{observedVisualChangeDuration} =\\ \mathit{observedLastVisualChange} - \mathit{observedFirstVisualChange}
 \end{multline}
 % \vspace{0.0cm}
-
-\textbf{Component Update Time.} In contrast, the measurements made for the component update times suggest clear rankings of the frameworks and of the used browsers (see figure \ref{fig:playwrightResults:total} and table \ref{tab:mutations:times}).
-The times of the \acrshort{dom} mutations are quite similar to each other except in Mobile Safari and Desktop Safari.
-In these browsers, Next.js is the slowest and Nuxt is the fastest framework.
-Across all pages and frameworks, the ranking of browsers from fastest to slowest is Google Chrome, Microsoft Edge, Chromium, Mobile Chrome, Firefox, Mobile Safari and Desktop Safari.
-This means that time budgets are most easily kept to in Google Chrome and hardest in Desktop Safari.
-The ranking of frameworks is - from fastest to slowest - Nuxt, Angular, Vue.js, React, Astro/Svelte and Next.js.
-In addition, Nuxt, Vue.js and Svelte are economical with \acrshort{dom} mutations after user interaction, whereas the other frameworks update the \acrshort{dom} after user interaction in more different ways.
-This ranking can influence the choice of framework for user input heavy applications.
-For this kind of application, Nuxt, Angular, Vue.js and React present themselves as the best choices relating to component update times.
+\vfill
 
 \begin{figure}[!h]
   \centering
@@ -544,6 +533,18 @@ For this kind of application, Nuxt, Angular, Vue.js and React present themselves
   \end{subfigure}
   \caption{}
 \end{figure}
+
+\pagebreak
+
+\textbf{Component Update Time.} In contrast, the measurements made for the Component Update Time suggest clear rankings of the frameworks and of the used browsers (see figure \ref{fig:playwrightResults:total} and table \ref{tab:mutations:times}).
+The times of the \acrshort{dom} mutations are quite similar to each other except in Mobile Safari and Desktop Safari.
+In these browsers, Next.js is the slowest and Nuxt is the fastest framework.
+Across all pages and frameworks, the ranking of browsers from fastest to slowest is Google Chrome, Microsoft Edge, Chromium, Mobile Chrome, Firefox, Mobile Safari and Desktop Safari.
+This means that time budgets are most easily kept to in Google Chrome and hardest in Desktop Safari.
+The ranking of frameworks is - from fastest to slowest - Nuxt, Angular, Vue.js, React, Astro/Svelte and Next.js.
+In addition, Nuxt, Vue.js and Svelte are economical with \acrshort{dom} mutations after user interaction, whereas the other frameworks update the \acrshort{dom} after user interaction in more different ways.
+This ranking can influence the choice of framework for user input heavy applications.
+For this kind of application, Nuxt, Angular, Vue.js and React present themselves as the best choices relating to Component Update Time.
 
 % DOM Mutation times state change
 \begin{table}[h!]
@@ -627,8 +628,7 @@ Additional pages might outline dependencies of the performance on the type of we
 Continuations of this study could also expand the user actions to other interactions than filling a form, for instance navigation between pages.
 
 This study also revealed that the used algorithms for start and end of the recording are suboptimal for the goals. 
-% Solutions to problems within this study should lead to a better initialization algorithm and end of recording \acrshort{dom} mutations.
-Therefore, some mutations are currently not recorded at all and the ending of the time frame for recording is manually set.
+The start is delayed with periodical initialization attempts and the ending of the time frame for recording is manually set.
 For these reasons, early mutations (fast loading components), slow mutations (slow loading components) and periodically mutating components, e.g. a digital clock, cannot be recorded properly.
 
 \pagebreak

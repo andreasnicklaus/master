@@ -173,7 +173,7 @@
     an der Hochschule der Medien Stuttgart
     
     \vspace{10px}
-    am \today
+    am 25.09.2024
     
     \vspace{10px}
     zur Erlangung des akademischen Grades eines Master of Science
@@ -212,7 +212,7 @@
 \selectlanguage{ngerman}
 \begin{abstract}
   Ein wesentlicher erster Schritt in jedem modernen Webanwendungsprojekt ist die Auswahl eines geeigneten Webentwicklungs-Frameworks.
-  Oft werden schwerwiegende Entscheidungen aufgrund von Gefühlen getroffen, anstatt die Leistung des Frameworks im Vergleich zu den Projektanforderungen und -ressourcen richtig zu bewerten.
+  Oft werden schwerwiegende Entscheidungen aufgrund von Gefühlen getroffen, anstatt die Leistung des Frameworks im Vergleich zu den Projektanforderungen und \linebreak-ressourcen richtig zu bewerten.
 
   In dieser Arbeit wird eine Modell-Webanwendung untersucht, die mit sieben Mainstream-JavaScript-Webentwicklungs-Frameworks identisch erstellt wurde: Angular, Astro, Next.js, Nuxt, React, Svelte und Vue.js.
 
@@ -236,7 +236,7 @@
 
   Performance measurements are done with Lighthouse and Playwright tools to identify strengths and weaknesses of the frameworks.
   To this end, classic page load times and the load and update times of JavaScript components are retrieved among other data.
-  Additionally two new suitable derivative metrics are evaluated: the \enquote{Observed Visual Change Duration} and a "loadEventEnd" metric.
+  Additionally, two new suitable derivative metrics are evaluated: the \enquote{Observed Visual Change Duration} and a "loadEventEnd" metric.
 
   The results show no clear-cut general advantage of a single web development framework.
   Component update times indicate Nuxt as the fastest web development framework.
@@ -266,7 +266,7 @@ Yet their load and rendering most likely would be blazingly fast with today's te
 Modern websites though are often bigger in size, have a lot more features and are in many respects more complex.
 Due to the increased complexity, the mere volume of a website's data has increased, especially with more and more multimedia files.
 That in return has increased the demand for better performance on all components of the load and rendering process.
-This technological advancement has upped the technological sophistication for development tools as well.
+This advancement has upped the technological sophistication for development tools as well.
 Today's modern web development frameworks support developers with tools to create sites and applications through terminal commands.
 They often increase the content-per-line-of-code quota through implicit page generation in contrast to the explicit writing of source code from earlier times.
 Many frameworks even feature configuration options for directly hosting the web page.
@@ -288,7 +288,7 @@ It is therefore perceivable that a \enquote{perfect combination} of hard- and so
 
 Many modern web tracking services provide data about the user, the user's devices, current page load times and so on.
 This data is helpful in determining current poor performances and therefore possible starting points for optimization efforts.
-But it gives very little information about recommended actions or recommended choice of frameworks for a redesign of a web application.
+But it has very little information about recommended actions or recommended choice of frameworks for a redesign of a web application.
 Relying on marketing material for choice of frameworks is equally questionable because most modern frameworks claim to be fast, easy to use and performance efficient.
 This suggests that each would be a great choice for developers.
 
@@ -574,7 +574,7 @@ To summarize some comparisons between frameworks or groups of frameworks, the mo
   Because there is no perceivable difference between prerendered pages and server-side rendered pages from a client perspective, they are grouped together in this context.
   \item \textbf{Angular - React - Vue.js}: Because these \acrshort{csr} frameworks have been competing for eight years at this point and they are still the most famous front-end frameworks \citep{stateOfJs2023}, the comparison of these frameworks is relevant for this study.
   \item \textbf{Nuxt - Vue.js}: As a next generation of the Vue.js framework, the actual performance increase of Nuxt is interesting for developers.
-  \item \textbf{Next.js - React}: Same as above in relation to React
+  \item \textbf{Next.js - React}: Same as above in relation to React.
   \item \textbf{Vue-based - React-based}: Because a direct comparison of frameworks based on React and based on Vue.js is possible with multiple candidates, a difference in performance is an actual relevant factor for the choice between the two ecosystems.
   \item \textbf{Svelte - Astro}: As the most recent popular frameworks in the selection of frameworks, Astro and Svelte have the potential to both outdo their contenders and outdo each other.
   This comparison is most interesting for fans of new tools and the development teams of the frameworks themselves.
@@ -751,7 +751,8 @@ In order to focus on this time frame, these metrics describe the application's p
   Optimization of this metric requires an understanding of the page's content and element size within the viewport.
 \end{itemize}
 
-From this list of relevant metrics, some expectations can be formulated before testing for them.
+From this list of relevant metrics, some expectations can be formulated before measuring them.
+
 \begin{enumerate}
   \item \acrshort{tbt} is most likely longer with \acrshort{csr} frameworks because the code execution filling the \acrshort{html} skeleton takes some time that is not necessary in clients with \acrshort{ssr} and Prerendered pages.
   On delayed pages this difference is expected to be very slight or nonexistent.
@@ -950,7 +951,7 @@ The initialization options for the creation process were chosen with the followi
   \item No testing tools are to be preconfigured except Playwright.
   If Playwright is not an option, then no testing tool should be chosen.
   \item Otherwise the default options (recommended or first) should be chosen.
-  If \enquote{none} is an option, it it should be selected.
+  If \enquote{none} is an option, it should be selected.
 \end{enumerate}
 
 After the initialization under these rules, the four web pages of the respective apps, their components and the routing between the pages were configured.
@@ -1366,7 +1367,7 @@ Enhanced image components are configured to ideally optimize the size and qualit
 The \verb|<video>| elements are designed to optimize the load behaviour of the browser and to change the default presentation and styling.
 Each video has a defined width and height, playback behaviour and controls.
 In order to come as close to the application's model, Instagram, videos should autoplay, but be muted by default.
-Each single behaviour is a single attribute to set, but autoplaying every video requires every video to be loaded on page load.
+Each single behaviour is a single attribute to set, but autoplaying every video requires each to be loaded immediately on page load.
 This network load bears a performance decrease.
 For this reason, only the metadata is preloaded unless it is the first post in the PostList.
 To ensure the wanted autoplay feature, each \verb|<video>| element is referenced using the framework and custom code ensures that videos play when they are in the viewport and pause when they are outside of it.
@@ -1471,6 +1472,7 @@ for (let projectConfig of config.projects) {
 logger.info("ALL DONE")
 \end{lstlisting}
 \hrule
+\pagebreak
 \begin{lstlisting}[caption={Test configuration for Lighthouse tests}, language=JavaScript, label={lst:lighthouse-config}]
 // testing-script/config.js
 export default {
@@ -1514,7 +1516,7 @@ Listing \ref{lst:playwright-trigger} shows the implementation of this trigger sc
 Project directories are defined and the test command is executed in the directory with the configured environment variables.
 Playwright is told to not open a report even if a test fails through \verb|PW_TEST_HTML_REPORT_OPEN|.
 
-\vspace{1cm}
+\pagebreak
 \begin{lstlisting}[caption={Trigger script for Playwright tests}, label={lst:playwright-trigger}, language=JavaScript]
 // playwright-trigger.mjs
 import { spawn } from 'child_process'
@@ -1650,7 +1652,7 @@ const routes = [
 
 export default routes;
 \end{lstlisting}
-\vspace{1cm}
+\pagebreak
 
 Second, \verb|dynamic-performance.spec.js| describes how component load times are measured.
 The same routes are opened after an initialization script is injected into the browser window.
@@ -2051,7 +2053,7 @@ Moreover, the byte size of the Profile page decreases for Nuxt-generate, a chara
 The property of Nuxt, that the Create page is as heavy as the Profile page, can be explained through the implementation of the MediaComponent (see listing \ref{lst:Nuxt:MediaComponent:Script}).
 All preconfigured image files are imported using \lstinline{import.meta.glob()} (see listing \ref{lst:Nuxt:MediaComponent:Script}, line \ref{line:Nuxt:MediaComponent:imageImport}).
 For this reason, the byte size of the page is at least the size of all images on pages that use MediaComponent.
-Although this import method is used with Nuxt, Astro and Svelte, Nuxt is the only framework with which this behaviour seems to have this impact.
+Although this import method is used with Nuxt, Astro and Svelte, Nuxt is the only framework with which this behaviour seems to have such a detrimental impact.
 Secondly, the About page has a small byte size, which is not surprising because it has only one \acrshort{svg} as an image.
 
 In general, pages from Next.js, Astro and Svelte have a small byte weight on the Feed page as well as the Profile page, most likely due to successful image compression.
@@ -2130,7 +2132,7 @@ Next.js is the only exception to that on the Create page.
 Amongst the frameworks, no clear separation can be identified across the pages or hosting environment, although Vue.js and React are always among the fastest in this metric compared to other frameworks with the same hosting method.
 Additionally, Nuxt has the slowest \acrshort{olvc} across pages, especially on the Feed page.
 However, the average of Nuxt-build on Vercel is deceiving.
-The distribution of the \acrshort{olvc} measurements of Nuxt-build throughout the 20 test repetitions clearly shows that most measurements lie around 4500 ms rather than the average of all values which is 6012 ms.
+The distribution of the \acrshort{olvc} measurements of Nuxt-build throughout the 20 test runs clearly shows that most measurements lie around 4500 ms rather than the average of all values which is 6012 ms.
 Nonetheless, the \acrshort{olvc} of Nuxt is still far above the average of other frameworks.
 \\
 
@@ -2163,7 +2165,7 @@ The numbers of passed page load tests with Playwright are listed in table \ref{t
 The only frameworks with which the application does not pass the tests are Astro and Svelte.
 For both frameworks the page load budget is exceeded on all four pages when opened in Firefox.
 The repetitions of failed tests also exceed the time budget, which causes the tests to be marked as failed.
-Figure \ref{subfig:Playwright:loadEventEnd:unbalanced} shows the timings of loadEventEnd across browsers, frameworks and pages, including test repetitions.
+Figure \ref{subfig:Playwright:loadEventEnd:unbalanced} shows the timings of loadEventEnd across browsers, frameworks and pages, including test runs.
 It is clear that these test results are outliers compared to other frameworks and browsers.
 The load speed in Firefox is slower than the budget only for Astro and Svelte.
 Upon inspection of other navigation event times, the reason for this results becomes clear.
@@ -2352,24 +2354,27 @@ In general, each described group does update similar elements with similar mutat
 % Total user action mutations
 \begin{table}[!ht]
   \centering
-  \begin{adjustbox}{angle=90}
-    \begin{tabular}{|l|r|r|r|r|r|r|r|}
-      \hline
-      ~                       & \textbf{Angular}  & \textbf{Astro}  & \textbf{Next.js}  & \textbf{Nuxt} & \textbf{React}  & \textbf{Vue.js} & \textbf{Svelte} \\ \hline
-      Caption change          & 3                 & 2               & 3                 & 1             & 2               & 1               & 1               \\ \hline
-      Media selection         & 3                 & 1               & 3                 & 1             & 1               & 1               & 1               \\ \hline
-      Media source insertion  & 3                 & 2               & 3                 & 1             & 2               & 1               & 1               \\ \hline
-      Post creation           & 5                 & 4               & 6                 & 3             & 4               & 3               & 3               \\ \hline\hline
-      \textbf{Total}          & 14                & 9               & 15                & 6             & 9               & 6               & 6               \\ \hline
-    \end{tabular}
-  \end{adjustbox}
+  {
+    \small
+    \begin{adjustbox}{angle=00}
+      \begin{tabular}{|l|r|r|r|r|r|r|r|}
+        \hline
+        ~                       & \textbf{Angular}  & \textbf{Astro}  & \textbf{Next.js}  & \textbf{Nuxt} & \textbf{React}  & \textbf{Vue.js} & \textbf{Svelte} \\ \hline
+        Caption change          & 3                 & 2               & 3                 & 1             & 2               & 1               & 1               \\ \hline
+        Media selection         & 3                 & 1               & 3                 & 1             & 1               & 1               & 1               \\ \hline
+        Source insertion        & 3                 & 2               & 3                 & 1             & 2               & 1               & 1               \\ \hline
+        Post creation           & 5                 & 4               & 6                 & 3             & 4               & 3               & 3               \\ \hline\hline
+        \textbf{Total}          & 14                & 9               & 15                & 6             & 9               & 6               & 6               \\ \hline
+      \end{tabular}
+    \end{adjustbox}
+  }
   \caption{Total number of \acrshort{dom} mutation types per framework and user action}
   \label{tab:mutations:total}
 \end{table}
 
 Figure \ref{fig:playwrightResults:total} presents the mutation times of each framework per browser with all recorded times across user actions.
 The first results for this study is that almost all frameworks do finish mutating the \acrshort{dom} within the predefined time budget of 500 ms.
-Slower mutations do speed up in test repetitions.
+Slower mutations do speed up in test runs.
 As a result, the Playwright tests pass.
 In addition, the maximum time for mutations is decidedly dependent on the browser.
 While Desktop Safari apparently is the slowest browser for \acrshort{dom} mutations triggered by the user, especially with Next.js, almost all mutations in Chromium, Microsoft Edge and Google Chrome even finish within the time limit for earliest mutations of 100 ms.
@@ -2542,6 +2547,8 @@ The fastest times are all recorded in Google Chrome and slowest in Desktop Safar
 Notably, both the slowest first mutation and the fastest average and last mutation are recorded in Astro.
 Based on the average per browser, the ranking of fastest browsers by component update time is as follows:
 
+\begin{center}
+\begin{varwidth}{\textwidth}
 \begin{enumerate}
   \item Google Chrome
   \item Microsoft Edge
@@ -2551,6 +2558,8 @@ Based on the average per browser, the ranking of fastest browsers by component u
   \item Mobile Safari
   \item Desktop Safari
 \end{enumerate}
+\end{varwidth}
+\end{center}
 
 \section{Summary}\label{sec:summary}
 % 1. Which framework works best with page load times?
@@ -2560,9 +2569,11 @@ Based on the average per browser, the ranking of fastest browsers by component u
 The previous chapter has presented the results to the proposed measurements.
 The purpose of this chapter is to summarize the results as to which framework performs well in which metric category and in which browser the applications perform well.
 Table \ref{tab:playwright:total} displays the number of passed, failed and flaky tests.
-Flaky tests fail at least once, but pass in any of the test repetitions.
-Across all Playwright tests, Angular and Nuxt share the first place of most passed tests, Next.js is third-fastest and the fourth place is shared by React and Vue.js.
+Flaky tests fail at least once, but pass in any of the test runs.
+Across all Playwright tests, Angular and Nuxt share the first place of most passed tests.
+Next.js is third and the fourth place is shared by React and Vue.js.
 The fewest tests are passed by Svelte and Astro with 4 failed tests and 6 failed tests, respectively.
+\\
 
 % total Playwright tests passes
 \begin{table}[!ht]
@@ -2582,11 +2593,11 @@ The fewest tests are passed by Svelte and Astro with 4 failed tests and 6 failed
   \label{tab:playwright:total}
 \end{table}
 
-Concerning the page load behaviour, the results do not favor any one framework.
+\textbf{Page Load Time.} Concerning the Page Load behaviour, the results do not favor any one framework.
 Frameworks that have fast load times when being inspected through one metric, demonstrate worse performances in other metrics.
 In their \acrlong{tbw}, Next.js, Astro and Svelte are the leading frameworks with their small byte size.
 Svelte, Next.js, Vue.js and especially Astro have fast \acrlong{tti} results in this application.
-In Addition, Astro, Angular, Svelte, Nuxt and Vue.js stand out through little fluctuations in \acrshort{tti} across pages and test repetitions.
+In Addition, Astro, Angular, Svelte, Nuxt and Vue.js stand out through little fluctuations in \acrshort{tti} across pages and test runs.
 Astro and Svelte also beat their competition in \acrlong{tbt}.
 In contrast, Vue, React and Nuxt are the fastest frameworks when the domContentLoaded or raw loadEventEnd events are timed.
 These metrics show the weaknesses of Astro and Svelte.
@@ -2596,25 +2607,39 @@ Other metrics in the category do not support such a ranking.
 For example, the \acrlong{ttfb} also shows a dependency on the page content and host, which often influences the results more than the chosen framework.
 However, Astro, Next.js and Angular show slow results.
 The balanced loadEventEnd highlights Vue.js and React positively, but also demonstrates the differences between browsers clearly.
+\\
 
-The metrics for the component load time have similar characteristics.
+\textbf{Component Load Time.} The metrics for the Component Load Time have similar characteristics as with the Page Load Times.
 Overlapping metrics (\acrshort{tbt}, \acrshort{olvc}, \acrshort{tti} and loadEventEnd) focus positively on Astro, Svelte, Vue.js, React and Next.js, but they do not all have good results in every one of those metrics.
 The \acrshort{ofvc} of the applications are early in Astro, React and Next.js.
 Only React translates this dominant property over its competitors to \acrshort{ovcd}, where it is joined by Vue.js and Angular.
 These groupings of frameworks in \acrshort{ofvc}, \acrshort{olvc} and \acrshort{ovcd} is due to the fact that performing well in all three metrics is very difficult to achieve.
 The recordings of early \acrshort{dom} mutations favor Angular, Astro, Vue.js and React based on their \acrshort{csr}.
+\\
 
-In contrast, the measurements made for the component update times do indicate clear rankings of frameworks and browsers.
+\textbf{Component Update Time} In contrast, the measurements made for the Component Update Times do indicate clear rankings of frameworks and browsers.
 Nuxt, Vue.js and Svelte are economical with \acrshort{dom} mutations.
 The other tested frameworks Next.js, React, Angular and Astro mutate the \acrshort{dom} more often.
-However, the times of mutations are close to each other except in in Mobile Safari and Desktop Safari.
+However, the times of mutations are close to each other, except in Mobile Safari and Desktop Safari.
 In only these two browsers, Next.js is the slowest and Nuxt is the fastest framework.
 The recorded times of \acrshort{dom} mutations permit the creation of rankings of browsers and frameworks.
 The browsers rank fastest to slowest Google Chrome, Microsoft Edge, Chromium, Mobile Chrome, Firefox and Mobile Safari and then Desktop Safari.
 Judging from this ranking, it is the easiest to test below a predefined time budget in Google Chrome and hardest in Desktop Safari.
-The resulting ranking of frameworks for the component update times of the example application is from fastest to slowest Nuxt, Angular, Vue.js, React, Astro/Svelte and Next.js.
+The resulting ranking of frameworks for the Component Update Times of the example application is from fastest to slowest Nuxt, Angular, Vue.js, React, Astro/Svelte and Next.js.
 This ranking can influence the choice of frameworks for user input heavy applications.
-For this kind of web application, Nuxt, Angular, Vue.js and React present themselves as the best choices in regard of component update times.
+For this kind of web application, Nuxt, Angular, Vue.js and React present themselves as the best choices in regard of Component Update Times.
+\begin{center}
+\begin{varwidth}{\textwidth}
+\begin{enumerate}
+  \item Nuxt
+  \item Angular
+  \item Vue.js
+  \item React
+  \item Astro \& Svelte
+  \item Next.js
+\end{enumerate}
+\end{varwidth}
+\end{center}
 
 \section{Concluding remarks}\label{sec:conclusion}
 % results are application-specific
@@ -2630,22 +2655,27 @@ In this study, Angular, Astro, Next.js, Nuxt, React, Svelte and Vue.js were cont
 The measurement results show that the results are not clear-cut towards any framework, but rather indicate tendencies of load and update speeds of frameworks, browsers, page types, hosting environments and implementation.
 All frameworks display strengths in at least one metric relating to page and component load.
 Component update time is the only metric category outlining fast and slow frameworks, as well as browsers.
-Google Chrome and Microsoft Edge turn out to be the fastest of the compared browsers and Nuxt appears to be the fastest framework.
+Google Chrome and Microsoft Edge turn out to be the fastest of the compared browsers.
+Nuxt appears to be the fastest framework.
 On the other end of the spectrum, Mobile Safari and Desktop Safari as well as Next.js produce slow component update times.
 
-Because the framework choice appears to be dependent on more than just the framework itself, some considerations can be recommended for it.
-Before choosing a framework for new projects, the browser usage of users should be taken into consideration, especially with Mobile Safari and Desktop Safari.
+For real-word business projects it is commendable to see about additional constrainst beyond the mere greenfield performance of web development frameworks.
+Obviously as seen in this study, the browser usage of users should be taken into consideration, especially with Mobile Safari and Desktop Safari.
 If the used browsers are known, budgets for any tested metrics should be adapted to match expectations based on the results presented in this study.
 Additionally, results have shown that performance measurements fluctuate to up to 30 \% in either direction.
 Therefore, all performance tests should be executed multiple times before a test should be considered passing.
 This recommendation should especially be considered when comparing frameworks, as shown in this work.
+\\
 
 Future works might find solutions for uncovered difficulties with testing strategies and missing data in this study.
+
 First, the measurements do not cover navigation between the pages, but only the load behaviour of single pages.
 The current expectation is that navigation measurements would favor Angular applications because no additional \acrlong{js} files have to be loaded on navigation to another page.
 Especially the byte weight of pages might be compensated in favor of Angular for this reason.
+
 Second, the actual time between updates to the application's state and visual changes in the user's viewport are skipped in this study with the goal of keeping measurement methods as open as possible.
 Solutions to this end include white-box testing and might involve triggering custom events on state updates that are registerable in a testing suite.
+
 Third, the interpretations of test results uncovered trade-offs relating to the initialization and end of recording.
 A slow interval for initialization of the MutationObserver for \acrshort{dom} mutations makes results comparable to other test execution, but also leads to missing data for early mutations between injection of the recording script and initialization of the MutationObserver.
 This might be solved through a different initialization process, e.g. including the recording script into the application's code.
@@ -2654,6 +2684,7 @@ Components that load slower than ten seconds are not recorded at all and compone
 For the former, no solution is currently apparent except a longer recording, which does not fully solve the problem.
 A solution for the latter conflict is implemented by setting a custom \acrshort{html} attribute \verb|skipPerformance="true"| to elements that should be ignored for the recording.
 A different approach might open opportunities to improve the registration of a fully loaded application in test suites apart from the events of the \acrshort{html} standard.
+
 Lastly, this study only covers four pages of a single application, two hosting environments and up to 20 repetitions per Lighthouse test and three repetitions of Playwright tests if the test fails.
 Future work should verify the results by repeating the measurements of the example application of this study with more test runs to eliminate fluctuations.
 Also, insights into differences in performance and considerations for tests might be gained through the addition of pages for all page types and the usage of other hosting environments. 
@@ -2671,7 +2702,7 @@ Nikolai Thees, M.Sc, and Dominik Ratzel, B.Sc, for their support in the creation
 To my best friend Erik for reminding me that it could always be worse.
 My partner Anna-Lena - I simply could not have done it without your calmness and straight-forwardness, special thanks.
 My father Dr. Bernhard Nicklaus for never letting any of my lazyness slide.
-And to my parents, who sent me off on the road to this M.Sc. - what feels like a very long time ago.
+And to my loving parents, who supported and encouraged me to embark on this M.Sc. endeavour - what feels like a long time ago.
 
 \lstlistoflistings
 
@@ -3503,7 +3534,7 @@ export default MediaComponent
       \textbf{Total Changes}          & \textbf{3}        & \textbf{2}      & \textbf{3}          & \textbf{1}    & \textbf{2}      & \textbf{1}      & \textbf{1}      \\ \hline
       \end{tabular}
   \end{adjustbox}
-  \caption{List of recorded mutations during media source insertion (empty cells indicate that an element is not present, \enquote{-} indicates no mutations)}
+  \caption{List of recorded mutations during Source insertion (empty cells indicate that an element is not present, \enquote{-} indicates no mutations)}
   \label{tab:mutations:mediaSourceInsertion}
 \end{table}
 

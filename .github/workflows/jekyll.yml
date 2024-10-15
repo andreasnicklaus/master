@@ -23,6 +23,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Copy markdown files
         run: cp -r doc pages/ && cp README.md pages
+      - name: Copy pdf files
+        run: cp Mega-fast or just super-fast -  Performance differences of mainstream JavaScript frameworks for web applications - Andreas Nicklaus - Expose.pdf pages && cp C:\Users\Andreas\IdeaProjects\Masterthesis\Mega-fast or just super-fast -  Performance differences of mainstream JavaScript frameworks for web applications - Andreas Nicklaus.pdf pages
       - name: Setup Ruby
         uses: ruby/setup-ruby@8575951200e472d5f2d95c625da0c7bec8217c42 # v1.161.0
         with:

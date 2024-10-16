@@ -5,7 +5,7 @@ permalink: /index.html
 nav_order: 0
 ---
 
-# Masterthesis: Evaluation von Automatisierten Web-Performance-Optimierungen mit JavaScript-Frameworks
+# Masterthesis: Mega-fast or just super-fast? Performance differences of mainstream JavaScript frameworks for web applications
 
 Autor: Andreas Nicklaus
 

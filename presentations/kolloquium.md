@@ -213,7 +213,7 @@ FRAMEWORKS:
 </div>
 <div>
 
-**Entscheidungskriterien:** [[2]](https://2023.stateofjs.com/en-US/libraries/front-end-frameworks/)
+**Entscheidungskriterien:** [[2](https://2023.stateofjs.com/en-US/libraries/front-end-frameworks/)]
 - Nutzungsquote
 - Empfehlungsrate
 </div>
@@ -260,7 +260,7 @@ HOSTING:
 height: 80%">
 <div>
 
-### Vercel
+### Vercel [[3](https://vercel.com/)]
 - Network Delay
 - Kostenloses Konto
 - CI/CD Integration
@@ -374,6 +374,8 @@ height: 80%">
 - Automatisierung von Tests
 - Google Chrome
 
+<small>[[4](https://developer.chrome.com/docs/lighthouse/overview)]</small>
+
 </div>
 
 <div>
@@ -385,6 +387,7 @@ height: 80%">
   ➡️ Black-Box-Testing
 - Freie Browser-Wahl
 
+<small>[[5](https://playwright.dev/)]</small>
 </div>
 </div>
 
@@ -427,6 +430,8 @@ BROWSERS:
 - Firefox
 - Desktop Safari
 - Mobile Safari
+
+<small>[[6](https://gs.statcounter.com/)]</small>
 
 # 4. Ergebnisse
 
@@ -947,15 +952,49 @@ Andreas Nicklaus, 44835
 
 17.10.2024
 
-# Referenzen
-
-[1] https://www.scribd.com/document/471812575/A-website
-[2] https://2023.stateofjs.com/en-US/libraries/front-end-frameworks/
-
-<!-- TODO: # Abkürzungsverzeichnis -->
-
 # Anhang
 <!-- _class: lead -->
+
+# Referenzen
+<!-- 
+_class: sm
+-->
+[1] https://www.scribd.com/document/471812575/A-website
+[2] https://2023.stateofjs.com/en-US/libraries/front-end-frameworks/
+[3] https://vercel.com/
+[4] https://developer.chrome.com/docs/lighthouse/overview
+[5] https://playwright.dev/
+[6] https://gs.statcounter.com/
+
+# Abkürzungsverzeichnis
+<!-- 
+_class: table-sm
+-->
+<div  style="display: flex; column-gap: 12px; align-items: start;">
+
+| Abkürzung | Bedeutung                                      |
+| --------- | ---------------------------------------------- |
+| CI/CD     | Continuous Integration and Continuous Delivery |
+| CSR       | Client-Side Rendering                          |
+| DOM       | Document Object Model                          |
+| FVC       | First Visual Change                            |
+| HTML      | Hypertext Markup Language                      |
+| JS        | JavaScript                                     |
+| LCP       | Largest Contentful Paint                       |
+| LVC       | Last Visual Change                             |
+
+| Abkürzung | Bedeutung                       |
+| --------- | ------------------------------- |
+| OLVC      | Observed Last Visual Change     |
+| OFVC      | Observed First Visual Change    |
+| OVCD      | Observed Visual Change Duration |
+| SSR       | Server-Side Rendering           |
+| TBT       | Total Blocking Time             |
+| TBW       | Total Byte Weight               |
+| TTFB      | Time To First Byte              |
+| TTI       | Time To Interactive             |
+
+</div>
 
 ## 4.1 Page Load Time - TBT
 <!-- 

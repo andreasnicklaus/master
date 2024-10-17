@@ -233,10 +233,10 @@ FRAMEWORKS:
 -->
 
 <div style="display: flex; flex-direction: row; justify-content: space-around; margin-top: 40px">
-  <img src="img/ig-clone/Feed.png" height="400" style="border: grey 1px solid" />
-  <img src="img/ig-clone/Profil.png" height="400" style="border: grey 1px solid" />
-  <img src="img/ig-clone/Beitrag erstellen.png" height="400" style="border: grey 1px solid" />
-  <img src="img/ig-clone/Informationsseite.png" height="400" style="border: grey 1px solid" />
+  <img src="./img/ig-clone/Feed.png" height="400" style="border: grey 1px solid" />
+  <img src="./img/ig-clone/Profil.png" height="400" style="border: grey 1px solid" />
+  <img src="./img/ig-clone/Beitrag erstellen.png" height="400" style="border: grey 1px solid" />
+  <img src="./img/ig-clone/Informationsseite.png" height="400" style="border: grey 1px solid" />
 </div>
 
 ## 3.3 Hosting-Umgebung
@@ -463,7 +463,7 @@ BROWSERS:
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/TTFB.png)
+![height:500px](./img/lighthouse-results/TTFB.png)
 </div>
 
 ## 4.1 Page Load Time - TBW
@@ -476,7 +476,7 @@ BROWSERS:
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/TBW.png)
+![height:500px](./img/lighthouse-results/TBW.png)
 </div>
 
 ## 4.1 Page Load Time - TTI
@@ -488,7 +488,7 @@ BROWSERS:
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/TTI.png)
+![height:500px](./img/lighthouse-results/TTI.png)
 </div>
 
 ## 4.1 Page Load Time - DomContentLoaded
@@ -500,7 +500,7 @@ BROWSERS:
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/observedDomContentLoaded.png)
+![height:500px](./img/lighthouse-results/observedDomContentLoaded.png)
 </div>
 
 ## 4.2 Component Load Time - LoadEventEnd
@@ -509,7 +509,7 @@ BROWSERS:
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/playwright-results/loadEventEnd/total.png)
+![height:500px](./img/playwright-results/loadEventEnd/total.png)
 </div>
 
 ## 4.2 Component Load Time - balanced LoadEventEnd (1)
@@ -532,7 +532,7 @@ Alte Messwerte
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/playwright-results/loadEventEnd/total.png)
+![height:500px](./img/playwright-results/loadEventEnd/total.png)
 </div>
 
 ## 4.2 Component Load Time - balanced LoadEventEnd (2)
@@ -549,7 +549,7 @@ Angeglichenen Werte
 -->
 <div style="display: grid; place-items: center">
 
-![height:450px](img/playwright-results/loadEventEnd_balanced/total.png)
+![height:450px](./img/playwright-results/loadEventEnd_balanced/total.png)
 </div>
 
 ## 4.1 Page Load Time - OLVC
@@ -559,7 +559,7 @@ Angeglichenen Werte
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/OLVC.png)
+![height:500px](./img/lighthouse-results/OLVC.png)
 </div>
 
 
@@ -572,7 +572,7 @@ Angeglichenen Werte
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/OFVC.png)
+![height:500px](./img/lighthouse-results/OFVC.png)
 </div>
 
 ## 4.2 Component Load Time - OVCD
@@ -595,7 +595,7 @@ OLVC
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/OLVC.png)
+![height:500px](./img/lighthouse-results/OLVC.png)
 </div>
 
 ## 4.2 Component Load Time - OVCD
@@ -608,7 +608,7 @@ OVCD
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/olvc-ofvc.png)
+![height:500px](./img/lighthouse-results/olvc-ofvc.png)
 </div>
 
 ## DOM Mutation Times
@@ -676,7 +676,7 @@ Ergebnis:
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/playwright-results/pageLoadMutations/total.png)
+![height:500px](./img/playwright-results/pageLoadMutations/total.png)
 </div>
 
 ## 4.2 Component Load Times - DOM Mutations
@@ -704,7 +704,7 @@ Ergebnis:
 - Caption + Dropdown
 -->
 <div style="display: flex; flex-direction: row; justify-content: space-around">
-<img src="img/ig-clone/Beitrag erstellen.png" height="500" style="border: grey 1px solid" />
+<img src="./img/ig-clone/Beitrag erstellen.png" height="500" style="border: grey 1px solid" />
 <div>
 
 1. Caption Insert
@@ -726,7 +726,7 @@ Ergebnis:
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/playwright-results/userActions_byUserAction/total.png)
+![height:500px](./img/playwright-results/userActions_byUserAction/total.png)
 </div>
 
 ## 4.3 Component Update Times - Messungen
@@ -1003,7 +1003,7 @@ _class: table-sm
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/TBT.png)
+![height:500px](./img/lighthouse-results/TBT.png)
 </div>
 
 ## 4.1 Page Load Time - LCP
@@ -1013,5 +1013,5 @@ _class: table-sm
 -->
 <div style="display: grid; place-items: center">
 
-![height:500px](img/lighthouse-results/LCP.png)
+![height:500px](./img/lighthouse-results/LCP.png)
 </div>

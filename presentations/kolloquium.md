@@ -451,7 +451,7 @@ BROWSERS:
   - Ungleich verteilte Stärken und Schwächen der Frameworks
   - Undeutliche Tendenzen bzgl. Client-Side vs. Server-Side Rendering
 - Undeutlich für CUT
-  - Unterschiedliche Spannweiten und Zeiten der DOM Mutations
+  - Zeiten und Zeitspannen der DOM Mutations
   - Durchschnittsranking von Frameworks und Browsern möglich
 
 ## 4.1 Page Load Time - TTFB

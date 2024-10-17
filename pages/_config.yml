@@ -12,6 +12,9 @@ plugins:
 mermaid:
   version: "9.1.3"
 
+include:
+  - presentations
+
 exclude:
   - .jekyll-cache/
   - Gemfile

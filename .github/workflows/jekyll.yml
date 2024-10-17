@@ -22,7 +22,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Copy presentation
-        run: cp presentations doc
+        run: cp -r presentations doc
       - name: Copy markdown files
         run: cp -r doc pages/ && cp README.md pages
       - name: Copy pdf files
